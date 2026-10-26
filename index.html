@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Omni-Liseuse</title>
-  <meta name="description" content="Omni-Liseuse — liseuse locale pour EPUB, PDF, FB2, TXT, HTML et CBZ.">
+  <meta name="description" content="Liseuse locale pour EPUB, PDF, FB2, TXT, HTML et CBZ.">
   <meta name="theme-color" id="metaThemeColor" content="#171226">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,7 +17,7 @@
 
   <style>
     /* ============================================================
-       THÈMES ET BASE VISUELLE
+       THÈMES ET BASE
        ============================================================ */
     :root {
       --accent: #6d4aff;
@@ -91,7 +91,6 @@
       background: var(--bg);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       -webkit-tap-highlight-color: transparent;
-      transition: color .16s ease, background-color .16s ease;
     }
 
     html[data-theme="nuit"] body {
@@ -137,7 +136,6 @@
       place-items: center;
       border-radius: 14px;
       background: var(--button);
-      transition: background .15s ease, transform .15s ease;
     }
 
     .icon-button:hover { background: var(--button-hover); }
@@ -203,7 +201,6 @@
     .brand h1 {
       margin: 0;
       font: 600 clamp(28px, 4vw, 38px)/1 "EB Garamond", Georgia, serif;
-      letter-spacing: -.025em;
     }
 
     .brand p {
@@ -233,28 +230,13 @@
       border: 1px dashed rgba(109, 74, 255, .55);
       border-radius: 24px;
       background: linear-gradient(120deg, var(--accent-soft), transparent 65%), var(--panel);
-      transition: transform .16s ease, border-color .16s ease, background .16s ease;
-    }
-
-    .import-panel::after {
-      content: "";
-      position: absolute;
-      width: 190px;
-      height: 190px;
-      top: -105px;
-      right: -65px;
-      border-radius: 50%;
-      background: rgba(109, 74, 255, .13);
-      pointer-events: none;
+      transition: transform .16s ease, border-color .16s ease;
     }
 
     .import-panel.dragging {
       transform: scale(1.008);
       border-color: var(--accent-light);
-      background: var(--accent-soft);
     }
-
-    .import-copy, .import-actions { position: relative; z-index: 1; }
 
     .import-copy h2 {
       margin: 0 0 8px;
@@ -279,9 +261,8 @@
 
     #importProgress {
       position: absolute;
-      z-index: 2;
       right: 18px;
-      bottom: 9px;
+      bottom: 8px;
       left: 18px;
       overflow: hidden;
       color: var(--muted);
@@ -296,7 +277,6 @@
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 15px;
     }
 
     .section-heading h2 { margin: 0; font-size: 18px; }
@@ -308,13 +288,7 @@
       gap: clamp(21px, 3vw, 30px);
     }
 
-    .book-card { min-width: 0; animation: card-in .24s ease both; }
-
-    @keyframes card-in {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
+    .book-card { min-width: 0; }
     .cover-wrap { position: relative; margin-bottom: 12px; }
 
     .cover-button {
@@ -329,7 +303,7 @@
       box-shadow: 0 12px 29px var(--cover-shadow);
       user-select: none;
       -webkit-user-select: none;
-      transition: transform .18s ease, box-shadow .18s ease;
+      transition: transform .18s ease;
     }
 
     .cover-button::before {
@@ -342,10 +316,7 @@
       pointer-events: none;
     }
 
-    .cover-button:hover {
-      transform: translateY(-4px) rotate(-.4deg);
-      box-shadow: 0 18px 35px var(--cover-shadow);
-    }
+    .cover-button:hover { transform: translateY(-4px); }
 
     .cover-button img {
       width: 100%;
@@ -367,12 +338,12 @@
       border-radius: 50%;
       color: #fff;
       background: rgba(18, 12, 28, .72);
-      backdrop-filter: blur(8px);
       opacity: 0;
-      transition: opacity .15s ease;
     }
 
-    .cover-wrap:hover .delete-book, .delete-book:focus-visible { opacity: 1; }
+    .cover-wrap:hover .delete-book,
+    .delete-book:focus-visible { opacity: 1; }
+
     .delete-book svg { width: 17px; height: 17px; }
 
     .book-title {
@@ -479,7 +450,7 @@
       padding: clamp(16px, 3.2vh, 38px) clamp(22px, 6vw, 84px) clamp(16px, 3vh, 34px);
       overflow: hidden;
       touch-action: pan-y;
-      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,.035)), var(--reader-bg);
+      background: var(--reader-bg);
     }
 
     #readerSurface {
@@ -503,8 +474,6 @@
       background: var(--paper);
     }
 
-    #epubViewport iframe { background: var(--paper) !important; }
-
     .reader-copy {
       margin: 0;
       overflow-wrap: break-word;
@@ -514,15 +483,12 @@
       hyphens: auto;
       -webkit-hyphens: auto;
       column-fill: auto;
-      orphans: 2;
-      widows: 2;
       will-change: transform;
     }
 
     .reader-copy p { margin: 0 0 .82em; }
 
-    .reader-copy h1, .reader-copy h2, .reader-copy h3,
-    .reader-copy h4, .reader-copy h5, .reader-copy h6 {
+    .reader-copy h1, .reader-copy h2, .reader-copy h3 {
       margin: 1.1em 0 .55em;
       break-after: avoid;
       font-weight: 600;
@@ -548,14 +514,8 @@
       break-inside: avoid;
     }
 
-    .reader-copy figure {
-      margin: 1em auto;
-      text-align: center;
-      break-inside: avoid;
-    }
-
+    .reader-copy figure { margin: 1em auto; text-align: center; break-inside: avoid; }
     .reader-copy pre { white-space: pre-wrap; font: inherit; text-align: left; }
-    .reader-copy a { color: var(--accent-light); }
     .reader-copy .fb2-break { height: 1.2em; }
     .reader-copy .fb2-verse { margin: 0; text-align: left; }
     .reader-copy .fb2-poem { margin: 1em 0; }
@@ -572,7 +532,6 @@
       -webkit-user-drag: none;
     }
 
-    /* Le canvas PDF reste blanc ; seul le fond de lecture suit le thème. */
     #pdfViewport {
       overflow: auto;
       overscroll-behavior: contain;
@@ -611,7 +570,6 @@
       background: var(--button);
       opacity: 0;
       transform: translateY(-50%);
-      transition: opacity .15s ease;
       font-size: 29px;
     }
 
@@ -629,11 +587,7 @@
       font-size: 12px;
     }
 
-    #pageIndicator {
-      min-width: 104px;
-      text-align: right;
-      white-space: nowrap;
-    }
+    #pageIndicator { min-width: 104px; text-align: right; white-space: nowrap; }
 
     .reading-progress {
       width: min(320px, 32vw);
@@ -643,13 +597,7 @@
       background: var(--line);
     }
 
-    #readingProgressBar {
-      width: 0;
-      height: 100%;
-      background: var(--accent);
-      transition: width .2s ease;
-    }
-
+    #readingProgressBar { width: 0; height: 100%; background: var(--accent); }
     .swipe-hint { white-space: nowrap; }
 
     #pdfZoomControls { display: flex; align-items: center; gap: 5px; }
@@ -663,11 +611,7 @@
       font-size: 13px;
     }
 
-    #pdfZoomValue {
-      min-width: 43px;
-      text-align: center;
-      font-variant-numeric: tabular-nums;
-    }
+    #pdfZoomValue { min-width: 43px; text-align: center; }
 
     #readerView.chrome-hidden .reader-topbar {
       transform: translateY(-110%);
@@ -682,7 +626,7 @@
     }
 
     /* ============================================================
-       ANIMATION DE TOURNEPAGE
+       TOURNEPAGE 3D
        ============================================================ */
     #turnLayer {
       position: absolute;
@@ -717,14 +661,11 @@
       background: var(--paper);
     }
 
-    .leaf-front { box-shadow: inset -25px 0 40px -30px rgba(0,0,0,.6); }
-
     .leaf-back {
       transform: rotateY(180deg);
       background:
         linear-gradient(100deg, rgba(0,0,0,.2), transparent 19%, transparent 80%, rgba(0,0,0,.1)),
         var(--paper);
-      box-shadow: inset 25px 0 40px -30px rgba(0,0,0,.58);
     }
 
     .leaf-face::after {
@@ -735,7 +676,6 @@
       background:
         linear-gradient(90deg, rgba(255,255,255,.12), transparent 9%, transparent 88%, rgba(0,0,0,.17)),
         radial-gradient(circle at 98% 2%, rgba(255,255,255,.25), transparent 15%);
-      mix-blend-mode: soft-light;
     }
 
     #pageShadow {
@@ -745,29 +685,15 @@
       opacity: 0;
       pointer-events: none;
       background: linear-gradient(90deg, rgba(0,0,0,.35), transparent 43%);
-      will-change: opacity, transform;
     }
 
     #pageShadow.previous {
       background: linear-gradient(-90deg, rgba(0,0,0,.35), transparent 43%);
     }
 
-    .snapshot-text {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      background: var(--paper);
-    }
-
-    .snapshot-comic {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: var(--paper);
-    }
-
+    .snapshot-text { position: absolute; inset: 0; overflow: hidden; background: var(--paper); }
+    .snapshot-comic { width: 100%; height: 100%; object-fit: contain; background: var(--paper); }
     .snapshot-pdf { width: 100%; height: 100%; display: block; }
-
     .paper-abstract { position: absolute; inset: 8%; opacity: .14; }
 
     .paper-abstract span {
@@ -777,9 +703,6 @@
       margin-bottom: 2.7vh;
       background: var(--ink);
     }
-
-    .paper-abstract span:nth-child(3n) { width: 91%; }
-    .paper-abstract span:nth-child(4n) { width: 96%; }
 
     #readerLoading {
       position: absolute;
@@ -846,12 +769,6 @@
       color: var(--ink);
       background: var(--panel);
       box-shadow: 0 18px 55px rgba(0,0,0,.28);
-      animation: panel-in .22s ease both;
-    }
-
-    @keyframes panel-in {
-      from { opacity: 0; transform: translateX(35px); }
-      to { opacity: 1; transform: translateX(0); }
     }
 
     .panel-header {
@@ -867,14 +784,7 @@
     }
 
     .setting-group { padding: 20px 0; border-top: 1px solid var(--line); }
-
-    .setting-group h3 {
-      margin: 0 0 13px;
-      font-size: 13px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-
+    .setting-group h3 { margin: 0 0 13px; font-size: 13px; text-transform: uppercase; }
     .setting-group p { color: var(--muted); font-size: 13px; line-height: 1.55; }
 
     .theme-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
@@ -923,20 +833,9 @@
       font: 22px "EB Garamond", Georgia, serif;
     }
 
-    #fontSizeValue {
-      min-width: 85px;
-      text-align: center;
-      font-variant-numeric: tabular-nums;
-    }
-
     .range-row { display: flex; align-items: center; gap: 14px; }
     input[type="range"] { width: 100%; accent-color: var(--accent); }
-
-    #warmthValue {
-      min-width: 43px;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-    }
+    #warmthValue { min-width: 43px; text-align: right; }
 
     .modal-backdrop { display: grid; place-items: center; padding: 20px; }
 
@@ -951,24 +850,12 @@
       border-radius: 24px;
       background: var(--panel);
       box-shadow: 0 18px 55px rgba(0,0,0,.3);
-      animation: modal-in .2s ease both;
     }
 
-    @keyframes modal-in {
-      from { opacity: 0; transform: translateY(10px) scale(.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .modal-icon {
-      width: 62px;
-      height: 62px;
-      margin-bottom: 16px;
-      border-radius: 18px;
-    }
-
+    .modal-icon { width: 62px; height: 62px; margin-bottom: 16px; border-radius: 18px; }
     .modal p, .modal li { color: var(--muted); line-height: 1.6; }
     .modal h3 { margin: 24px 0 8px; font-size: 16px; }
-    .modal ul { margin: 8px 0; padding-left: 21px; }
+    .modal ul { padding-left: 21px; }
     .modal li { margin-bottom: 8px; font-size: 14px; }
     .modal li strong { color: var(--ink); }
 
@@ -1007,19 +894,9 @@
       text-align: center;
       white-space: pre-line;
       transform: translateX(-50%);
-      animation: toast-in .2s ease both;
     }
 
-    #toast.error {
-      color: #fff;
-      border-color: transparent;
-      background: #893147;
-    }
-
-    @keyframes toast-in {
-      from { opacity: 0; transform: translate(-50%, 10px); }
-      to { opacity: 1; transform: translate(-50%, 0); }
-    }
+    #toast.error { color: #fff; border-color: transparent; background: #893147; }
 
     @media (max-width: 720px) {
       .brand p { display: none; }
@@ -1033,22 +910,12 @@
     }
 
     @media (orientation: landscape) and (max-height: 620px) {
-      .reader-topbar {
-        min-height: calc(50px + var(--safe-top));
-        padding-top: calc(5px + var(--safe-top));
-        padding-bottom: 5px;
-      }
-      .reader-footer { min-height: calc(39px + var(--safe-bottom)); padding-top: 4px; }
+      .reader-topbar { min-height: calc(50px + var(--safe-top)); padding-top: calc(5px + var(--safe-top)); }
       .reader-stage { padding-top: 12px; padding-bottom: 12px; }
-      .reader-heading small { display: none; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-      }
+      *, *::before, *::after { animation-duration: .01ms !important; }
     }
   </style>
 </head>
@@ -1085,9 +952,9 @@
 
       <main class="library-main">
         <section id="dropZone" class="import-panel" aria-label="Importer des livres">
-          <div class="import-copy">
+          <div>
             <h2>Ajoutez à votre bibliothèque</h2>
-            <p>EPUB · PDF · FB2 · TXT · HTML · CBZ<br>Sélection multiple, stockage et lecture entièrement locaux.</p>
+            <p>EPUB · PDF · FB2 · TXT · HTML · CBZ<br>Le contenu complet est copié dans IndexedDB lors de l’import.</p>
           </div>
 
           <div class="import-actions">
@@ -1134,7 +1001,7 @@
           <small id="readerFormatLabel">Omni-Liseuse</small>
         </div>
 
-        <button id="warmQuickButton" class="icon-button" title="Activer ou couper le filtre chaud" aria-label="Activer ou couper le filtre chaud">
+        <button id="warmQuickButton" class="icon-button" title="Filtre de lumière chaude" aria-label="Activer ou couper le filtre chaud">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
 
@@ -1160,7 +1027,7 @@
           <div id="turnLayer" aria-hidden="true">
             <div id="pageShadow"></div>
             <div id="turnLeaf">
-              <div id="leafFront" class="leaf-face leaf-front"></div>
+              <div id="leafFront" class="leaf-face"></div>
               <div class="leaf-face leaf-back"></div>
             </div>
           </div>
@@ -1186,7 +1053,7 @@
           <button id="pdfZoomOut" aria-label="Réduire le zoom PDF">−</button>
           <span id="pdfZoomValue">100 %</span>
           <button id="pdfZoomIn" aria-label="Augmenter le zoom PDF">+</button>
-          <button id="pdfFitButton" title="Ajuster la page à l’écran">Ajuster</button>
+          <button id="pdfFitButton">Ajuster</button>
         </div>
 
         <span class="swipe-hint">Glissez pour tourner la page</span>
@@ -1221,16 +1088,15 @@
         <span id="fontSizeValue">19 px</span>
         <button id="fontPlusButton" aria-label="Augmenter la taille de police">A+</button>
       </div>
-      <p>De 14 à 28 px, avec repagination des EPUB, FB2, TXT et HTML. Les PDF disposent de leur propre zoom.</p>
+      <p>De 14 à 28 px avec repagination. Les PDF disposent de leur propre zoom.</p>
     </section>
 
     <section class="setting-group">
       <h3>Lumière chaude</h3>
       <div class="range-row">
-        <input id="warmthRange" type="range" min="0" max="45" step="5" value="0" aria-label="Intensité du filtre de lumière chaude">
+        <input id="warmthRange" type="range" min="0" max="45" step="5" value="0" aria-label="Intensité du filtre chaud">
         <span id="warmthValue">0 %</span>
       </div>
-      <p>Filtre ambre progressif, sans interception des gestes ni des touches.</p>
       <button id="toggleWarmthButton" class="secondary-button wide-button">Activer le filtre</button>
     </section>
 
@@ -1247,14 +1113,14 @@
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 2.1.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <p><strong>Version 3.0.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
       <p class="credit">Application développée par Ferrus Dantioch avec l'aide de l'IA.</p>
-      <p>Le contenu des livres, leurs couvertures, les positions de lecture et les réglages restent dans IndexedDB sur cet appareil. Aucun livre ni historique de lecture n’est envoyé vers un serveur.</p>
+      <p>Les textes sont enregistrés sous forme de chaînes de caractères et les livres binaires sous forme d’ArrayBuffer dans IndexedDB. La lecture ne dépend jamais du fichier original sélectionné lors de l’import.</p>
 
       <h3>Formats pris en charge</h3>
       <ul>
         <li><strong>EPUB / EPUB3 sans DRM</strong> — Epub.js et reprise par CFI.</li>
-        <li><strong>PDF</strong> — PDF.js, canvas, page par page, zoom et reprise.</li>
+        <li><strong>PDF</strong> — PDF.js, canvas, zoom et reprise par numéro de page.</li>
         <li><strong>FB2</strong> — métadonnées, couverture et texte extraits du XML.</li>
         <li><strong>TXT et HTML</strong> — texte adaptable paginé localement.</li>
         <li><strong>CBZ</strong> — images extraites à la demande avec JSZip.</li>
@@ -1262,11 +1128,11 @@
 
       <h3>Et pour les autres formats ? Calibre fait le pont</h3>
       <ul>
-        <li><strong>CBR</strong> — archive RAR non prise en charge. → Convertir en <strong>CBZ</strong> avec Calibre.</li>
-        <li><strong>MOBI / AZW3 / KFX</strong> — formats propriétaires Amazon. → Convertir en <strong>EPUB</strong>.</li>
-        <li><strong>DJVU</strong> — format d’images compressées complexe. → Convertir en <strong>PDF</strong>.</li>
-        <li><strong>DOCX / ODT</strong> — parseurs lourds. → Convertir en <strong>EPUB</strong>.</li>
-        <li><strong>EPUB avec DRM</strong> — protection technique et restriction légale. → Privilégier une édition sans DRM.</li>
+        <li><strong>CBR</strong> — convertir en CBZ avec Calibre.</li>
+        <li><strong>MOBI / AZW3 / KFX</strong> — convertir en EPUB avec Calibre.</li>
+        <li><strong>DJVU</strong> — convertir en PDF avec Calibre.</li>
+        <li><strong>DOCX / ODT</strong> — convertir en EPUB avec Calibre.</li>
+        <li><strong>EPUB avec DRM</strong> — privilégier une édition sans DRM.</li>
       </ul>
 
       <p><small id="pwaStatus">Préparation du fonctionnement hors ligne…</small></p>
@@ -1288,10 +1154,7 @@
 
   <div id="toast" role="status" aria-live="polite" hidden></div>
 
-  <!-- ============================================================
-       LIBRAIRIES
-       PDF.js et son worker proviennent du même CDN et de la même version.
-       ============================================================ -->
+  <!-- Bibliothèques tierces -->
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
   <script src="https://unpkg.com/dexie@4.0.11/dist/dexie.min.js"></script>
@@ -1303,17 +1166,10 @@
 
     /* ============================================================
        CONSTANTES ET ÉTAT
-
-       Correction du stockage :
-       - TXT, FB2 et HTML sont lus immédiatement avec FileReader.readAsText ;
-       - EPUB, PDF et CBZ sont lus avec FileReader.readAsArrayBuffer ;
-       - IndexedDB reçoit record.content (string ou ArrayBuffer) ;
-       - aucun objet File n’est conservé comme source de lecture ;
-       - chaque moteur lit exclusivement record.content.
        ============================================================ */
     const APP_NAME = "Omni-Liseuse";
-    const APP_VERSION = "2.1.0";
-    const CACHE_NAME = "omni-liseuse-shell-v2.1.0";
+    const APP_VERSION = "3.0.0";
+    const CACHE_NAME = "omni-liseuse-shell-v3.0.0";
 
     const PDF_SCRIPT = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
     const PDF_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -1328,13 +1184,17 @@
       FONT_CSS
     ];
 
-    const CBR_MESSAGE = "Le format CBR (archive RAR) n'est pas pris en charge par les navigateurs. Convertissez-le en CBZ avec Calibre.";
+    const CBR_MESSAGE =
+      "Le format CBR (archive RAR) n'est pas pris en charge par les navigateurs. " +
+      "Convertissez-le en CBZ avec Calibre.";
+
     const SUPPORTED_FORMATS = new Set(["epub", "pdf", "fb2", "txt", "html", "cbz"]);
     const TEXT_FORMATS = new Set(["txt", "fb2", "html"]);
     const IMAGE_PATTERN = /\.(jpe?g|png|gif|webp|avif|bmp)$/i;
+
     const FORMAT_LABELS = {
-      epub: "EPUB", pdf: "PDF", fb2: "FB2", txt: "TXT",
-      html: "HTML", cbz: "CBZ", cbr: "CBR"
+      epub: "EPUB", pdf: "PDF", fb2: "FB2",
+      txt: "TXT", html: "HTML", cbz: "CBZ", cbr: "CBR"
     };
 
     const readerColors = {
@@ -1343,13 +1203,18 @@
       nuit: { paper: "#1e1633", ink: "#cfc4ea", accent: "#a48dff" }
     };
 
-    const prefs = { theme: "nuit", fontSize: 19, warmth: 0, lastWarmth: 20 };
-    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
+    const prefs = {
+      theme: "nuit",
+      fontSize: 19,
+      warmth: 0,
+      lastWarmth: 20
+    };
 
     const $ = id => document.getElementById(id);
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
     const nextFrame = () => new Promise(resolve => requestAnimationFrame(() => resolve()));
+    const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
     let db = null;
     let current = null;
@@ -1363,12 +1228,11 @@
     let deferredInstallPrompt = null;
     let fullscreenPending = false;
     let suppressTapUntil = 0;
-    let storageErrorShown = false;
     let confirmResolver = null;
     const libraryCoverUrls = new Set();
 
     /* ============================================================
-       UTILITAIRES GÉNÉRAUX
+       UTILITAIRES
        ============================================================ */
     function uid() {
       if (crypto.randomUUID) return crypto.randomUUID();
@@ -1396,7 +1260,7 @@
       return String(value || "").replace(/\s+/g, " ").trim();
     }
 
-    function showToast(message, duration = 4200, isError = false) {
+    function showToast(message, duration = 4500, isError = false) {
       clearTimeout(toastTimer);
       const toast = $("toast");
       toast.textContent = message;
@@ -1431,12 +1295,8 @@
 
     function imageMime(name) {
       return ({
-        jpg: "image/jpeg",
-        jpeg: "image/jpeg",
-        png: "image/png",
-        gif: "image/gif",
-        webp: "image/webp",
-        avif: "image/avif",
+        jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png",
+        gif: "image/gif", webp: "image/webp", avif: "image/avif",
         bmp: "image/bmp"
       })[extensionOf(name)] || "image/jpeg";
     }
@@ -1446,101 +1306,119 @@
     }
 
     /* ============================================================
-       LECTURE IMMÉDIATE DES FICHIERS AVEC FILEREADER
+       FILEREADER — UTILISÉ EXCLUSIVEMENT PENDANT L’IMPORT
+
+       La Promise n’est résolue que dans reader.onload, lorsque tout le
+       contenu est disponible. Dexie n’est appelé qu’après cette résolution.
        ============================================================ */
-    function readWithFileReader(blob, mode, encoding = "UTF-8") {
+    function readImportedText(blob, encoding = "UTF-8") {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
 
         reader.onload = () => {
-          if (mode === "text" && typeof reader.result === "string") {
-            resolve(reader.result);
-          } else if (mode === "binary" && reader.result instanceof ArrayBuffer) {
-            resolve(reader.result);
-          } else {
-            reject(new Error("Le contenu lu par le navigateur est invalide."));
-          }
+          if (typeof reader.result === "string") resolve(reader.result);
+          else reject(new Error("Le contenu texte lu est invalide."));
         };
 
-        reader.onerror = () => {
-          reject(new Error(
-            "Le navigateur n’a pas pu lire le fichier : " +
-            (reader.error?.message || "accès impossible.")
-          ));
-        };
+        reader.onerror = () => reject(new Error(
+          "Impossible de lire le contenu du fichier pendant l’import : " +
+          (reader.error?.message || "erreur inconnue")
+        ));
 
         reader.onabort = () => reject(new Error("La lecture du fichier a été interrompue."));
-
-        try {
-          if (mode === "text") reader.readAsText(blob, encoding);
-          else reader.readAsArrayBuffer(blob);
-        } catch (error) {
-          reject(new Error("Lecture locale impossible : " + error.message));
-        }
+        reader.readAsText(blob, encoding);
       });
     }
 
-    async function readTextWithFileReader(blob) {
-      const utf8 = await readWithFileReader(blob, "text", "UTF-8");
+    function readImportedBinary(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+          if (reader.result instanceof ArrayBuffer) resolve(reader.result);
+          else reject(new Error("Le contenu binaire lu est invalide."));
+        };
+
+        reader.onerror = () => reject(new Error(
+          "Impossible de lire le contenu binaire pendant l’import : " +
+          (reader.error?.message || "erreur inconnue")
+        ));
+
+        reader.onabort = () => reject(new Error("La lecture du fichier a été interrompue."));
+        reader.readAsArrayBuffer(blob);
+      });
+    }
+
+    async function readSelectedFileAtImport(selectedFile, format) {
+      if (!TEXT_FORMATS.has(format)) {
+        return readImportedBinary(selectedFile);
+      }
+
+      let text = await readImportedText(selectedFile, "UTF-8");
 
       /*
-       * Repli pour les anciens TXT/FB2 Windows. Le second essai utilise
-       * également FileReader.readAsText : le contenu enregistré reste une
-       * string autonome, jamais une référence au fichier d’origine.
+       * Prise en charge des FB2/XML historiques et de certains TXT Windows.
+       * Ces secondes lectures ont encore lieu pendant l’import, jamais à
+       * l’ouverture d’un livre depuis la bibliothèque.
        */
-      if (utf8.includes("\uFFFD")) {
+      const declaration = text.slice(0, 400);
+      const declaredEncoding = /encoding\s*=\s*["']([^"']+)["']/i
+        .exec(declaration)?.[1]?.toLowerCase();
+
+      if (
+        format === "fb2" &&
+        declaredEncoding &&
+        !["utf-8", "utf8"].includes(declaredEncoding)
+      ) {
         try {
-          return await readWithFileReader(blob, "text", "windows-1252");
+          text = await readImportedText(selectedFile, declaredEncoding);
         } catch (_) {
-          return utf8;
+          /* Le texte UTF-8 reste utilisable si l’encodage est refusé. */
+        }
+      } else if (text.includes("\uFFFD")) {
+        try {
+          text = await readImportedText(selectedFile, "windows-1252");
+        } catch (_) {
+          /* Conservation du premier résultat. */
         }
       }
-      return utf8;
+
+      return text;
     }
 
-    async function readContentForImport(file, format) {
-      if (TEXT_FORMATS.has(format)) {
-        return readTextWithFileReader(file);
-      }
-      return readWithFileReader(file, "binary");
+    function isBinaryContent(value) {
+      return value instanceof ArrayBuffer ||
+        ArrayBuffer.isView(value) ||
+        Object.prototype.toString.call(value) === "[object ArrayBuffer]";
     }
 
-    function getStoredText(record) {
-      if (typeof record.content !== "string") {
-        throw new Error("Le texte stocké est absent ou invalide. Supprimez puis réimportez ce livre.");
-      }
-      return record.content;
-    }
+    function copyArrayBuffer(value) {
+      if (value instanceof ArrayBuffer) return value.slice(0);
 
-    function getStoredBinaryCopy(record) {
-      const content = record.content;
-
-      if (content instanceof ArrayBuffer) {
-        /*
-         * PDF.js peut transférer/détacher son buffer vers le worker.
-         * Une copie préserve donc le ArrayBuffer persistant de IndexedDB.
-         */
-        return content.slice(0);
-      }
-
-      if (ArrayBuffer.isView(content)) {
-        return content.buffer.slice(
-          content.byteOffset,
-          content.byteOffset + content.byteLength
+      if (ArrayBuffer.isView(value)) {
+        return value.buffer.slice(
+          value.byteOffset,
+          value.byteOffset + value.byteLength
         );
       }
 
-      throw new Error("Le contenu binaire stocké est absent ou invalide. Supprimez puis réimportez ce livre.");
+      if (Object.prototype.toString.call(value) === "[object ArrayBuffer]") {
+        const bytes = new Uint8Array(value);
+        return bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+      }
+
+      throw new Error(
+        "La copie binaire du livre est absente d’IndexedDB. Supprimez puis réimportez ce livre."
+      );
     }
 
-    function validateStoredContent(record) {
-      if (TEXT_FORMATS.has(record.format)) {
-        getStoredText(record);
-      } else {
-        if (!record.content || typeof record.content === "string") {
-          throw new Error("Le contenu du livre est absent de la bibliothèque. Réimportez-le.");
-        }
+    function getTextContent(content) {
+      if (typeof content !== "string") {
+        throw new Error(
+          "La copie texte du livre est absente d’IndexedDB. Supprimez puis réimportez ce livre."
+        );
       }
+      return content;
     }
 
     /* ============================================================
@@ -1557,9 +1435,11 @@
       ctx.closePath();
     }
 
-    function drawBookIcon(canvas) {
+    function makeIcon(size) {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = size;
       const ctx = canvas.getContext("2d");
-      ctx.scale(canvas.width / 512, canvas.height / 512);
+      ctx.scale(size / 512, size / 512);
 
       const gradient = ctx.createLinearGradient(0, 0, 512, 512);
       gradient.addColorStop(0, "#8665ff");
@@ -1569,16 +1449,7 @@
       roundedRect(ctx, 0, 0, 512, 512, 104);
       ctx.fill();
 
-      ctx.fillStyle = "rgba(255,255,255,.09)";
-      ctx.beginPath();
-      ctx.arc(410, 88, 145, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.shadowColor = "rgba(20,5,55,.32)";
-      ctx.shadowBlur = 24;
-      ctx.shadowOffsetY = 14;
       ctx.fillStyle = "#f6f0ff";
-
       ctx.beginPath();
       ctx.moveTo(105, 145);
       ctx.quadraticCurveTo(177, 124, 246, 163);
@@ -1595,7 +1466,6 @@
       ctx.closePath();
       ctx.fill();
 
-      ctx.shadowColor = "transparent";
       ctx.strokeStyle = "#cbbcff";
       ctx.lineWidth = 8;
       ctx.lineCap = "round";
@@ -1612,24 +1482,17 @@
         ctx.stroke();
       }
 
-      return canvas;
+      return canvas.toDataURL("image/png");
     }
 
-    function makeIconDataUrl(size) {
-      const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = size;
-      return drawBookIcon(canvas).toDataURL("image/png");
-    }
-
-    function setupIconsAndManifest() {
-      const icon192 = makeIconDataUrl(192);
-      const icon512 = makeIconDataUrl(512);
+    function setupManifest() {
+      const icon192 = makeIcon(192);
+      const icon512 = makeIcon(512);
       $("brandIcon").src = icon192;
       $("aboutIcon").src = icon192;
 
       const favicon = document.createElement("link");
       favicon.rel = "icon";
-      favicon.type = "image/png";
       favicon.href = icon192;
       document.head.appendChild(favicon);
 
@@ -1660,7 +1523,6 @@
         orientation: "any",
         background_color: "#171226",
         theme_color: "#171226",
-        categories: ["books", "education", "entertainment"],
         icons: [
           { src: icon192, sizes: "192x192", type: "image/png", purpose: "any maskable" },
           { src: icon512, sizes: "512x512", type: "image/png", purpose: "any maskable" }
@@ -1676,133 +1538,12 @@
     }
 
     /* ============================================================
-       PWA ET CACHE
-       ============================================================ */
-    async function primeOfflineCache() {
-      if (!("caches" in window) || !/^https?:$/.test(location.protocol)) return false;
+       INDEXEDDB — MÉTADONNÉES SÉPARÉES DU CONTENU
 
-      try {
-        const cache = await caches.open(CACHE_NAME);
-        const resources = [location.href.split("#")[0], ...CDN_RESOURCES];
-
-        const results = await Promise.allSettled(resources.map(async url => {
-          const crossOrigin = !url.startsWith(location.origin);
-          const response = await fetch(url, {
-            mode: crossOrigin ? "no-cors" : "same-origin",
-            credentials: crossOrigin ? "omit" : "same-origin"
-          });
-          if (response.ok || response.type === "opaque") await cache.put(url, response);
-        }));
-
-        return results.some(result => result.status === "fulfilled");
-      } catch (error) {
-        console.warn("Cache local indisponible :", error);
-        return false;
-      }
-    }
-
-    async function setupServiceWorker() {
-      const cached = await primeOfflineCache();
-
-      if (!("serviceWorker" in navigator) || !window.isSecureContext || !/^https?:$/.test(location.protocol)) {
-        $("pwaStatus").textContent =
-          "La lecture locale est disponible. L’installation PWA et le service worker nécessitent HTTPS ou localhost.";
-        return;
-      }
-
-      const appUrl = location.href.split("#")[0];
-      const workerSource = `
-        const CACHE = ${JSON.stringify(CACHE_NAME)};
-        const APP = ${JSON.stringify(appUrl)};
-        const CORE = ${JSON.stringify(CDN_RESOURCES)};
-
-        self.addEventListener("install", event => {
-          event.waitUntil((async () => {
-            const cache = await caches.open(CACHE);
-            await Promise.allSettled([APP].concat(CORE).map(async url => {
-              try {
-                const cross = !url.startsWith(self.location.origin);
-                const response = await fetch(url, {
-                  mode: cross ? "no-cors" : "same-origin",
-                  credentials: cross ? "omit" : "same-origin"
-                });
-                if (response.ok || response.type === "opaque") await cache.put(url, response);
-              } catch (_) {}
-            }));
-            await self.skipWaiting();
-          })());
-        });
-
-        self.addEventListener("activate", event => {
-          event.waitUntil((async () => {
-            const keys = await caches.keys();
-            await Promise.all(keys
-              .filter(key => key.startsWith("omni-liseuse-") && key !== CACHE)
-              .map(key => caches.delete(key)));
-            await self.clients.claim();
-          })());
-        });
-
-        self.addEventListener("fetch", event => {
-          const request = event.request;
-          if (request.method !== "GET") return;
-
-          const url = new URL(request.url);
-          if (url.protocol !== "http:" && url.protocol !== "https:") return;
-
-          if (request.mode === "navigate") {
-            event.respondWith((async () => {
-              try {
-                const response = await fetch(request);
-                const cache = await caches.open(CACHE);
-                await cache.put(APP, response.clone());
-                return response;
-              } catch (_) {
-                return (await caches.match(APP, { ignoreSearch: true })) ||
-                       (await caches.match(request)) || Response.error();
-              }
-            })());
-            return;
-          }
-
-          event.respondWith((async () => {
-            const cached = await caches.match(request);
-            if (cached) return cached;
-
-            try {
-              const response = await fetch(request);
-              if (response.ok || response.type === "opaque") {
-                const cache = await caches.open(CACHE);
-                await cache.put(request, response.clone());
-              }
-              return response;
-            } catch (_) {
-              return (await caches.match(request, { ignoreSearch: true })) || Response.error();
-            }
-          })());
-        });
-      `;
-
-      const blobUrl = URL.createObjectURL(
-        new Blob([workerSource], { type: "text/javascript" })
-      );
-
-      try {
-        await navigator.serviceWorker.register(blobUrl, { scope: "./" });
-        await navigator.serviceWorker.ready;
-        $("pwaStatus").textContent = "Service worker actif : ressources disponibles hors ligne.";
-      } catch (error) {
-        console.info("Service worker Blob refusé :", error.message);
-        $("pwaStatus").textContent = cached
-          ? "Ressources mises en cache. Certains navigateurs exigent un fichier service worker HTTP(S) distinct pour garantir le rechargement hors ligne."
-          : "Le cache hors ligne n’a pas pu être initialisé dans ce contexte.";
-      } finally {
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1200);
-      }
-    }
-
-    /* ============================================================
-       INDEXEDDB, MIGRATION ET PRÉFÉRENCES
+       books    : métadonnées et positions seulement.
+       contents : { id, kind, content }, où content est une String ou un
+                  ArrayBuffer. La bibliothèque ne charge donc pas tous les
+                  livres en mémoire pour afficher les couvertures.
        ============================================================ */
     function createDatabase() {
       db = new Dexie("omni-liseuse");
@@ -1812,58 +1553,59 @@
         settings: "key"
       });
 
-      /*
-       * content n’a pas besoin d’être indexé. La version 2 documente le
-       * nouveau modèle : string pour les textes, ArrayBuffer pour les binaires.
-       */
       db.version(2).stores({
         books: "id,title,author,format,addedAt,lastOpenedAt",
         settings: "key"
       });
-    }
 
-    async function migrateLegacyRecords() {
-      /*
-       * Les anciennes versions pouvaient contenir un Blob/File dans la base.
-       * On lit ce Blob déjà stocké, puis on le remplace par content. Aucun
-       * accès au fichier original du système n’est effectué.
-       */
-      const legacyBooks = await db.books
-        .filter(book => book.content == null && book.file instanceof Blob)
-        .toArray();
+      db.version(3).stores({
+        books: "id,title,author,format,addedAt,lastOpenedAt",
+        contents: "id",
+        settings: "key"
+      }).upgrade(async transaction => {
+        const booksTable = transaction.table("books");
+        const contentsTable = transaction.table("contents");
+        const oldBooks = await booksTable.toArray();
 
-      let failures = 0;
+        for (const old of oldBooks) {
+          const format = old.format;
+          const validText = TEXT_FORMATS.has(format) && typeof old.content === "string";
+          const validBinary = !TEXT_FORMATS.has(format) && isBinaryContent(old.content);
+          const hasAutonomousContent = validText || validBinary;
 
-      for (const book of legacyBooks) {
-        try {
-          const content = TEXT_FORMATS.has(book.format)
-            ? await readTextWithFileReader(book.file)
-            : await readWithFileReader(book.file, "binary");
+          if (hasAutonomousContent) {
+            await contentsTable.put({
+              id: old.id,
+              kind: validText ? "text" : "binary",
+              content: old.content
+            });
+          }
 
-          const migrated = { ...book, content };
-          delete migrated.file;
-          await db.books.put(migrated);
-        } catch (error) {
-          failures++;
-          console.error("Migration impossible pour", book.title, error);
+          /*
+           * Seules les métadonnées sont réécrites. Aucun ancien objet local
+           * n’est rouvert ou relu pendant cette migration.
+           */
+          await booksTable.put({
+            id: old.id,
+            title: old.title || "Sans titre",
+            author: old.author || "Auteur inconnu",
+            format,
+            cover: old.cover || null,
+            addedAt: old.addedAt || Date.now(),
+            lastOpenedAt: old.lastOpenedAt || 0,
+            position: old.position || null,
+            progress: Number(old.progress) || 0,
+            needsReimport: !hasAutonomousContent
+          });
         }
-      }
-
-      if (failures) {
-        showToast(
-          `${failures} ancien(s) livre(s) n’ont pas pu être migrés. Réimportez-les si nécessaire.`,
-          7000,
-          true
-        );
-      }
+      });
     }
 
     async function savePreference(key, value) {
-      if (!db) return;
       try {
         await db.settings.put({ key, value });
       } catch (error) {
-        console.error("Sauvegarde du réglage impossible :", error);
+        console.error("Sauvegarde du réglage :", error);
       }
     }
 
@@ -1878,6 +1620,30 @@
       }
     }
 
+    async function persistPosition(bookId, position, progress) {
+      try {
+        const safeProgress = typeof progress === "number" && Number.isFinite(progress)
+          ? clamp(progress, 0, 1)
+          : null;
+
+        const changes = { position, lastOpenedAt: Date.now() };
+        if (safeProgress !== null) changes.progress = safeProgress;
+
+        await db.books.update(bookId, changes);
+        await db.settings.put({ key: "lastBookId", value: bookId });
+
+        if (current?.record?.id === bookId) {
+          current.record.position = position;
+          if (safeProgress !== null) current.record.progress = safeProgress;
+        }
+      } catch (error) {
+        console.error("Sauvegarde de la position :", error);
+      }
+    }
+
+    /* ============================================================
+       PRÉFÉRENCES VISUELLES
+       ============================================================ */
     function applyTheme() {
       document.documentElement.dataset.theme = prefs.theme;
       $("metaThemeColor").content = {
@@ -1890,11 +1656,7 @@
         button.setAttribute("aria-pressed", String(button.dataset.setTheme === prefs.theme));
       });
 
-      try {
-        current?.engine?.setTheme?.();
-      } catch (error) {
-        console.warn("Application du thème :", error);
-      }
+      try { current?.engine?.setTheme?.(); } catch (_) {}
     }
 
     function applyWarmth() {
@@ -1903,6 +1665,17 @@
       $("warmthRange").value = String(prefs.warmth);
       $("warmthValue").textContent = prefs.warmth + " %";
       $("toggleWarmthButton").textContent = prefs.warmth ? "Couper le filtre" : "Activer le filtre";
+    }
+
+    function setWarmth(value, persist = true) {
+      prefs.warmth = clamp(Math.round(value / 5) * 5, 0, 45);
+      if (prefs.warmth) prefs.lastWarmth = prefs.warmth;
+      applyWarmth();
+
+      if (persist) {
+        void savePreference("warmth", prefs.warmth);
+        void savePreference("lastWarmth", prefs.lastWarmth);
+      }
     }
 
     function applyFontSize(updateEngine = true) {
@@ -1915,57 +1688,38 @@
 
       if (updateEngine) {
         fontTimer = setTimeout(() => {
-          Promise.resolve(current?.engine?.fontChanged?.()).catch(error => {
-            console.warn("Repagination :", error);
-            showToast("La repagination a échoué : " + error.message, 5000, true);
-          });
+          Promise.resolve(current?.engine?.fontChanged?.())
+            .catch(error => showToast("Repagination impossible : " + error.message, 5000, true));
         }, 70);
       }
     }
 
-    function setWarmth(value, persist = true) {
-      prefs.warmth = clamp(Math.round(value / 5) * 5, 0, 45);
-      if (prefs.warmth > 0) prefs.lastWarmth = prefs.warmth;
-      applyWarmth();
-
-      if (persist) {
-        void savePreference("warmth", prefs.warmth);
-        void savePreference("lastWarmth", prefs.lastWarmth);
+    /* ============================================================
+       PDF.JS
+       ============================================================ */
+    function ensurePdfJs() {
+      if (!window.pdfjsLib) {
+        throw new Error(
+          "PDF.js n’est pas chargé. Vérifiez la connexion lors du premier chargement."
+        );
       }
+
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
+      return window.pdfjsLib;
     }
 
-    async function persistPosition(bookId, position, progress) {
-      const safeProgress = typeof progress === "number" && Number.isFinite(progress)
-        ? clamp(progress, 0, 1)
-        : null;
+    function createPdfTask(arrayBuffer) {
+      const pdfjs = ensurePdfJs();
 
-      try {
-        const changes = { position, lastOpenedAt: Date.now() };
-        if (safeProgress !== null) changes.progress = safeProgress;
-
-        await db.books.update(bookId, changes);
-        await db.settings.put({ key: "lastBookId", value: bookId });
-
-        if (current?.record?.id === bookId) {
-          current.record.position = position;
-          if (safeProgress !== null) current.record.progress = safeProgress;
-        }
-      } catch (error) {
-        console.error("Sauvegarde de la position impossible :", error);
-
-        if (!storageErrorShown) {
-          storageErrorShown = true;
-          showToast(
-            "La position n’a pas pu être sauvegardée. Vérifiez le stockage autorisé pour ce site.",
-            6500,
-            true
-          );
-        }
-      }
+      /* Uint8Array créé directement depuis la copie IndexedDB. */
+      return pdfjs.getDocument({
+        data: new Uint8Array(arrayBuffer),
+        isEvalSupported: false
+      });
     }
 
     /* ============================================================
-       FB2 : PARSING XML ET MÉTADONNÉES
+       FB2
        ============================================================ */
     function descendants(root, localName) {
       if (!root) return [];
@@ -1977,38 +1731,24 @@
       return descendants(root, localName)[0] || null;
     }
 
-    function imageReference(imageNode) {
-      if (!imageNode) return "";
-
-      const namespaced = imageNode.getAttributeNS?.(
-        "http://www.w3.org/1999/xlink",
-        "href"
-      );
-
-      const attribute = namespaced ||
-        imageNode.getAttribute("href") ||
-        Array.from(imageNode.attributes).find(attr => attr.localName === "href")?.value ||
+    function imageReference(node) {
+      if (!node) return "";
+      const value = node.getAttributeNS?.("http://www.w3.org/1999/xlink", "href") ||
+        node.getAttribute("href") ||
+        Array.from(node.attributes).find(attribute => attribute.localName === "href")?.value ||
         "";
-
-      return attribute.replace(/^#/, "");
+      return value.replace(/^#/, "");
     }
 
     function base64ToBlob(base64, mime) {
       const binary = atob(base64.replace(/\s+/g, ""));
-      const parts = [];
-      const chunkSize = 16384;
+      const bytes = new Uint8Array(binary.length);
 
-      for (let offset = 0; offset < binary.length; offset += chunkSize) {
-        const slice = binary.slice(offset, offset + chunkSize);
-        const bytes = new Uint8Array(slice.length);
-
-        for (let i = 0; i < slice.length; i++) {
-          bytes[i] = slice.charCodeAt(i);
-        }
-        parts.push(bytes);
+      for (let index = 0; index < binary.length; index++) {
+        bytes[index] = binary.charCodeAt(index);
       }
 
-      return new Blob(parts, { type: mime || "image/jpeg" });
+      return new Blob([bytes], { type: mime || "image/jpeg" });
     }
 
     function parseFictionBook(source) {
@@ -2019,7 +1759,7 @@
       }
 
       if (doc.documentElement.localName !== "FictionBook") {
-        throw new Error("Ce fichier ne contient pas de document FictionBook valide.");
+        throw new Error("Ce fichier n’est pas un document FictionBook valide.");
       }
 
       const titleInfo = firstDescendant(doc, "title-info");
@@ -2050,21 +1790,14 @@
         !["notes", "comments"].includes(item.getAttribute("name"))
       ) || bodies[0];
 
-      if (!body) throw new Error("Ce FB2 ne contient aucun corps de texte lisible.");
+      if (!body) throw new Error("Ce FB2 ne contient aucun corps de texte.");
 
       let cover = null;
-      const coverImage = firstDescendant(
-        firstDescendant(titleInfo, "coverpage"),
-        "image"
-      );
+      const coverImage = firstDescendant(firstDescendant(titleInfo, "coverpage"), "image");
       const coverBinary = binaries.get(imageReference(coverImage));
 
       if (coverBinary) {
-        try {
-          cover = base64ToBlob(coverBinary.data, coverBinary.mime);
-        } catch (error) {
-          console.info("Couverture FB2 ignorée :", error);
-        }
+        try { cover = base64ToBlob(coverBinary.data, coverBinary.mime); } catch (_) {}
       }
 
       return {
@@ -2080,7 +1813,7 @@
     function buildFb2Fragment(parsed, objectUrls) {
       const fragment = document.createDocumentFragment();
 
-      function makeImage(node, inline = false) {
+      function makeImage(node) {
         const binary = parsed.binaries.get(imageReference(node));
         if (!binary) return document.createDocumentFragment();
 
@@ -2088,14 +1821,10 @@
           const url = URL.createObjectURL(base64ToBlob(binary.data, binary.mime));
           objectUrls.push(url);
 
+          const figure = document.createElement("figure");
           const image = document.createElement("img");
           image.src = url;
           image.alt = "Illustration du livre";
-          image.loading = "lazy";
-
-          if (inline) return image;
-
-          const figure = document.createElement("figure");
           figure.appendChild(image);
           return figure;
         } catch (_) {
@@ -2113,18 +1842,12 @@
 
         let element = null;
 
-        switch (node.localName) {
-          case "emphasis": element = document.createElement("em"); break;
-          case "strong": element = document.createElement("strong"); break;
-          case "sub": element = document.createElement("sub"); break;
-          case "sup": element = document.createElement("sup"); break;
-          case "strikethrough": element = document.createElement("s"); break;
-          case "code": element = document.createElement("code"); break;
-          case "a": element = document.createElement("span"); break;
-          case "image":
-            target.appendChild(makeImage(node, true));
-            return;
-        }
+        if (node.localName === "emphasis") element = document.createElement("em");
+        if (node.localName === "strong") element = document.createElement("strong");
+        if (node.localName === "sub") element = document.createElement("sub");
+        if (node.localName === "sup") element = document.createElement("sup");
+        if (node.localName === "strikethrough") element = document.createElement("s");
+        if (node.localName === "code") element = document.createElement("code");
 
         if (element) {
           for (const child of node.childNodes) appendInline(element, child);
@@ -2134,204 +1857,61 @@
         }
       }
 
-      function paragraphFrom(node, className = "") {
-        const paragraph = document.createElement("p");
-        if (className) paragraph.className = className;
-        for (const child of node.childNodes) appendInline(paragraph, child);
-        return paragraph;
+      function paragraph(node, className = "") {
+        const element = document.createElement("p");
+        if (className) element.className = className;
+        for (const child of node.childNodes) appendInline(element, child);
+        return element;
       }
 
-      function renderBlock(node) {
-        switch (node.localName) {
-          case "section":
-            return renderSection(node);
-
-          case "title": {
-            const heading = document.createElement("h2");
-            heading.textContent = cleanText(node.textContent);
-            return heading;
-          }
-
-          case "subtitle": {
-            const heading = document.createElement("h3");
-            heading.textContent = cleanText(node.textContent);
-            return heading;
-          }
-
-          case "p":
-            return paragraphFrom(node);
-
-          case "v":
-            return paragraphFrom(node, "fb2-verse");
-
-          case "text-author":
-            return paragraphFrom(node, "fb2-author");
-
-          case "empty-line": {
-            const space = document.createElement("div");
-            space.className = "fb2-break";
-            return space;
-          }
-
-          case "image":
-            return makeImage(node);
-
-          case "epigraph":
-          case "cite": {
-            const quote = document.createElement("blockquote");
-            for (const child of node.children) {
-              const rendered = renderBlock(child);
-              if (rendered) quote.appendChild(rendered);
-            }
-            return quote;
-          }
-
-          case "poem":
-          case "stanza": {
-            const poem = document.createElement("div");
-            poem.className = "fb2-poem";
-            for (const child of node.children) {
-              const rendered = renderBlock(child);
-              if (rendered) poem.appendChild(rendered);
-            }
-            return poem;
-          }
-
-          case "table": {
-            const pre = document.createElement("pre");
-            pre.textContent = cleanText(node.textContent);
-            return pre;
-          }
-
-          default: {
-            const container = document.createDocumentFragment();
-
-            for (const child of node.children) {
-              const rendered = renderBlock(child);
-              if (rendered) container.appendChild(rendered);
-            }
-
-            if (!container.childNodes.length && cleanText(node.textContent)) {
-              const paragraph = document.createElement("p");
-              paragraph.textContent = cleanText(node.textContent);
-              container.appendChild(paragraph);
-            }
-            return container;
-          }
+      function render(node) {
+        if (node.localName === "section") {
+          const section = document.createElement("section");
+          for (const child of node.children) section.appendChild(render(child));
+          return section;
         }
-      }
 
-      function renderSection(sectionNode) {
-        const section = document.createElement("section");
-
-        for (const child of sectionNode.children) {
-          const rendered = renderBlock(child);
-          if (rendered) section.appendChild(rendered);
+        if (node.localName === "title" || node.localName === "subtitle") {
+          const heading = document.createElement(node.localName === "title" ? "h2" : "h3");
+          heading.textContent = cleanText(node.textContent);
+          return heading;
         }
-        return section;
+
+        if (node.localName === "p") return paragraph(node);
+        if (node.localName === "v") return paragraph(node, "fb2-verse");
+        if (node.localName === "text-author") return paragraph(node, "fb2-author");
+        if (node.localName === "image") return makeImage(node);
+
+        if (node.localName === "empty-line") {
+          const space = document.createElement("div");
+          space.className = "fb2-break";
+          return space;
+        }
+
+        if (["epigraph", "cite"].includes(node.localName)) {
+          const quote = document.createElement("blockquote");
+          for (const child of node.children) quote.appendChild(render(child));
+          return quote;
+        }
+
+        if (["poem", "stanza"].includes(node.localName)) {
+          const poem = document.createElement("div");
+          poem.className = "fb2-poem";
+          for (const child of node.children) poem.appendChild(render(child));
+          return poem;
+        }
+
+        const container = document.createDocumentFragment();
+        for (const child of node.children) container.appendChild(render(child));
+        return container;
       }
 
-      for (const child of parsed.body.children) {
-        const rendered = renderBlock(child);
-        if (rendered) fragment.appendChild(rendered);
-      }
-
-      if (!fragment.childNodes.length) {
-        const paragraph = document.createElement("p");
-        paragraph.textContent = "Le corps de ce fichier FB2 ne contient aucun texte affichable.";
-        fragment.appendChild(paragraph);
-      }
-
+      for (const child of parsed.body.children) fragment.appendChild(render(child));
       return fragment;
     }
 
     /* ============================================================
-       PDF.JS : CONFIGURATION ET INSPECTION
-       ============================================================ */
-    function ensurePdfJs() {
-      if (!window.pdfjsLib) {
-        throw new Error(
-          "PDF.js n’est pas chargé. Vérifiez la connexion lors du premier chargement, puis rechargez la page."
-        );
-      }
-
-      if (!window.pdfjsLib.GlobalWorkerOptions) {
-        throw new Error("La configuration du worker PDF.js est indisponible.");
-      }
-
-      window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
-      return window.pdfjsLib;
-    }
-
-    function createPdfLoadingTask(contentBuffer) {
-      const pdfjs = ensurePdfJs();
-
-      return pdfjs.getDocument({
-        data: new Uint8Array(contentBuffer),
-        isEvalSupported: false
-      });
-    }
-
-    async function inspectPdf(content, record) {
-      ensurePdfJs();
-      let task = null;
-
-      try {
-        task = createPdfLoadingTask(content.slice(0));
-        const pdf = await withTimeout(task.promise, 35000, "L’analyse du PDF a expiré.");
-
-        if (!pdf.numPages) throw new Error("Ce PDF ne contient aucune page.");
-
-        try {
-          const metadata = await pdf.getMetadata();
-          const info = metadata?.info || {};
-          if (cleanText(info.Title)) record.title = cleanText(info.Title);
-          if (cleanText(info.Author)) record.author = cleanText(info.Author);
-        } catch (error) {
-          console.info("Métadonnées PDF absentes :", error);
-        }
-
-        try {
-          const page = await pdf.getPage(1);
-          const base = page.getViewport({ scale: 1 });
-          const scale = Math.min(480 / base.width, 680 / base.height);
-          const viewport = page.getViewport({ scale });
-
-          const canvas = document.createElement("canvas");
-          canvas.width = Math.max(1, Math.ceil(viewport.width));
-          canvas.height = Math.max(1, Math.ceil(viewport.height));
-
-          const context = canvas.getContext("2d", { alpha: false });
-          context.fillStyle = "#fff";
-          context.fillRect(0, 0, canvas.width, canvas.height);
-
-          await page.render({
-            canvasContext: context,
-            viewport,
-            background: "#ffffff"
-          }).promise;
-
-          record.cover = await canvasToBlob(canvas, "image/jpeg", .87);
-          page.cleanup();
-        } catch (error) {
-          console.info("Couverture PDF non générée :", error);
-        }
-      } catch (error) {
-        if (error?.name === "PasswordException") {
-          throw new Error(
-            "Ce PDF est protégé par un mot de passe. Créez une copie non protégée avant l’import."
-          );
-        }
-        throw new Error("PDF corrompu ou illisible : " + (error.message || "analyse impossible"));
-      } finally {
-        try {
-          await task?.destroy();
-        } catch (_) {}
-      }
-    }
-
-    /* ============================================================
-       COUVERTURES ET IMPORT
+       COUVERTURES ET INSPECTION À L’IMPORT
        ============================================================ */
     async function generateCover(title, author, format) {
       const canvas = document.createElement("canvas");
@@ -2345,11 +1925,6 @@
       gradient.addColorStop(1, "#120d21");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 480, 720);
-
-      ctx.fillStyle = "rgba(109,74,255,.28)";
-      ctx.beginPath();
-      ctx.arc(420, 50, 230, 0, Math.PI * 2);
-      ctx.fill();
 
       ctx.fillStyle = "#6d4aff";
       ctx.fillRect(0, 0, 15, 720);
@@ -2383,36 +1958,67 @@
 
       ctx.fillStyle = "#aa9dcc";
       ctx.font = "25px 'EB Garamond', Georgia, serif";
-      ctx.fillText(
-        author.length > 35 ? author.slice(0, 34) + "…" : author,
-        54,
-        Math.min(y + 35, 545)
-      );
+      ctx.fillText(author.slice(0, 38), 54, Math.min(y + 35, 545));
 
       ctx.fillStyle = "#927be5";
       ctx.font = "700 18px system-ui, sans-serif";
       ctx.fillText(formatLabel(format), 54, 635);
 
-      ctx.fillStyle = "#75659a";
-      ctx.font = "16px system-ui, sans-serif";
-      ctx.fillText("OMNI-LISEUSE", 54, 670);
-
       return canvasToBlob(canvas, "image/jpeg", .88);
     }
 
-    function detectFormat(file) {
-      let format = extensionOf(file.name);
-      if (format === "htm") format = "html";
+    async function inspectPdfAtImport(content, record) {
+      let task = null;
 
-      if (!format) {
-        format = ({
-          "application/pdf": "pdf",
-          "application/epub+zip": "epub",
-          "text/plain": "txt",
-          "text/html": "html"
-        })[file.type] || "";
+      try {
+        task = createPdfTask(copyArrayBuffer(content));
+        const pdf = await withTimeout(task.promise, 35000, "L’analyse du PDF a expiré.");
+
+        if (!pdf.numPages) throw new Error("Ce PDF ne contient aucune page.");
+
+        try {
+          const metadata = await pdf.getMetadata();
+          if (cleanText(metadata?.info?.Title)) record.title = cleanText(metadata.info.Title);
+          if (cleanText(metadata?.info?.Author)) record.author = cleanText(metadata.info.Author);
+        } catch (_) {}
+
+        try {
+          const page = await pdf.getPage(1);
+          const base = page.getViewport({ scale: 1 });
+          const viewport = page.getViewport({
+            scale: Math.min(480 / base.width, 680 / base.height)
+          });
+
+          const canvas = document.createElement("canvas");
+          canvas.width = Math.ceil(viewport.width);
+          canvas.height = Math.ceil(viewport.height);
+
+          const context = canvas.getContext("2d", { alpha: false });
+          context.fillStyle = "#fff";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+
+          await page.render({
+            canvasContext: context,
+            viewport,
+            background: "#ffffff"
+          }).promise;
+
+          record.cover = await canvasToBlob(canvas, "image/jpeg", .87);
+          page.cleanup();
+        } catch (_) {}
+      } catch (error) {
+        if (error?.name === "PasswordException") {
+          throw new Error("Ce PDF est protégé par un mot de passe.");
+        }
+        throw new Error("PDF corrompu ou illisible : " + (error.message || "analyse impossible"));
+      } finally {
+        try { await task?.destroy(); } catch (_) {}
       }
+    }
 
+    function detectFormat(selectedFile) {
+      let format = extensionOf(selectedFile.name);
+      if (format === "htm") format = "html";
       return format;
     }
 
@@ -2420,57 +2026,44 @@
       if (format === "cbr" || format === "rar") return CBR_MESSAGE;
 
       if (["mobi", "azw", "azw3", "kfx"].includes(format)) {
-        return "Les formats Amazon MOBI/AZW3/KFX sont propriétaires. Convertissez le livre en EPUB avec Calibre.";
+        return "Convertissez ce livre Amazon en EPUB avec Calibre.";
       }
 
       if (["djvu", "djv"].includes(format)) {
-        return "Le format DJVU est hors périmètre. Convertissez-le en PDF avec Calibre.";
+        return "Convertissez ce document DJVU en PDF avec Calibre.";
       }
 
       if (["docx", "odt"].includes(format)) {
-        return "Les documents DOCX/ODT nécessitent des parseurs lourds. Convertissez-les en EPUB avec Calibre.";
+        return "Convertissez ce document en EPUB avec Calibre.";
       }
 
-      return "Format non pris en charge. Formats acceptés : EPUB, PDF, FB2, TXT, HTML et CBZ.";
+      return "Formats acceptés : EPUB, PDF, FB2, TXT, HTML et CBZ.";
     }
 
-    async function prepareBook(file) {
-      const format = detectFormat(file);
-
-      if (!SUPPORTED_FORMATS.has(format)) {
-        throw new Error(unsupportedFormatMessage(format));
-      }
-
-      if (!file.size) throw new Error("Le fichier est vide.");
-
-      /*
-       * Lecture immédiate obligatoire. Seul ce résultat autonome sera stocké
-       * dans IndexedDB : string pour les textes, ArrayBuffer pour les binaires.
-       */
-      const content = await readContentForImport(file, format);
-
+    async function buildImportedBook(filename, format, content) {
       const record = {
         id: uid(),
-        title: titleFromFilename(file.name),
+        title: titleFromFilename(filename),
         author: format === "cbz" ? "Bande dessinée" : "Auteur inconnu",
         format,
-        content,
         cover: null,
         addedAt: Date.now(),
         lastOpenedAt: 0,
         position: null,
-        progress: 0
+        progress: 0,
+        needsReimport: false
       };
 
       if (format === "epub") {
-        if (!window.ePub || !window.JSZip) {
-          throw new Error("Le moteur EPUB n’est pas disponible.");
-        }
-
         let temporaryBook = null;
 
         try {
-          temporaryBook = ePub(content.slice(0));
+          const epubBlob = new Blob(
+            [copyArrayBuffer(content)],
+            { type: "application/epub+zip" }
+          );
+
+          temporaryBook = ePub(epubBlob);
           await withTimeout(temporaryBook.ready, 30000, "L’analyse de l’EPUB a expiré.");
 
           const metadata = await temporaryBook.loaded.metadata;
@@ -2478,43 +2071,29 @@
           if (cleanText(metadata?.creator)) record.author = cleanText(metadata.creator);
 
           try {
-            const coverUrl = await withTimeout(
-              temporaryBook.coverUrl(),
-              9000,
-              "Couverture inaccessible."
-            );
-
-            if (coverUrl && /^(blob:|data:)/.test(coverUrl)) {
+            const coverUrl = await temporaryBook.coverUrl();
+            if (coverUrl) {
               const response = await fetch(coverUrl);
               if (response.ok) record.cover = await response.blob();
               if (coverUrl.startsWith("blob:")) URL.revokeObjectURL(coverUrl);
             }
-          } catch (error) {
-            console.info("Couverture EPUB absente :", error);
-          }
+          } catch (_) {}
         } catch (error) {
-          throw new Error(
-            "EPUB corrompu, incomplet ou protégé par DRM : " +
-            (error.message || "analyse impossible")
-          );
+          throw new Error("EPUB corrompu ou protégé : " + (error.message || "analyse impossible"));
         } finally {
           try { temporaryBook?.destroy(); } catch (_) {}
         }
       }
 
       if (format === "pdf") {
-        await inspectPdf(content, record);
+        await inspectPdfAtImport(content, record);
       }
 
       if (format === "fb2") {
-        try {
-          const parsed = parseFictionBook(content);
-          if (parsed.title) record.title = parsed.title;
-          if (parsed.author) record.author = parsed.author;
-          record.cover = parsed.cover;
-        } catch (error) {
-          throw new Error("FB2 illisible : " + error.message);
-        }
+        const parsed = parseFictionBook(content);
+        if (parsed.title) record.title = parsed.title;
+        if (parsed.author) record.author = parsed.author;
+        record.cover = parsed.cover;
       }
 
       if (format === "html") {
@@ -2522,20 +2101,15 @@
         const title = cleanText(doc.querySelector("title")?.textContent) ||
           cleanText(doc.querySelector("h1")?.textContent);
         const author = cleanText(doc.querySelector('meta[name="author"]')?.content);
-
         if (title) record.title = title;
         if (author) record.author = author;
       }
 
-      if (format === "txt") {
-        record.author = "Document texte";
-      }
+      if (format === "txt") record.author = "Document texte";
 
       if (format === "cbz") {
-        if (!window.JSZip) throw new Error("JSZip n’est pas disponible pour lire le CBZ.");
-
         try {
-          const zip = await JSZip.loadAsync(content.slice(0));
+          const zip = await JSZip.loadAsync(copyArrayBuffer(content));
           const images = Object.values(zip.files)
             .filter(entry =>
               !entry.dir &&
@@ -2544,13 +2118,10 @@
             )
             .sort((a, b) => collator.compare(a.name, b.name));
 
-          if (!images.length) throw new Error("Aucune image de page dans l’archive.");
+          if (!images.length) throw new Error("Aucune image dans l’archive.");
           record.cover = typedImageBlob(await images[0].async("blob"), images[0].name);
         } catch (error) {
-          throw new Error(
-            "CBZ corrompu ou sans page lisible : " +
-            (error.message || "archive ZIP invalide")
-          );
+          throw new Error("CBZ corrompu : " + (error.message || "archive invalide"));
         }
       }
 
@@ -2558,7 +2129,7 @@
         record.cover = await generateCover(record.title, record.author, format);
       }
 
-      return record;
+      return { record, content };
     }
 
     async function importFiles(files) {
@@ -2573,21 +2144,42 @@
       const errors = [];
 
       for (let index = 0; index < files.length; index++) {
-        const file = files[index];
-        progress.textContent = `Import ${index + 1}/${files.length} · ${file.name}`;
+        const selectedFile = files[index];
+        progress.textContent = `Import ${index + 1}/${files.length} · ${selectedFile.name}`;
 
         try {
-          const record = await prepareBook(file);
+          const format = detectFormat(selectedFile);
+
+          if (!SUPPORTED_FORMATS.has(format)) {
+            throw new Error(unsupportedFormatMessage(format));
+          }
+
+          if (!selectedFile.size) throw new Error("Le fichier est vide.");
 
           /*
-           * record ne contient volontairement aucune propriété file.
-           * La lecture ultérieure utilise exclusivement record.content.
+           * 1. Lecture complète immédiate avec FileReader.
+           * 2. Analyse du résultat en mémoire.
+           * 3. Seulement ensuite, transaction Dexie.
+           *
+           * L’objet sélectionné n’est jamais enregistré dans IndexedDB.
            */
-          await db.books.add(record);
+          const content = await readSelectedFileAtImport(selectedFile, format);
+          const prepared = await buildImportedBook(selectedFile.name, format, content);
+
+          await db.transaction("rw", db.books, db.contents, async () => {
+            await db.contents.add({
+              id: prepared.record.id,
+              kind: TEXT_FORMATS.has(format) ? "text" : "binary",
+              content: prepared.content
+            });
+
+            await db.books.add(prepared.record);
+          });
+
           imported++;
         } catch (error) {
-          console.error("Import impossible :", file.name, error);
-          errors.push(`${file.name} — ${error.message || "fichier illisible"}`);
+          console.error("Import impossible :", selectedFile.name, error);
+          errors.push(`${selectedFile.name} — ${error.message || "fichier illisible"}`);
         }
       }
 
@@ -2597,17 +2189,8 @@
       await renderLibrary();
 
       const messages = [];
-
-      if (imported) {
-        messages.push(`${imported} livre${imported > 1 ? "s" : ""} ajouté${imported > 1 ? "s" : ""}.`);
-      }
-
-      if (errors.length) {
-        messages.push(errors.slice(0, 3).join("\n"));
-        if (errors.length > 3) {
-          messages.push(`${errors.length - 3} autre(s) fichier(s) refusé(s).`);
-        }
-      }
+      if (imported) messages.push(`${imported} livre${imported > 1 ? "s" : ""} ajouté${imported > 1 ? "s" : ""}.`);
+      if (errors.length) messages.push(errors.slice(0, 3).join("\n"));
 
       if (messages.length) {
         showToast(messages.join("\n"), errors.length ? 10000 : 3500, errors.length > 0);
@@ -2615,7 +2198,7 @@
     }
 
     /* ============================================================
-       BIBLIOTHÈQUE ET SUPPRESSION
+       BIBLIOTHÈQUE
        ============================================================ */
     function releaseLibraryCoverUrls() {
       for (const url of libraryCoverUrls) URL.revokeObjectURL(url);
@@ -2623,13 +2206,12 @@
     }
 
     async function renderLibrary() {
-      if (!db) return;
-
       const books = await db.books.toArray();
-      books.sort((a, b) => {
-        const recent = (b.lastOpenedAt || b.addedAt) - (a.lastOpenedAt || a.addedAt);
-        return recent || collator.compare(a.title, b.title);
-      });
+
+      books.sort((a, b) =>
+        (b.lastOpenedAt || b.addedAt) - (a.lastOpenedAt || a.addedAt) ||
+        collator.compare(a.title, b.title)
+      );
 
       releaseLibraryCoverUrls();
       const grid = $("bookGrid");
@@ -2648,7 +2230,6 @@
         const coverButton = document.createElement("button");
         coverButton.className = "cover-button";
         coverButton.setAttribute("aria-label", `Ouvrir ${book.title}`);
-        coverButton.title = `${book.title} · ${formatLabel(book.format)}`;
 
         const image = document.createElement("img");
         image.alt = `Couverture de ${book.title}`;
@@ -2664,10 +2245,9 @@
 
         const deleteButton = document.createElement("button");
         deleteButton.className = "delete-book";
-        deleteButton.title = "Supprimer le livre";
         deleteButton.setAttribute("aria-label", `Supprimer ${book.title}`);
         deleteButton.innerHTML =
-          '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg>';
+          '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>';
 
         deleteButton.addEventListener("click", event => {
           event.stopPropagation();
@@ -2682,15 +2262,15 @@
 
         const author = document.createElement("p");
         author.className = "book-author";
-        author.textContent = `${book.author} · ${formatLabel(book.format)}`;
+        author.textContent = book.needsReimport
+          ? `Réimport nécessaire · ${formatLabel(book.format)}`
+          : `${book.author} · ${formatLabel(book.format)}`;
 
         card.append(coverWrap, title, author);
 
         if (book.progress > 0) {
           const progress = document.createElement("div");
           progress.className = "book-progress";
-          progress.title = `${Math.round(book.progress * 100)} % lu`;
-
           const bar = document.createElement("span");
           bar.style.width = `${clamp(book.progress, 0, 1) * 100}%`;
           progress.appendChild(bar);
@@ -2709,10 +2289,7 @@
       let startY = 0;
       let suppressClickUntil = 0;
 
-      const cancel = () => {
-        clearTimeout(timer);
-        timer = 0;
-      };
+      const cancel = () => clearTimeout(timer);
 
       button.addEventListener("pointerdown", event => {
         if (event.button !== 0) return;
@@ -2770,24 +2347,23 @@
     async function confirmBookDeletion(book) {
       const accepted = await askConfirmation(
         "Supprimer ce livre ?",
-        `« ${book.title} » et sa position de lecture seront définitivement retirés de cet appareil.`
+        `« ${book.title} », son contenu et sa position seront supprimés de cet appareil.`
       );
 
       if (!accepted) return;
 
-      try {
+      await db.transaction("rw", db.books, db.contents, db.settings, async () => {
         await db.books.delete(book.id);
+        await db.contents.delete(book.id);
 
         const resume = await db.settings.get("resumeBookId");
         if (resume?.value === book.id) {
           await db.settings.put({ key: "resumeBookId", value: null });
         }
+      });
 
-        await renderLibrary();
-        showToast(`« ${book.title} » a été supprimé.`);
-      } catch (error) {
-        showToast("Suppression impossible : " + error.message, 6000, true);
-      }
+      await renderLibrary();
+      showToast(`« ${book.title} » a été supprimé.`);
     }
 
     /* ============================================================
@@ -2798,10 +2374,8 @@
 
       if (typeof progress === "number" && Number.isFinite(progress)) {
         $("readingProgressBar").style.width = `${clamp(progress, 0, 1) * 100}%`;
-        $("readingProgressBar").parentElement.style.opacity = "1";
       } else {
         $("readingProgressBar").style.width = "0";
-        $("readingProgressBar").parentElement.style.opacity = ".4";
       }
     }
 
@@ -2818,11 +2392,12 @@
     }
 
     /* ============================================================
-       MOTEUR EPUB
+       MOTEUR EPUB — BLOB CRÉÉ DEPUIS L’ARRAYBUFFER INDEXEDDB
        ============================================================ */
     class EpubEngine {
-      constructor(record) {
+      constructor(record, content) {
         this.record = record;
+        this.content = content;
         this.book = null;
         this.rendition = null;
         this.location = null;
@@ -2835,7 +2410,11 @@
         $("epubViewport").hidden = false;
         await nextFrame();
 
-        this.book = ePub(getStoredBinaryCopy(this.record));
+        const arrayBuffer = copyArrayBuffer(this.content);
+        const epubBlob = new Blob([arrayBuffer], { type: "application/epub+zip" });
+
+        /* Le Blob est nouveau et autonome : il ne référence aucun fichier local. */
+        this.book = ePub(epubBlob);
         await withTimeout(this.book.ready, 30000, "Le livre EPUB ne répond pas.");
 
         const viewport = $("epubViewport");
@@ -2859,13 +2438,9 @@
               "line-height": "1.7 !important",
               "text-align": "justify !important",
               hyphens: "auto !important",
-              "-webkit-hyphens": "auto !important",
               padding: "0 4% !important"
             },
-            p: {
-              "line-height": "1.7 !important",
-              margin: "0 0 .85em !important"
-            },
+            p: { "line-height": "1.7 !important", margin: "0 0 .85em !important" },
             a: { color: colors.accent + " !important" },
             img: { "max-width": "100% !important", height: "auto !important" }
           });
@@ -2874,23 +2449,23 @@
         this.setTheme();
 
         this.rendition.hooks.content.register(contents => {
-          try {
-            this.prepareContents(contents);
-          } catch (error) {
-            console.warn("Préparation EPUB :", error);
-          }
+          const doc = contents.document;
+          if (!doc) return;
+
+          doc.querySelectorAll("script,iframe,object,embed").forEach(node => node.remove());
+          this.styleDocument(doc);
+          bindEpubGestures(doc);
         });
 
         this.rendition.on("relocated", location => {
           if (this.destroyed || !location?.start) return;
 
           this.location = location;
-          const cfi = location.start.cfi;
-          const displayed = location.start.displayed;
           const percentage = typeof location.start.percentage === "number"
             ? location.start.percentage
             : null;
 
+          const displayed = location.start.displayed;
           updateReaderStatus(
             displayed?.total
               ? `Section · ${displayed.page} / ${displayed.total}`
@@ -2898,7 +2473,9 @@
             percentage
           );
 
-          if (cfi) void persistPosition(this.record.id, { cfi }, percentage);
+          if (location.start.cfi) {
+            void persistPosition(this.record.id, { cfi: location.start.cfi }, percentage);
+          }
         });
 
         const savedCfi = this.record.position?.cfi;
@@ -2907,33 +2484,12 @@
           await withTimeout(
             this.rendition.display(savedCfi || undefined),
             30000,
-            "Le rendu de cette page EPUB a expiré."
+            "Le rendu EPUB a expiré."
           );
         } catch (error) {
           if (!savedCfi) throw error;
-
-          showToast(
-            "L’ancienne position EPUB était illisible ; ouverture au début du livre.",
-            5000,
-            true
-          );
           await this.rendition.display();
         }
-      }
-
-      prepareContents(contents) {
-        const doc = contents.document;
-        if (!doc) return;
-
-        doc.querySelectorAll("script, iframe, object, embed")
-          .forEach(node => node.remove());
-
-        doc.querySelectorAll("[src]").forEach(node => {
-          if (/^https?:\/\//i.test(node.getAttribute("src") || "")) node.remove();
-        });
-
-        this.styleDocument(doc);
-        bindEpubGestures(doc);
       }
 
       styleDocument(doc) {
@@ -2947,21 +2503,16 @@
         }
 
         style.textContent = `
-          html, body {
-            background:${colors.paper} !important;
-            color:${colors.ink} !important;
+          html,body{background:${colors.paper}!important;color:${colors.ink}!important}
+          body{
+            font-family:'EB Garamond',Georgia,serif!important;
+            font-size:${prefs.fontSize}px!important;
+            line-height:1.7!important;
+            text-align:justify!important;
+            hyphens:auto!important;
           }
-          body {
-            font-family:'EB Garamond',Georgia,serif !important;
-            font-size:${prefs.fontSize}px !important;
-            line-height:1.7 !important;
-            text-align:justify !important;
-            hyphens:auto !important;
-            -webkit-hyphens:auto !important;
-          }
-          p,li { line-height:1.7 !important; }
-          a { color:${colors.accent} !important; }
-          img,svg { max-width:100% !important; }
+          a{color:${colors.accent}!important}
+          img,svg{max-width:100%!important}
         `;
       }
 
@@ -3016,13 +2567,12 @@
         this.destroyed = true;
         try { this.rendition?.destroy(); } catch (_) {}
         try { this.book?.destroy(); } catch (_) {}
-        this.rendition = null;
-        this.book = null;
+        this.content = null;
       }
     }
 
     /* ============================================================
-       HTML LOCAL : NETTOYAGE
+       HTML ET MOTEUR REFLOW TXT / HTML / FB2
        ============================================================ */
     function sanitizeHtml(source) {
       const doc = new DOMParser().parseFromString(source, "text/html");
@@ -3038,28 +2588,21 @@
 
           if (
             name.startsWith("on") ||
-            name === "style" ||
-            name === "srcdoc" ||
-            name === "id"
+            ["style", "srcdoc", "id"].includes(name) ||
+            (["href", "src"].includes(name) && /^javascript:/i.test(value))
           ) {
-            element.removeAttribute(attribute.name);
-          }
-
-          if ((name === "href" || name === "src") && /^javascript:/i.test(value)) {
             element.removeAttribute(attribute.name);
           }
         }
       });
 
       doc.querySelectorAll("img").forEach(image => {
-        const src = image.getAttribute("src") || "";
-        if (!/^data:image\/(?:png|jpe?g|gif|webp|avif);/i.test(src)) image.remove();
+        if (!/^data:image\/(?:png|jpe?g|gif|webp|avif);/i.test(image.getAttribute("src") || "")) {
+          image.remove();
+        }
       });
 
-      doc.querySelectorAll("a").forEach(link => {
-        link.removeAttribute("href");
-        link.removeAttribute("target");
-      });
+      doc.querySelectorAll("a").forEach(link => link.removeAttribute("href"));
 
       return {
         html: doc.body.innerHTML,
@@ -3067,34 +2610,28 @@
       };
     }
 
-    /* ============================================================
-       MOTEUR TXT / HTML / FB2
-       ============================================================ */
     class TextEngine {
-      constructor(record) {
+      constructor(record, content) {
         this.record = record;
+        this.content = content;
         this.page = 0;
         this.total = 1;
         this.width = 1;
-        this.height = 1;
         this.gap = 40;
         this.ready = false;
         this.anchor = Number(record.position?.offset) || 0;
         this.segments = [];
         this.nodeStarts = new WeakMap();
         this.characterCount = 0;
-        this.layoutTimer = 0;
         this.objectUrls = [];
         this.destroyed = false;
       }
 
       async init() {
-        /* Aucun File/Blob n’est lu ici : uniquement la string IndexedDB. */
-        const source = getStoredText(this.record);
+        /* String récupérée directement d’IndexedDB. */
+        const source = getTextContent(this.content);
         const content = $("textContent");
-
         content.replaceChildren();
-        content.removeAttribute("lang");
 
         if (this.record.format === "fb2") {
           const parsed = parseFictionBook(source);
@@ -3102,15 +2639,14 @@
           if (parsed.language) content.lang = parsed.language;
         } else if (this.record.format === "html") {
           const clean = sanitizeHtml(source);
-          content.innerHTML = clean.html || "<p>Ce document ne contient aucun texte lisible.</p>";
+          content.innerHTML = clean.html || "<p>Document vide.</p>";
           if (clean.language) content.lang = clean.language;
         } else {
-          const normalized = source.replace(/\r\n?/g, "\n").replace(/\f/g, "\n\n");
           const fragment = document.createDocumentFragment();
+          const normalized = source.replace(/\r\n?/g, "\n").replace(/\f/g, "\n\n");
 
           for (const block of normalized.split(/\n[\t ]*\n/)) {
             if (!block.trim()) continue;
-
             const paragraph = document.createElement("p");
             paragraph.textContent = block.trim();
             paragraph.style.whiteSpace = "pre-wrap";
@@ -3131,14 +2667,6 @@
 
         this.measureTextSegments();
         this.layout();
-
-        content.querySelectorAll("img").forEach(image => {
-          image.addEventListener("load", () => {
-            clearTimeout(this.layoutTimer);
-            this.layoutTimer = setTimeout(() => this.layout(), 100);
-          }, { once: true });
-        });
-
         this.saveState();
       }
 
@@ -3147,22 +2675,15 @@
         this.nodeStarts = new WeakMap();
         let offset = 0;
 
-        const walker = document.createTreeWalker(
-          $("textContent"),
-          NodeFilter.SHOW_TEXT
-        );
-
+        const walker = document.createTreeWalker($("textContent"), NodeFilter.SHOW_TEXT);
         let node;
+
         while ((node = walker.nextNode())) {
           const length = node.nodeValue?.length || 0;
           if (!length) continue;
 
           this.nodeStarts.set(node, offset);
-          this.segments.push({
-            node,
-            start: offset,
-            end: offset + length
-          });
+          this.segments.push({ node, start: offset, end: offset + length });
           offset += length;
         }
 
@@ -3173,7 +2694,6 @@
         const viewport = $("textViewport");
         const content = $("textContent");
         const rect = viewport.getBoundingClientRect();
-
         if (!rect.width || !rect.height) return this.anchor;
 
         const x = rect.left + Math.min(10, rect.width / 4);
@@ -3198,11 +2718,7 @@
             content.contains(node) &&
             this.nodeStarts.has(node)
           ) {
-            return clamp(
-              this.nodeStarts.get(node) + offset,
-              0,
-              this.characterCount
-            );
+            return clamp(this.nodeStarts.get(node) + offset, 0, this.characterCount);
           }
         }
 
@@ -3213,39 +2729,15 @@
         if (!this.segments.length) return 0;
 
         const target = clamp(offset, 0, this.characterCount);
-        let low = 0;
-        let high = this.segments.length - 1;
-        let segment = this.segments[0];
-
-        while (low <= high) {
-          const middle = (low + high) >> 1;
-          const candidate = this.segments[middle];
-
-          if (target < candidate.start) {
-            high = middle - 1;
-          } else if (target > candidate.end) {
-            low = middle + 1;
-          } else {
-            segment = candidate;
-            break;
-          }
-
-          segment = candidate;
-        }
+        const segment = this.segments.find(item =>
+          target >= item.start && target <= item.end
+        ) || this.segments[this.segments.length - 1];
 
         try {
-          const local = clamp(
-            target - segment.start,
-            0,
-            segment.node.nodeValue.length - 1
-          );
-
+          const local = clamp(target - segment.start, 0, segment.node.nodeValue.length - 1);
           const range = document.createRange();
           range.setStart(segment.node, local);
-          range.setEnd(
-            segment.node,
-            Math.min(local + 1, segment.node.nodeValue.length)
-          );
+          range.setEnd(segment.node, Math.min(local + 1, segment.node.nodeValue.length));
 
           const rect = range.getBoundingClientRect();
           const contentRect = $("textContent").getBoundingClientRect();
@@ -3270,18 +2762,14 @@
         const oldAnchor = wasReady
           ? this.readVisibleAnchor()
           : Number(this.record.position?.offset) || 0;
-        const oldRatio = wasReady && this.total > 1
-          ? this.page / (this.total - 1)
-          : 0;
+        const oldRatio = wasReady && this.total > 1 ? this.page / (this.total - 1) : 0;
 
         content.style.transform = "translate3d(0,0,0)";
-
         this.width = Math.max(1, Math.floor(viewport.clientWidth));
-        this.height = Math.max(1, Math.floor(viewport.clientHeight));
         this.gap = clamp(Math.round(this.width * .075), 28, 64);
 
         content.style.width = this.width + "px";
-        content.style.height = this.height + "px";
+        content.style.height = Math.floor(viewport.clientHeight) + "px";
         content.style.columnWidth = this.width + "px";
         content.style.columnGap = this.gap + "px";
         content.style.fontSize = prefs.fontSize + "px";
@@ -3295,27 +2783,18 @@
         } else if (oldAnchor > 0) {
           this.page = clamp(this.findPageForOffset(oldAnchor), 0, this.total - 1);
         } else {
-          this.page = clamp(
-            Math.round(oldRatio * (this.total - 1)),
-            0,
-            this.total - 1
-          );
+          this.page = clamp(Math.round(oldRatio * (this.total - 1)), 0, this.total - 1);
         }
 
         this.ready = true;
         this.applyPage(false);
-        if (wasReady) this.saveState();
       }
 
       applyPage(save = true) {
         const stride = this.width + this.gap;
-        $("textContent").style.transform =
-          `translate3d(${-this.page * stride}px,0,0)`;
+        $("textContent").style.transform = `translate3d(${-this.page * stride}px,0,0)`;
 
-        const progress = this.total > 1
-          ? this.page / (this.total - 1)
-          : (this.page ? 1 : 0);
-
+        const progress = this.total > 1 ? this.page / (this.total - 1) : (this.page ? 1 : 0);
         updateReaderStatus(`Page ${this.page + 1} / ${this.total}`, progress);
         if (save) this.saveState();
       }
@@ -3323,16 +2802,8 @@
       saveState() {
         if (this.destroyed) return;
 
-        const visible = this.readVisibleAnchor();
-        const estimated = this.characterCount && this.total > 1
-          ? Math.round((this.page / (this.total - 1)) * this.characterCount)
-          : 0;
-
-        this.anchor = Number.isFinite(visible) ? visible : estimated;
-
-        const progress = this.total > 1
-          ? this.page / (this.total - 1)
-          : (this.page ? 1 : 0);
+        this.anchor = this.readVisibleAnchor();
+        const progress = this.total > 1 ? this.page / (this.total - 1) : (this.page ? 1 : 0);
 
         void persistPosition(
           this.record.id,
@@ -3342,9 +2813,7 @@
       }
 
       canGo(direction) {
-        return direction > 0
-          ? this.page < this.total - 1
-          : this.page > 0;
+        return direction > 0 ? this.page < this.total - 1 : this.page > 0;
       }
 
       async go(direction) {
@@ -3365,22 +2834,18 @@
 
         const clone = $("textContent").cloneNode(true);
         clone.removeAttribute("id");
-        clone.setAttribute("aria-hidden", "true");
         clone.style.position = "absolute";
         clone.style.left = "0";
         clone.style.top = "0";
-        clone.style.margin = "0";
-
         wrapper.appendChild(clone);
         return wrapper;
       }
 
       destroy() {
         this.destroyed = true;
-        clearTimeout(this.layoutTimer);
-
         for (const url of this.objectUrls) URL.revokeObjectURL(url);
         this.objectUrls = [];
+        this.content = null;
         $("textContent").replaceChildren();
       }
     }
@@ -3389,21 +2854,19 @@
        MOTEUR CBZ
        ============================================================ */
     class ComicEngine {
-      constructor(record) {
+      constructor(record, content) {
         this.record = record;
+        this.content = content;
         this.pages = [];
         this.page = 0;
-        this.zip = null;
         this.loadToken = 0;
         this.destroyed = false;
       }
 
       async init() {
-        if (!window.JSZip) throw new Error("JSZip n’est pas disponible pour ce CBZ.");
+        const zip = await JSZip.loadAsync(copyArrayBuffer(this.content));
 
-        this.zip = await JSZip.loadAsync(getStoredBinaryCopy(this.record));
-
-        const entries = Object.values(this.zip.files)
+        const entries = Object.values(zip.files)
           .filter(entry =>
             !entry.dir &&
             IMAGE_PATTERN.test(entry.name) &&
@@ -3411,9 +2874,7 @@
           )
           .sort((a, b) => collator.compare(a.name, b.name));
 
-        if (!entries.length) {
-          throw new Error("Aucune page image lisible dans ce CBZ.");
-        }
+        if (!entries.length) throw new Error("Aucune page image lisible dans ce CBZ.");
 
         this.pages = entries.map(entry => ({
           name: entry.name,
@@ -3435,22 +2896,12 @@
 
       async getUrl(index) {
         const descriptor = this.pages[index];
-
-        if (!descriptor || this.destroyed) {
-          throw new Error("Page CBZ indisponible.");
-        }
-
+        if (!descriptor || this.destroyed) throw new Error("Page CBZ indisponible.");
         if (descriptor.url) return descriptor.url;
         if (descriptor.pending) return descriptor.pending;
 
         descriptor.pending = (async () => {
-          const blob = typedImageBlob(
-            await descriptor.entry.async("blob"),
-            descriptor.name
-          );
-
-          if (this.destroyed) throw new Error("Lecture fermée.");
-
+          const blob = typedImageBlob(await descriptor.entry.async("blob"), descriptor.name);
           descriptor.url = URL.createObjectURL(blob);
           descriptor.pending = null;
           this.pruneCache();
@@ -3483,22 +2934,15 @@
 
         const image = $("comicImage");
         image.src = url;
-        image.alt = `Page ${this.page + 1} de ${this.record.title}`;
 
-        try {
-          await image.decode();
-        } catch (_) {
-          if (!image.complete || !image.naturalWidth) {
-            throw new Error(
-              `La page ${this.page + 1} est une image corrompue ou non prise en charge.`
-            );
-          }
+        try { await image.decode(); } catch (_) {
+          if (!image.naturalWidth) throw new Error("Cette page CBZ est illisible.");
         }
 
         this.updateStatus();
         if (save) this.saveState();
 
-        for (const neighbor of [this.page + 1, this.page - 1, this.page + 2]) {
+        for (const neighbor of [this.page + 1, this.page - 1]) {
           if (neighbor >= 0 && neighbor < this.pages.length) {
             this.getUrl(neighbor).catch(() => {});
           }
@@ -3508,36 +2952,23 @@
       updateStatus() {
         const progress = this.pages.length > 1
           ? this.page / (this.pages.length - 1)
-          : (this.page ? 1 : 0);
-
-        updateReaderStatus(
-          `Page ${this.page + 1} / ${this.pages.length}`,
-          progress
-        );
+          : 0;
+        updateReaderStatus(`Page ${this.page + 1} / ${this.pages.length}`, progress);
       }
 
       saveState() {
         const progress = this.pages.length > 1
           ? this.page / (this.pages.length - 1)
-          : (this.page ? 1 : 0);
-
-        void persistPosition(
-          this.record.id,
-          { page: this.page },
-          progress
-        );
+          : 0;
+        void persistPosition(this.record.id, { page: this.page }, progress);
       }
 
       canGo(direction) {
-        return direction > 0
-          ? this.page < this.pages.length - 1
-          : this.page > 0;
+        return direction > 0 ? this.page < this.pages.length - 1 : this.page > 0;
       }
 
       async go(direction) {
-        if (this.canGo(direction)) {
-          await this.showPage(this.page + direction, true);
-        }
+        if (this.canGo(direction)) await this.showPage(this.page + direction, true);
       }
 
       resize() {}
@@ -3548,7 +2979,6 @@
         const image = document.createElement("img");
         image.className = "snapshot-comic";
         image.src = $("comicImage").src;
-        image.alt = "";
         return image;
       }
 
@@ -3558,27 +2988,21 @@
 
         for (const descriptor of this.pages) {
           if (descriptor.url) URL.revokeObjectURL(descriptor.url);
-          descriptor.url = null;
         }
 
         this.pages = [];
-        this.zip = null;
+        this.content = null;
         $("comicImage").removeAttribute("src");
       }
     }
 
     /* ============================================================
-       MOTEUR PDF.JS CORRIGÉ
-
-       - worker CDN explicitement configuré ;
-       - getDocument alimenté par une copie du ArrayBuffer IndexedDB ;
-       - rendu effectif dans un canvas ;
-       - annulation des rendus obsolètes ;
-       - zoom et reprise par numéro de page.
+       MOTEUR PDF — UINT8ARRAY DEPUIS INDEXEDDB ET RENDU CANVAS
        ============================================================ */
     class PdfEngine {
-      constructor(record) {
+      constructor(record, content) {
         this.record = record;
+        this.content = content;
         this.task = null;
         this.pdf = null;
         this.page = 0;
@@ -3596,25 +3020,15 @@
         $("pdfZoomControls").hidden = false;
         this.updateZoomControls();
 
-        this.task = createPdfLoadingTask(getStoredBinaryCopy(this.record));
+        this.task = createPdfTask(copyArrayBuffer(this.content));
 
         try {
-          this.pdf = await withTimeout(
-            this.task.promise,
-            40000,
-            "L’ouverture du PDF a expiré."
-          );
+          this.pdf = await withTimeout(this.task.promise, 40000, "L’ouverture du PDF a expiré.");
         } catch (error) {
           if (error?.name === "PasswordException") {
-            throw new Error(
-              "Ce PDF demande un mot de passe et ne peut pas être ouvert ici."
-            );
+            throw new Error("Ce PDF est protégé par un mot de passe.");
           }
-
-          throw new Error(
-            "PDF.js n’a pas pu ouvrir ce document : " +
-            (error.message || "format PDF invalide")
-          );
+          throw new Error("PDF.js ne peut pas ouvrir ce document : " + error.message);
         }
 
         this.total = this.pdf.numPages;
@@ -3644,58 +3058,38 @@
         if (!viewportElement.clientWidth || !viewportElement.clientHeight) return;
 
         const token = ++this.renderToken;
+        try { this.renderTask?.cancel(); } catch (_) {}
 
-        try {
-          this.renderTask?.cancel();
-        } catch (_) {}
-
-        const pageNumber = this.page + 1;
-        const page = await this.pdf.getPage(pageNumber);
-
-        if (this.destroyed || token !== this.renderToken) {
-          page.cleanup();
-          return;
-        }
+        const page = await this.pdf.getPage(this.page + 1);
+        if (this.destroyed || token !== this.renderToken) return;
 
         try {
           const base = page.getViewport({ scale: 1 });
-          const availableWidth = Math.max(50, viewportElement.clientWidth - 24);
-          const availableHeight = Math.max(50, viewportElement.clientHeight - 24);
-
           const fitScale = Math.min(
-            availableWidth / base.width,
-            availableHeight / base.height
+            Math.max(50, viewportElement.clientWidth - 24) / base.width,
+            Math.max(50, viewportElement.clientHeight - 24) / base.height
           );
 
           const cssScale = Math.max(.03, fitScale * this.zoom);
           const cssViewport = page.getViewport({ scale: cssScale });
 
-          let outputScale = Math.min(window.devicePixelRatio || 1, 2);
-          const pixelsAtFullScale =
-            cssViewport.width * cssViewport.height * outputScale * outputScale;
+          let outputScale = Math.min(devicePixelRatio || 1, 2);
           const maxPixels = 12000000;
+          const pixels = cssViewport.width * cssViewport.height * outputScale * outputScale;
 
-          if (pixelsAtFullScale > maxPixels) {
-            outputScale *= Math.sqrt(maxPixels / pixelsAtFullScale);
-          }
-
+          if (pixels > maxPixels) outputScale *= Math.sqrt(maxPixels / pixels);
           outputScale = Math.max(.35, outputScale);
 
-          const renderViewport = page.getViewport({
-            scale: cssScale * outputScale
-          });
-
+          const renderViewport = page.getViewport({ scale: cssScale * outputScale });
           const canvas = document.createElement("canvas");
+
           canvas.width = Math.max(1, Math.floor(renderViewport.width));
           canvas.height = Math.max(1, Math.floor(renderViewport.height));
           canvas.style.width = Math.floor(cssViewport.width) + "px";
           canvas.style.height = Math.floor(cssViewport.height) + "px";
-          canvas.setAttribute("role", "img");
-          canvas.setAttribute("aria-label", `Page ${pageNumber} du PDF`);
+          canvas.setAttribute("aria-label", `Page ${this.page + 1} du PDF`);
 
           const context = canvas.getContext("2d", { alpha: false });
-          if (!context) throw new Error("Impossible de créer le contexte canvas 2D.");
-
           context.fillStyle = "#fff";
           context.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -3713,17 +3107,8 @@
           this.updateStatus();
           if (save) this.saveState();
         } catch (error) {
-          if (
-            error?.name === "RenderingCancelledException" ||
-            token !== this.renderToken
-          ) {
-            return;
-          }
-
-          throw new Error(
-            "Le rendu de la page PDF a échoué : " +
-            (error.message || "erreur inconnue")
-          );
+          if (error?.name === "RenderingCancelledException" || token !== this.renderToken) return;
+          throw new Error("Rendu PDF impossible : " + (error.message || "erreur inconnue"));
         } finally {
           if (token === this.renderToken) this.renderTask = null;
           try { page.cleanup(); } catch (_) {}
@@ -3731,19 +3116,13 @@
       }
 
       updateStatus() {
-        const progress = this.total > 1
-          ? this.page / (this.total - 1)
-          : (this.page ? 1 : 0);
-
+        const progress = this.total > 1 ? this.page / (this.total - 1) : 0;
         updateReaderStatus(`Page ${this.page + 1} / ${this.total}`, progress);
       }
 
       saveState() {
         if (this.destroyed) return;
-
-        const progress = this.total > 1
-          ? this.page / (this.total - 1)
-          : (this.page ? 1 : 0);
+        const progress = this.total > 1 ? this.page / (this.total - 1) : 0;
 
         void persistPosition(
           this.record.id,
@@ -3753,29 +3132,18 @@
       }
 
       canGo(direction) {
-        return direction > 0
-          ? this.page < this.total - 1
-          : this.page > 0;
+        return direction > 0 ? this.page < this.total - 1 : this.page > 0;
       }
 
       async go(direction) {
         if (!this.canGo(direction)) return;
-
         this.page += direction;
         $("pdfViewport").scrollTo(0, 0);
         await this.renderPage(true);
       }
 
       async changeZoom(delta) {
-        const next = clamp(
-          Math.round((this.zoom + delta) * 100) / 100,
-          .5,
-          3
-        );
-
-        if (next === this.zoom) return;
-
-        this.zoom = next;
+        this.zoom = clamp(Math.round((this.zoom + delta) * 100) / 100, .5, 3);
         this.updateZoomControls();
         await this.renderPage(true);
       }
@@ -3787,10 +3155,7 @@
         await this.renderPage(true);
       }
 
-      async resize() {
-        await this.renderPage(false);
-      }
-
+      async resize() { await this.renderPage(false); }
       fontChanged() {}
       setTheme() {}
 
@@ -3800,7 +3165,6 @@
 
         const width = Math.max(1, $("readerSurface").clientWidth);
         const height = Math.max(1, $("readerSurface").clientHeight);
-
         const canvas = document.createElement("canvas");
         canvas.width = width;
         canvas.height = height;
@@ -3828,7 +3192,6 @@
       destroy() {
         this.destroyed = true;
         this.renderToken++;
-
         try { this.renderTask?.cancel(); } catch (_) {}
 
         try {
@@ -3837,13 +3200,13 @@
         } catch (_) {}
 
         this.pdf = null;
-        this.task = null;
+        this.content = null;
         $("pdfViewport").replaceChildren();
       }
     }
 
     /* ============================================================
-       OUVERTURE, FERMETURE ET REPRISE
+       OUVERTURE DEPUIS INDEXEDDB UNIQUEMENT
        ============================================================ */
     async function openBook(bookId, options = {}) {
       if (opening) return;
@@ -3857,31 +3220,45 @@
 
       try {
         const record = await db.books.get(bookId);
-
-        if (!record) {
-          throw new Error("Le livre n’existe plus dans la bibliothèque.");
-        }
-
-        if (record.format === "cbr") throw new Error(CBR_MESSAGE);
-
-        if (!SUPPORTED_FORMATS.has(record.format)) {
-          throw new Error(unsupportedFormatMessage(record.format));
-        }
-
-        /* Vérifie le contenu persistant, jamais un fichier local d’origine. */
-        validateStoredContent(record);
+        if (!record) throw new Error("Le livre n’existe plus dans la bibliothèque.");
 
         bookTitle = record.title;
 
+        if (record.needsReimport) {
+          throw new Error(
+            "Cette entrée provient d’une ancienne version sans copie autonome du contenu. " +
+            "Supprimez-la puis réimportez le livre une fois. Les nouveaux imports sont complets et persistants."
+          );
+        }
+
+        /*
+         * Seule la table contents est consultée. Aucun accès au fichier
+         * original et aucun FileReader ne sont utilisés à l’ouverture.
+         */
+        const stored = await db.contents.get(bookId);
+
+        if (!stored || stored.content == null) {
+          throw new Error(
+            "Le contenu persistant est absent d’IndexedDB. Supprimez puis réimportez ce livre."
+          );
+        }
+
+        let content;
+
+        if (TEXT_FORMATS.has(record.format)) {
+          content = getTextContent(stored.content);
+        } else {
+          content = copyArrayBuffer(stored.content);
+        }
+
         try { current?.engine?.destroy(); } catch (_) {}
-        current = { record, engine: null };
+        current = { record, content, engine: null };
 
         $("libraryView").hidden = true;
         $("readerView").hidden = false;
         $("readerView").classList.remove("chrome-hidden");
         $("readerBookTitle").textContent = record.title;
-        $("readerFormatLabel").textContent =
-          `${formatLabel(record.format)} · Omni-Liseuse`;
+        $("readerFormatLabel").textContent = `${formatLabel(record.format)} · Omni-Liseuse`;
         $("readerLoadingText").textContent = `Ouverture de « ${record.title} »…`;
         $("readerLoading").hidden = false;
 
@@ -3892,15 +3269,11 @@
         await db.settings.put({ key: "lastBookId", value: bookId });
         await db.settings.put({ key: "resumeBookId", value: bookId });
 
-        if (record.format === "epub") {
-          engine = new EpubEngine(record);
-        } else if (["txt", "html", "fb2"].includes(record.format)) {
-          engine = new TextEngine(record);
-        } else if (record.format === "pdf") {
-          engine = new PdfEngine(record);
-        } else {
-          engine = new ComicEngine(record);
-        }
+        if (record.format === "epub") engine = new EpubEngine(record, content);
+        else if (["txt", "html", "fb2"].includes(record.format)) engine = new TextEngine(record, content);
+        else if (record.format === "pdf") engine = new PdfEngine(record, content);
+        else if (record.format === "cbz") engine = new ComicEngine(record, content);
+        else throw new Error(unsupportedFormatMessage(record.format));
 
         await engine.init();
 
@@ -3927,8 +3300,8 @@
           await renderLibrary();
 
           showToast(
-            `Impossible d’ouvrir « ${bookTitle} ».\n${error.message || "Le fichier est peut-être corrompu."}`,
-            8500,
+            `Impossible d’ouvrir « ${bookTitle} ».\n${error.message}`,
+            9000,
             true
           );
         }
@@ -3950,28 +3323,23 @@
       queuedDirection = 0;
       fullscreenPending = false;
 
-      try { engine?.destroy(); } catch (error) {
-        console.warn(error);
-      }
+      try { engine?.destroy(); } catch (_) {}
 
       resetReaderViewports();
       $("readerLoading").hidden = true;
       $("readerView").hidden = true;
       $("libraryView").hidden = false;
 
-      if (db) {
-        await db.settings.put({ key: "resumeBookId", value: null });
-        await renderLibrary();
-      }
+      await db.settings.put({ key: "resumeBookId", value: null });
+      await renderLibrary();
     }
 
     /* ============================================================
-       TOURNEPAGE ET NAVIGATION
+       TOURNEPAGE ET SWIPE
        ============================================================ */
     function makePaperAbstract() {
       const abstract = document.createElement("div");
       abstract.className = "paper-abstract";
-
       for (let index = 0; index < 13; index++) {
         abstract.appendChild(document.createElement("span"));
       }
@@ -3979,40 +3347,14 @@
     }
 
     async function playPageTurn(direction, action, engine) {
-      const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const supports3d =
-        CSS.supports("transform-style", "preserve-3d") &&
-        CSS.supports("backface-visibility", "hidden");
-
+      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
       const layer = $("turnLayer");
       const leaf = $("turnLeaf");
       const front = $("leafFront");
       const shadow = $("pageShadow");
-      const surface = $("readerSurface");
 
-      if (reduceMotion || !supports3d || !leaf.animate) {
-        const animation = surface.animate([
-          { opacity: 1, transform: "translateX(0)" },
-          {
-            opacity: .25,
-            transform: `translateX(${direction > 0 ? -14 : 14}px)`,
-            offset: .48
-          },
-          { opacity: 1, transform: "translateX(0)" }
-        ], {
-          duration: reduceMotion ? 150 : 240,
-          easing: "ease-out"
-        });
-
-        const navigation = (async () => {
-          await sleep(reduceMotion ? 30 : 105);
-          await action();
-        })();
-
-        await Promise.all([
-          animation.finished.catch(() => {}),
-          navigation
-        ]);
+      if (reduced || !leaf.animate) {
+        await action();
         return;
       }
 
@@ -4029,11 +3371,10 @@
       const degrees = direction > 0 ? -179 : 179;
 
       const leafAnimation = leaf.animate([
-        { transform: "rotateY(0deg)", opacity: 0, offset: 0 },
+        { transform: "rotateY(0deg)", opacity: 0 },
         { transform: "rotateY(0deg)", opacity: 1, offset: .025 },
-        { transform: `rotateY(${degrees * .30}deg)`, opacity: 1, offset: .32 },
-        { transform: `rotateY(${degrees * .72}deg)`, opacity: 1, offset: .74 },
-        { transform: `rotateY(${degrees}deg)`, opacity: 0, offset: 1 }
+        { transform: `rotateY(${degrees * .65}deg)`, opacity: 1, offset: .65 },
+        { transform: `rotateY(${degrees}deg)`, opacity: 0 }
       ], {
         duration: 350,
         easing: "cubic-bezier(.28,.68,.26,1)",
@@ -4041,13 +3382,9 @@
       });
 
       const shadowAnimation = shadow.animate([
-        { opacity: 0, transform: "translateX(0)" },
-        { opacity: .12, offset: .25 },
-        { opacity: .42, offset: .58 },
-        {
-          opacity: 0,
-          transform: `translateX(${direction > 0 ? -8 : 8}%)`
-        }
+        { opacity: 0 },
+        { opacity: .35, offset: .55 },
+        { opacity: 0 }
       ], {
         duration: 350,
         easing: "ease-in-out",
@@ -4073,17 +3410,6 @@
       }
     }
 
-    function edgeFeedback(direction) {
-      $("readerSurface").animate([
-        { transform: "translateX(0)" },
-        { transform: `translateX(${direction > 0 ? -7 : 7}px)` },
-        { transform: "translateX(0)" }
-      ], {
-        duration: 180,
-        easing: "ease-out"
-      });
-    }
-
     async function navigate(direction) {
       const engine = current?.engine;
       if (!engine || opening) return;
@@ -4093,10 +3419,7 @@
         return;
       }
 
-      if (engine.canGo && !engine.canGo(direction)) {
-        edgeFeedback(direction);
-        return;
-      }
+      if (engine.canGo && !engine.canGo(direction)) return;
 
       navigationBusy = true;
       showReaderChrome();
@@ -4104,30 +3427,21 @@
       try {
         await playPageTurn(direction, () => engine.go(direction), engine);
       } catch (error) {
-        console.error("Changement de page :", error);
-        showToast(
-          "Cette page n’a pas pu être affichée : " +
-          (error.message || "erreur de rendu"),
-          6000,
-          true
-        );
+        showToast("Page illisible : " + error.message, 6000, true);
       } finally {
         navigationBusy = false;
 
         if (queuedDirection) {
-          const nextDirection = queuedDirection;
+          const next = queuedDirection;
           queuedDirection = 0;
-          setTimeout(() => navigate(nextDirection), 0);
+          setTimeout(() => navigate(next), 0);
         }
       }
     }
 
-    /* ============================================================
-       SWIPE ET ZONES DE TAP
-       ============================================================ */
     let outerGesture = null;
 
-    function setupOuterGestures() {
+    function setupGestures() {
       const stage = $("readerStage");
 
       stage.addEventListener("pointerdown", event => {
@@ -4157,7 +3471,7 @@
         }
       }, { passive: false });
 
-      const finish = event => {
+      stage.addEventListener("pointerup", event => {
         const gesture = outerGesture;
         if (!gesture || gesture.id !== event.pointerId) return;
 
@@ -4166,19 +3480,16 @@
 
         const dx = event.clientX - gesture.x;
         const elapsed = Math.max(1, performance.now() - gesture.time);
-        const velocity = Math.abs(dx) / elapsed;
-        const threshold = Math.min(75, Math.max(42, stage.clientWidth * .07));
 
         if (
-          Math.abs(dx) >= threshold ||
-          (Math.abs(dx) > 28 && velocity > .38)
+          Math.abs(dx) > 45 ||
+          (Math.abs(dx) > 28 && Math.abs(dx) / elapsed > .38)
         ) {
           suppressTapUntil = Date.now() + 450;
           navigate(dx < 0 ? 1 : -1);
         }
-      };
+      });
 
-      stage.addEventListener("pointerup", finish);
       stage.addEventListener("pointercancel", () => { outerGesture = null; });
 
       $("tapLeft").addEventListener("click", () => {
@@ -4191,7 +3502,6 @@
 
       $("tapCenter").addEventListener("click", () => {
         if (Date.now() < suppressTapUntil) return;
-
         const hidden = $("readerView").classList.toggle("chrome-hidden");
         if (!hidden) scheduleChromeHide();
       });
@@ -4203,7 +3513,6 @@
 
       doc.addEventListener("touchstart", event => {
         if (event.touches.length !== 1) return;
-
         const touch = event.touches[0];
         gesture = {
           x: touch.clientX,
@@ -4236,10 +3545,7 @@
         const dx = touch.clientX - gesture.x;
         const elapsed = Math.max(1, performance.now() - gesture.time);
 
-        if (
-          Math.abs(dx) > 45 ||
-          (Math.abs(dx) > 28 && Math.abs(dx) / elapsed > .38)
-        ) {
+        if (Math.abs(dx) > 45 || (Math.abs(dx) > 28 && Math.abs(dx) / elapsed > .38)) {
           suppressClickUntil = Date.now() + 450;
           navigate(dx < 0 ? 1 : -1);
         }
@@ -4248,77 +3554,38 @@
       }, { passive: true });
 
       doc.addEventListener("click", event => {
-        const anchor = event.target.closest?.("a");
+        if (Date.now() < suppressClickUntil) return;
 
-        if (anchor && /^https?:\/\//i.test(anchor.getAttribute("href") || "")) {
-          event.preventDefault();
-          showToast("Les liens externes sont désactivés pendant la lecture locale.");
-          return;
-        }
-
-        if (event.defaultPrevented || Date.now() < suppressClickUntil) return;
-
-        const width = doc.documentElement.clientWidth || doc.body.clientWidth || 1;
+        const width = doc.documentElement.clientWidth || 1;
         const ratio = event.clientX / width;
 
-        if (ratio < .22) {
-          navigate(-1);
-        } else if (ratio > .78) {
-          navigate(1);
-        } else {
+        if (ratio < .22) navigate(-1);
+        else if (ratio > .78) navigate(1);
+        else {
           const hidden = $("readerView").classList.toggle("chrome-hidden");
           if (!hidden) scheduleChromeHide();
-        }
-      });
-
-      doc.addEventListener("keydown", event => {
-        if (["ArrowRight", "PageDown", " "].includes(event.key)) {
-          event.preventDefault();
-          navigate(1);
-        } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
-          event.preventDefault();
-          navigate(-1);
         }
       });
     }
 
     /* ============================================================
-       PLEIN ÉCRAN ET COMMANDES
+       PLEIN ÉCRAN, PANNEAUX ET INTERFACE
        ============================================================ */
     async function requestFullscreen(notify = true) {
-      const element = document.documentElement;
-      const request = element.requestFullscreen || element.webkitRequestFullscreen;
+      const request = document.documentElement.requestFullscreen ||
+        document.documentElement.webkitRequestFullscreen;
 
       if (!request) {
-        if (notify) {
-          showToast(
-            "Le plein écran n’est pas proposé par ce navigateur. Le mode PWA reste disponible."
-          );
-        }
+        if (notify) showToast("Le plein écran n’est pas proposé par ce navigateur.");
         return false;
       }
 
       try {
-        await request.call(element, { navigationUI: "hide" });
+        await request.call(document.documentElement, { navigationUI: "hide" });
         return true;
-      } catch (error) {
-        console.info("Plein écran refusé :", error);
-
-        if (notify) {
-          showToast(
-            "Le navigateur a refusé le plein écran. La lecture reste disponible normalement."
-          );
-        }
+      } catch (_) {
+        if (notify) showToast("Le navigateur a refusé le plein écran.");
         return false;
-      }
-    }
-
-    async function toggleFullscreen() {
-      if (document.fullscreenElement || document.webkitFullscreenElement) {
-        const exit = document.exitFullscreen || document.webkitExitFullscreen;
-        try { await exit?.call(document); } catch (_) {}
-      } else {
-        await requestFullscreen(true);
       }
     }
 
@@ -4332,24 +3599,16 @@
       if (!current?.engine || !$("settingsPanel").hidden) return;
 
       chromeTimer = setTimeout(() => {
-        if (
-          current?.engine &&
-          $("settingsPanel").hidden &&
-          $("aboutModal").hidden
-        ) {
+        if (current?.engine && $("settingsPanel").hidden && $("aboutModal").hidden) {
           $("readerView").classList.add("chrome-hidden");
         }
       }, 4200);
     }
 
-    /* ============================================================
-       INTERFACE GÉNÉRALE
-       ============================================================ */
     function openSettings() {
       clearTimeout(chromeTimer);
       $("panelBackdrop").hidden = false;
       $("settingsPanel").hidden = false;
-      $("closeSettingsButton").focus();
     }
 
     function closeSettings() {
@@ -4360,7 +3619,6 @@
     function showAbout() {
       closeSettings();
       $("aboutModal").hidden = false;
-      $("closeAboutButton").focus();
     }
 
     function closeAbout() {
@@ -4369,10 +3627,7 @@
     }
 
     function changeFont(delta) {
-      const next = clamp(prefs.fontSize + delta, 14, 28);
-      if (next === prefs.fontSize) return;
-
-      prefs.fontSize = next;
+      prefs.fontSize = clamp(prefs.fontSize + delta, 14, 28);
       applyFontSize(true);
       void savePreference("fontSize", prefs.fontSize);
     }
@@ -4394,11 +3649,7 @@
         });
       }
 
-      dropZone.addEventListener("dragleave", event => {
-        if (!dropZone.contains(event.relatedTarget)) {
-          dropZone.classList.remove("dragging");
-        }
-      });
+      dropZone.addEventListener("dragleave", () => dropZone.classList.remove("dragging"));
 
       dropZone.addEventListener("drop", event => {
         event.preventDefault();
@@ -4407,38 +3658,20 @@
       });
 
       window.addEventListener("dragover", event => event.preventDefault());
-
       window.addEventListener("drop", event => {
         if (!dropZone.contains(event.target)) event.preventDefault();
       });
 
       $("librarySettingsButton").addEventListener("click", openSettings);
       $("readerSettingsButton").addEventListener("click", openSettings);
-
-      $("closeSettingsButton").addEventListener("click", () => {
-        closeSettings();
-        scheduleChromeHide();
-      });
-
-      $("panelBackdrop").addEventListener("click", () => {
-        closeSettings();
-        scheduleChromeHide();
-      });
-
+      $("closeSettingsButton").addEventListener("click", closeSettings);
+      $("panelBackdrop").addEventListener("click", closeSettings);
       $("aboutButton").addEventListener("click", showAbout);
       $("settingsAboutButton").addEventListener("click", showAbout);
       $("closeAboutButton").addEventListener("click", closeAbout);
 
-      $("aboutModal").addEventListener("click", event => {
-        if (event.target === $("aboutModal")) closeAbout();
-      });
-
       $("confirmCancelButton").addEventListener("click", () => finishConfirmation(false));
       $("confirmAcceptButton").addEventListener("click", () => finishConfirmation(true));
-
-      $("confirmModal").addEventListener("click", event => {
-        if (event.target === $("confirmModal")) finishConfirmation(false);
-      });
 
       document.querySelectorAll("[data-set-theme]").forEach(button => {
         button.addEventListener("click", () => {
@@ -4467,14 +3700,7 @@
         setWarmth(prefs.warmth ? 0 : prefs.lastWarmth);
       });
 
-      $("fullscreenButton").addEventListener("click", toggleFullscreen);
-
-      document.addEventListener("fullscreenchange", () => {
-        $("fullscreenButton").textContent = document.fullscreenElement
-          ? "Quitter le plein écran"
-          : "Passer en plein écran";
-      });
-
+      $("fullscreenButton").addEventListener("click", () => requestFullscreen(true));
       $("readerBackButton").addEventListener("click", closeReader);
 
       $("pdfZoomOut").addEventListener("click", () => {
@@ -4499,32 +3725,17 @@
         }
       }, { capture: true });
 
-      setupOuterGestures();
+      setupGestures();
 
       window.addEventListener("keydown", event => {
         if (event.key === "Escape") {
-          if (!$("confirmModal").hidden) {
-            finishConfirmation(false);
-          } else if (!$("aboutModal").hidden) {
-            closeAbout();
-          } else if (!$("settingsPanel").hidden) {
-            closeSettings();
-            scheduleChromeHide();
-          } else if (current) {
-            showReaderChrome();
-          }
+          if (!$("confirmModal").hidden) finishConfirmation(false);
+          else if (!$("aboutModal").hidden) closeAbout();
+          else closeSettings();
           return;
         }
 
-        if (
-          !current?.engine ||
-          !$("settingsPanel").hidden ||
-          !$("aboutModal").hidden
-        ) {
-          return;
-        }
-
-        if (/INPUT|TEXTAREA|SELECT/.test(event.target.tagName)) return;
+        if (!current?.engine) return;
 
         if (["ArrowRight", "PageDown", " "].includes(event.key)) {
           event.preventDefault();
@@ -4532,10 +3743,6 @@
         } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
           event.preventDefault();
           navigate(-1);
-        } else if (event.key === "+" || event.key === "=") {
-          changeFont(1);
-        } else if (event.key === "-") {
-          changeFont(-1);
         }
       });
 
@@ -4547,89 +3754,93 @@
 
       $("installButton").addEventListener("click", async () => {
         if (!deferredInstallPrompt) return;
-
         deferredInstallPrompt.prompt();
         await deferredInstallPrompt.userChoice;
         deferredInstallPrompt = null;
         $("installButton").hidden = true;
       });
 
-      window.addEventListener("appinstalled", () => {
-        deferredInstallPrompt = null;
-        $("installButton").hidden = true;
-        showToast("Omni-Liseuse a été installée sur l’écran d’accueil.");
-      });
-
-      window.addEventListener("offline", () => {
-        showToast("Mode hors ligne : vos livres locaux restent accessibles.");
-      });
-
-      window.addEventListener("online", () => {
-        showToast("Connexion rétablie.");
-      });
-
       let resizeTimer = 0;
 
-      const scheduleResize = () => {
-        if (!current?.engine) return;
-
+      const resize = () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-          Promise.resolve(current?.engine?.resize?.()).catch(error => {
-            console.warn("Redimensionnement :", error);
-          });
+          Promise.resolve(current?.engine?.resize?.()).catch(() => {});
         }, 140);
       };
 
       if ("ResizeObserver" in window) {
-        const observer = new ResizeObserver(scheduleResize);
-        observer.observe($("readerSurface"));
+        new ResizeObserver(resize).observe($("readerSurface"));
       }
 
-      window.addEventListener("resize", scheduleResize);
-
-      window.addEventListener("orientationchange", () => {
-        setTimeout(scheduleResize, 180);
-      });
+      window.addEventListener("resize", resize);
+      window.addEventListener("orientationchange", () => setTimeout(resize, 180));
 
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
           try { current?.engine?.saveState?.(); } catch (_) {}
         }
       });
+    }
 
-      document.fonts?.ready.then(() => {
-        Promise.resolve(current?.engine?.resize?.()).catch(() => {});
-      }).catch(() => {});
+    /* ============================================================
+       CACHE PWA — LE SERVICE WORKER BLOB RESTE UNE TENTATIVE
+
+       Certains navigateurs imposent un script service worker HTTP(S)
+       distinct. Cette limite ne concerne pas la persistance des livres.
+       ============================================================ */
+    async function setupOfflineSupport() {
+      if (!("caches" in window) || !/^https?:$/.test(location.protocol)) {
+        $("pwaStatus").textContent = "Le stockage des livres reste local et persistant.";
+        return;
+      }
+
+      try {
+        const cache = await caches.open(CACHE_NAME);
+        const resources = [location.href.split("#")[0], ...CDN_RESOURCES];
+
+        await Promise.allSettled(resources.map(async url => {
+          const crossOrigin = !url.startsWith(location.origin);
+          const response = await fetch(url, {
+            mode: crossOrigin ? "no-cors" : "same-origin",
+            credentials: crossOrigin ? "omit" : "same-origin"
+          });
+
+          if (response.ok || response.type === "opaque") {
+            await cache.put(url, response);
+          }
+        }));
+
+        $("pwaStatus").textContent =
+          "Livres et positions stockés dans IndexedDB. Ressources de l’application mises en cache lorsque le navigateur l’autorise.";
+      } catch (_) {
+        $("pwaStatus").textContent = "Les livres restent disponibles dans IndexedDB.";
+      }
     }
 
     /* ============================================================
        DÉMARRAGE
        ============================================================ */
     async function boot() {
-      setupIconsAndManifest();
+      setupManifest();
       bindInterface();
       applyTheme();
       applyWarmth();
       applyFontSize(false);
 
-      /* Configuration PDF.js effectuée avant toute ouverture de document. */
       if (window.pdfjsLib) {
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
       }
 
       if (!window.Dexie) {
         $("importButton").disabled = true;
-        $("emptyState").innerHTML =
-          "<strong>Stockage local indisponible</strong>Dexie.js n’a pas pu être chargé. Vérifiez la connexion lors du premier chargement, puis rechargez la page.";
-        showToast("Dexie.js est indispensable à la bibliothèque locale.", 8000, true);
+        showToast("Dexie.js n’a pas pu être chargé.", 8000, true);
         return;
       }
 
       try {
         createDatabase();
         await db.open();
-        await migrateLegacyRecords();
         await loadPreferences();
 
         applyTheme();
@@ -4637,27 +3848,34 @@
         applyFontSize(false);
         await renderLibrary();
       } catch (error) {
-        console.error("Initialisation IndexedDB :", error);
         $("importButton").disabled = true;
-        $("emptyState").innerHTML =
-          "<strong>La bibliothèque ne peut pas démarrer</strong>Le stockage local est bloqué ou indisponible. Autorisez le stockage du site, puis rechargez.";
-        showToast("IndexedDB est indisponible : " + error.message, 8000, true);
+        showToast("IndexedDB est indisponible : " + error.message, 9000, true);
         return;
       }
 
-      void setupServiceWorker();
+      void setupOfflineSupport();
+
+      const legacyCount = await db.books
+        .filter(book => book.needsReimport === true)
+        .count();
+
+      if (legacyCount) {
+        showToast(
+          `${legacyCount} ancienne(s) entrée(s) doivent être réimportées une fois. ` +
+          "Aucune ancienne référence locale ne sera rouverte automatiquement.",
+          8000,
+          true
+        );
+      }
 
       const resume = await db.settings.get("resumeBookId");
 
       if (resume?.value) {
         const book = await db.books.get(resume.value);
 
-        if (book) {
+        if (book && !book.needsReimport) {
           setTimeout(() => {
-            void openBook(book.id, {
-              userGesture: false,
-              automatic: true
-            });
+            void openBook(book.id, { userGesture: false, automatic: true });
           }, 180);
         } else {
           await db.settings.put({ key: "resumeBookId", value: null });
@@ -4666,12 +3884,8 @@
     }
 
     boot().catch(error => {
-      console.error("Erreur de démarrage :", error);
-      showToast(
-        "Omni-Liseuse n’a pas pu démarrer correctement : " + error.message,
-        9000,
-        true
-      );
+      console.error(error);
+      showToast("Erreur de démarrage : " + error.message, 9000, true);
     });
   })();
   </script>
