@@ -3,17 +3,21 @@
 /*
  * Service worker d'Omni-Liseuse : rend l'application utilisable hors ligne.
  *
- * - La page (index.html) est d'abord demandée au réseau, pour recevoir
- *   les mises à jour ; sans connexion, la copie en cache est utilisée.
+ * - La page (index.html, qui contient tout le code) est servie depuis la
+ *   copie en cache de CETTE version : elle n'est demandée au réseau que si
+ *   la copie manque (toute première visite). Avant, elle était d'abord
+ *   demandée au réseau : la nouvelle version s'affichait alors d'elle-même,
+ *   avant même l'appui sur « Mettre à jour ».
  * - À chaque nouvelle version, changez le numéro de CACHE_NAME : la
  *   liseuse affiche alors « Nouvelle version disponible » et la mise à
  *   jour se fait d'un appui, sans interrompre une lecture en cours.
+ *   Rien ne change avant cet appui.
  * - Les bibliothèques (versions figées) et les icônes sont servies
  *   depuis le cache.
  * - Les livres ne passent jamais par ici : ils sont dans IndexedDB.
  */
 
-const CACHE_NAME = "omni-liseuse-v3.3.0";
+const CACHE_NAME = "omni-liseuse-v3.3.1";
 const CACHE_PREFIX = "omni-liseuse-";
 
 const APP_SHELL = [
@@ -100,7 +104,7 @@ self.addEventListener("fetch", event => {
   const sameOrigin = url.origin === self.location.origin;
 
   if (request.mode === "navigate" && sameOrigin) {
-    event.respondWith(networkFirstPage(request));
+    event.respondWith(cachedPage(request));
     return;
   }
 
@@ -109,8 +113,11 @@ self.addEventListener("fetch", event => {
   }
 });
 
-async function networkFirstPage(request) {
+async function cachedPage(request) {
   const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match("./") || await cache.match(request, { ignoreSearch: true });
+
+  if (cached) return cached;
 
   try {
     const response = await Promise.race([
@@ -126,10 +133,6 @@ async function networkFirstPage(request) {
 
     return response;
   } catch (error) {
-    const cached = await cache.match("./") || await cache.match(request, { ignoreSearch: true });
-
-    if (cached) return cached;
-
     return new Response(
       "Omni-Liseuse n’a pas encore été enregistrée pour le mode hors ligne. " +
       "Ouvrez-la une fois avec une connexion.",
