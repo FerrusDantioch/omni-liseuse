@@ -921,6 +921,10 @@
       background: var(--accent-soft);
     }
 
+    .modal .credit p { margin: 0 0 10px; color: var(--ink); }
+    .modal .credit a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+    .modal .credit .secondary-button { margin-top: 4px; text-decoration: none; text-align: center; }
+
     .modal small { color: var(--muted); line-height: 1.5; }
 
     .modal-actions {
@@ -1504,8 +1508,14 @@
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 3.2.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
-      <p class="credit">Application développée par Ferrus Dantioch avec l'aide de l'IA.</p>
+      <p><strong>Version 3.2.1</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <div class="credit">
+        <p>Application développée par <strong>Ferrus Dantioch</strong> avec l'aide de l'IA.</p>
+        <p>© 2026 Ferrus Dantioch. Omni-Liseuse est publiée sous licence
+          <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="noopener">Creative Commons BY-NC-ND 4.0</a> :
+          vous pouvez la partager librement en citant son auteur, mais pas la vendre ni la modifier.</p>
+        <a class="secondary-button wide-button" href="https://ferrusdantioch.github.io/omni-systeme/#applications" target="_blank" rel="noopener">Découvrir les autres applications Omni</a>
+      </div>
       <p>Pensez à exporter votre bibliothèque de temps en temps (Réglages → Sauvegarde) : les livres ne sont enregistrés que sur cet appareil.</p>
       <p>Les textes sont enregistrés sous forme de chaînes de caractères et les livres binaires sous forme d’ArrayBuffer dans IndexedDB. La lecture ne dépend jamais du fichier original sélectionné lors de l’import.</p>
 
