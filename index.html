@@ -5,15 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Omni-Liseuse</title>
   <meta name="description" content="Liseuse locale pour EPUB, PDF, FB2, TXT, HTML et CBZ.">
-  <meta name="theme-color" id="metaThemeColor" content="#171226">
+  <meta name="theme-color" id="metaThemeColor" content="#14111d">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Omni-Liseuse">
 
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+
+  <!-- Restaure le thème avant l'affichage pour éviter un flash de couleur. -->
+  <script>
+    (function () {
+      try {
+        var theme = localStorage.getItem("omni-liseuse-theme");
+        if (["clair", "sombre", "nuit"].indexOf(theme) !== -1) {
+          document.documentElement.dataset.theme = theme;
+          document.getElementById("metaThemeColor").content =
+            { clair: "#faf0e6", sombre: "#1a1a1a", nuit: "#14111d" }[theme];
+        }
+      } catch (error) {
+        /* Le thème sera appliqué après le chargement des réglages. */
+      }
+    }());
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Oxanium:wght@500;600;700&display=swap" rel="stylesheet">
 
   <style>
     /* ============================================================
@@ -61,19 +81,25 @@
       --cover-shadow: rgba(0, 0, 0, .58);
     }
 
+    /* Violet nuit : mêmes couleurs que le portfolio Omni-système
+       (fond #14111d, surfaces #1d1929, filets #332c47, violet #a777ff). */
     html[data-theme="nuit"] {
       color-scheme: dark;
-      --bg: #171226;
-      --paper: #1e1633;
-      --reader-bg: #171226;
-      --panel: #221838;
-      --panel-2: #2d2148;
-      --ink: #cfc4ea;
-      --muted: #9e92bc;
-      --line: rgba(207, 196, 234, .14);
-      --button: rgba(148, 117, 255, .08);
-      --button-hover: rgba(148, 117, 255, .17);
-      --cover-shadow: rgba(3, 1, 12, .65);
+      --accent: #a777ff;
+      --accent-light: #d6c2ff;
+      --accent-soft: rgba(167, 119, 255, .14);
+      --bg: #14111d;
+      --paper: #1d1929;
+      --reader-bg: #14111d;
+      --panel: #1d1929;
+      --panel-2: #262036;
+      --ink: #e9e4f2;
+      --muted: #a59cbb;
+      --line: #332c47;
+      --button: rgba(167, 119, 255, .08);
+      --button-hover: rgba(167, 119, 255, .16);
+      --cover-shadow: rgba(0, 0, 0, .6);
+      --f-titre: "Oxanium", "Trebuchet MS", system-ui, sans-serif;
     }
 
     * { box-sizing: border-box; }
@@ -95,10 +121,51 @@
 
     html[data-theme="nuit"] body {
       background:
-        radial-gradient(circle at 90% -10%, rgba(109, 74, 255, .17), transparent 38%),
-        radial-gradient(circle at -10% 100%, rgba(86, 44, 146, .14), transparent 42%),
+        radial-gradient(circle at 90% -10%, rgba(167, 119, 255, .10), transparent 38%),
         var(--bg);
     }
+
+    /* Violet nuit : titres en Oxanium et boutons pleins, comme le portfolio.
+       Le texte des livres garde sa police de lecture. */
+    html[data-theme="nuit"] .brand h1,
+    html[data-theme="nuit"] .import-copy h2,
+    html[data-theme="nuit"] .section-heading h2,
+    html[data-theme="nuit"] .empty-state strong,
+    html[data-theme="nuit"] .panel-header h2,
+    html[data-theme="nuit"] .modal h2,
+    html[data-theme="nuit"] .setting-group h3,
+    html[data-theme="nuit"] .reader-heading small,
+    html[data-theme="nuit"] .primary-button,
+    html[data-theme="nuit"] .secondary-button,
+    html[data-theme="nuit"] .theme-choice {
+      font-family: var(--f-titre);
+    }
+
+    html[data-theme="nuit"] .brand h1 {
+      font-size: clamp(24px, 4vw, 36px);
+      font-weight: 700;
+      letter-spacing: .01em;
+      white-space: nowrap;
+    }
+    html[data-theme="nuit"] .setting-group h3,
+    html[data-theme="nuit"] .reader-heading small { letter-spacing: .14em; color: var(--muted); }
+
+    html[data-theme="nuit"] .primary-button {
+      color: #140d24;
+      background: var(--accent);
+      border-radius: 10px;
+      box-shadow: none;
+      letter-spacing: .04em;
+    }
+
+    html[data-theme="nuit"] .primary-button:hover:not(:disabled) { background: var(--accent-light); }
+    html[data-theme="nuit"] .danger-button { color: #fff; background: var(--danger); }
+    html[data-theme="nuit"] .danger-button:hover:not(:disabled) { background: #d95a73; }
+    html[data-theme="nuit"] .secondary-button { border-color: var(--line); border-radius: 10px; color: var(--accent-light); }
+    html[data-theme="nuit"] .secondary-button:hover { border-color: var(--accent); }
+    html[data-theme="nuit"] .brand img { box-shadow: 0 0 22px rgba(167, 119, 255, .4); }
+    html[data-theme="nuit"] .import-panel { border-color: var(--accent); }
+    html[data-theme="nuit"] #readerSurface { box-shadow: 0 0 0 1px var(--line); }
 
     button, input { font: inherit; }
 
@@ -344,6 +411,12 @@
     .cover-wrap:hover .delete-book,
     .delete-book:focus-visible { opacity: 1; }
 
+    /* Sur écran tactile, pas de survol : la corbeille reste visible
+       pour éviter de la toucher sans la voir. */
+    @media (hover: none) {
+      .delete-book { opacity: .8; }
+    }
+
     .delete-book svg { width: 17px; height: 17px; }
 
     .book-title {
@@ -451,7 +524,12 @@
       overflow: hidden;
       touch-action: pan-y;
       background: var(--reader-bg);
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
     }
+
+    #readerStage.dragging { cursor: grabbing; }
 
     #readerSurface {
       position: relative;
@@ -465,6 +543,7 @@
       box-shadow: 0 4px 25px rgba(0,0,0,.08);
     }
 
+    /* Les gestes sur la page sont gérés par la liseuse (tourner les pages). */
     .reader-viewport {
       position: absolute;
       inset: 0;
@@ -472,6 +551,7 @@
       height: 100%;
       overflow: hidden;
       background: var(--paper);
+      touch-action: none;
     }
 
     .reader-copy {
@@ -532,6 +612,7 @@
       -webkit-user-drag: none;
     }
 
+    /* PDF zoomé : le doigt fait défiler la page agrandie (réglé par le moteur PDF). */
     #pdfViewport {
       overflow: auto;
       overscroll-behavior: contain;
@@ -544,38 +625,6 @@
       background: #fff;
       box-shadow: 0 4px 22px rgba(0,0,0,.22);
     }
-
-    .tap-zone {
-      position: absolute;
-      z-index: 5;
-      top: 0;
-      bottom: 0;
-      padding: 0;
-      background: transparent;
-    }
-
-    #tapLeft { left: 0; width: 22%; }
-    #tapCenter { left: 22%; width: 56%; }
-    #tapRight { right: 0; width: 22%; }
-
-    .tap-zone span {
-      position: absolute;
-      top: 50%;
-      width: 34px;
-      height: 52px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      color: var(--muted);
-      background: var(--button);
-      opacity: 0;
-      transform: translateY(-50%);
-      font-size: 29px;
-    }
-
-    #tapLeft span { left: 5px; }
-    #tapRight span { right: 5px; }
-    .tap-zone:hover span { opacity: .55; }
 
     .reader-footer {
       min-height: calc(49px + var(--safe-bottom));
@@ -626,7 +675,14 @@
     }
 
     /* ============================================================
-       TOURNEPAGE 3D
+       TOURNEPAGE — PLI DE PAPIER QUI SUIT LE DOIGT
+
+       Calques, de bas en haut :
+       - turnUnder : copie de la page actuelle quand on revient en arrière ;
+       - turnShade : ombre portée par la feuille sur la page découverte ;
+       - turnSheet : la partie encore à plat de la feuille qui tourne ;
+       - turnFlap  : le verso de la partie soulevée (reflet de la feuille
+                     le long de la ligne de pli), avec un léger transparent.
        ============================================================ */
     #turnLayer {
       position: absolute;
@@ -635,74 +691,71 @@
       overflow: hidden;
       visibility: hidden;
       pointer-events: none;
-      perspective: 1800px;
+      contain: strict;
     }
 
     #turnLayer.active { visibility: visible; }
 
-    #turnLeaf {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      transform-style: preserve-3d;
-      will-change: transform, opacity;
-    }
-
-    #turnLeaf.next { transform-origin: left center; }
-    #turnLeaf.previous { transform-origin: right center; }
-
-    .leaf-face {
+    .turn-plane {
       position: absolute;
       inset: 0;
       overflow: hidden;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      color: var(--ink);
       background: var(--paper);
     }
 
-    .leaf-back {
-      transform: rotateY(180deg);
-      background:
-        linear-gradient(100deg, rgba(0,0,0,.2), transparent 19%, transparent 80%, rgba(0,0,0,.1)),
-        var(--paper);
+    #turnShade, #turnFlapShade {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
     }
 
-    .leaf-face::after {
-      content: "";
+    #turnShade {
+      background: linear-gradient(90deg, rgba(0,0,0,.5), rgba(0,0,0,.18) 35%, transparent);
+    }
+
+    #turnFlapWrap {
       position: absolute;
       inset: 0;
-      pointer-events: none;
-      background:
-        linear-gradient(90deg, rgba(255,255,255,.12), transparent 9%, transparent 88%, rgba(0,0,0,.17)),
-        radial-gradient(circle at 98% 2%, rgba(255,255,255,.25), transparent 15%);
+      filter: drop-shadow(0 0 9px rgba(0,0,0,.32));
     }
 
-    #pageShadow {
+    #turnFlap {
       position: absolute;
-      z-index: 10;
-      inset: 0;
-      opacity: 0;
-      pointer-events: none;
-      background: linear-gradient(90deg, rgba(0,0,0,.35), transparent 43%);
-    }
-
-    #pageShadow.previous {
-      background: linear-gradient(-90deg, rgba(0,0,0,.35), transparent 43%);
-    }
-
-    .snapshot-text { position: absolute; inset: 0; overflow: hidden; background: var(--paper); }
-    .snapshot-comic { width: 100%; height: 100%; object-fit: contain; background: var(--paper); }
-    .snapshot-pdf { width: 100%; height: 100%; display: block; }
-    .paper-abstract { position: absolute; inset: 8%; opacity: .14; }
-
-    .paper-abstract span {
-      display: block;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 1px;
-      margin-bottom: 2.7vh;
-      background: var(--ink);
+      height: 100%;
+      overflow: hidden;
+      transform-origin: 0 0;
+      background: var(--paper);
     }
+
+    #turnLayer.pdf #turnFlap { background: var(--reader-bg); }
+
+    /* Le texte du recto se devine à travers le papier, comme sur un vrai livre. */
+    #turnGhost { position: absolute; inset: 0; opacity: .05; }
+
+    #turnFlapShade {
+      background: linear-gradient(90deg,
+        rgba(0,0,0,.30) 0,
+        rgba(0,0,0,.08) 9%,
+        rgba(255,255,255,.07) 30%,
+        rgba(255,255,255,0) 62%,
+        rgba(0,0,0,.12) 100%);
+    }
+
+    .snapshot-text, .snapshot-epub, .snapshot-pdf, .turn-blank {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .snapshot-text .reader-copy { position: absolute; top: 0; left: 0; overflow: hidden; }
+    .snapshot-pdf { background: var(--reader-bg); }
+    .snapshot-pdf canvas { position: absolute; background: #fff; box-shadow: 0 4px 22px rgba(0,0,0,.22); }
+    .snapshot-comic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: var(--paper); }
 
     #readerLoading {
       position: absolute;
@@ -815,7 +868,7 @@
     [data-set-theme="clair"] .theme-swatch { background: #faf0e6; }
     [data-set-theme="sombre"] .theme-swatch { background: #1a1a1a; }
     [data-set-theme="nuit"] .theme-swatch {
-      background: linear-gradient(135deg, #1e1633 65%, #6d4aff 65%);
+      background: linear-gradient(135deg, #1d1929 65%, #a777ff 65%);
     }
 
     .font-controls {
@@ -915,7 +968,10 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
     }
   </style>
 </head>
@@ -952,7 +1008,7 @@
 
       <main class="library-main">
         <section id="dropZone" class="import-panel" aria-label="Importer des livres">
-          <div>
+          <div class="import-copy">
             <h2>Ajoutez à votre bibliothèque</h2>
             <p>EPUB · PDF · FB2 · TXT · HTML · CBZ<br>Le contenu complet est copié dans IndexedDB lors de l’import.</p>
           </div>
@@ -1025,10 +1081,14 @@
           <div id="pdfViewport" class="reader-viewport" hidden></div>
 
           <div id="turnLayer" aria-hidden="true">
-            <div id="pageShadow"></div>
-            <div id="turnLeaf">
-              <div id="leafFront" class="leaf-face"></div>
-              <div class="leaf-face leaf-back"></div>
+            <div id="turnUnder" class="turn-plane" hidden></div>
+            <div id="turnShade"></div>
+            <div id="turnSheet" class="turn-plane"></div>
+            <div id="turnFlapWrap">
+              <div id="turnFlap">
+                <div id="turnGhost"></div>
+                <div id="turnFlapShade"></div>
+              </div>
             </div>
           </div>
 
@@ -1039,10 +1099,6 @@
             </div>
           </div>
         </div>
-
-        <button id="tapLeft" class="tap-zone" aria-label="Page précédente"><span>‹</span></button>
-        <button id="tapCenter" class="tap-zone" aria-label="Afficher ou masquer les commandes"></button>
-        <button id="tapRight" class="tap-zone" aria-label="Page suivante"><span>›</span></button>
       </main>
 
       <footer class="reader-footer">
@@ -1077,7 +1133,7 @@
       <div class="theme-options">
         <button class="theme-choice" data-set-theme="clair" aria-pressed="false"><span class="theme-swatch"></span>Clair</button>
         <button class="theme-choice" data-set-theme="sombre" aria-pressed="false"><span class="theme-swatch"></span>Sombre</button>
-        <button class="theme-choice" data-set-theme="nuit" aria-pressed="true"><span class="theme-swatch"></span>Nuit pourpre</button>
+        <button class="theme-choice" data-set-theme="nuit" aria-pressed="true"><span class="theme-swatch"></span>Violet nuit</button>
       </div>
     </section>
 
@@ -1103,7 +1159,7 @@
     <section class="setting-group">
       <h3>Affichage et application</h3>
       <button id="fullscreenButton" class="secondary-button wide-button">Passer en plein écran</button>
-      <p></p>
+      <p>En plein écran, Android masque ses boutons : il faut alors glisser deux fois depuis le bas de l’écran pour quitter ou réduire l’application.</p>
       <button id="settingsAboutButton" class="secondary-button wide-button">À propos et formats compatibles</button>
     </section>
   </aside>
@@ -1113,7 +1169,7 @@
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 3.0.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <p><strong>Version 3.1.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
       <p class="credit">Application développée par Ferrus Dantioch avec l'aide de l'IA.</p>
       <p>Les textes sont enregistrés sous forme de chaînes de caractères et les livres binaires sous forme d’ArrayBuffer dans IndexedDB. La lecture ne dépend jamais du fichier original sélectionné lors de l’import.</p>
 
@@ -1167,22 +1223,12 @@
     /* ============================================================
        CONSTANTES ET ÉTAT
        ============================================================ */
-    const APP_NAME = "Omni-Liseuse";
-    const APP_VERSION = "3.0.0";
-    const CACHE_NAME = "omni-liseuse-shell-v3.0.0";
-
-    const PDF_SCRIPT = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+    /*
+     * Le mode hors ligne est assuré par service-worker.js (fichier séparé,
+     * obligatoire pour un service worker). Il garde aussi les bibliothèques
+     * ci-dessous en cache.
+     */
     const PDF_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-    const FONT_CSS = "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap";
-
-    const CDN_RESOURCES = [
-      "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js",
-      "https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js",
-      "https://unpkg.com/dexie@4.0.11/dist/dexie.min.js",
-      PDF_SCRIPT,
-      PDF_WORKER,
-      FONT_CSS
-    ];
 
     const CBR_MESSAGE =
       "Le format CBR (archive RAR) n'est pas pris en charge par les navigateurs. " +
@@ -1200,11 +1246,17 @@
     const readerColors = {
       clair: { paper: "#faf0e6", ink: "#2b2b2b", accent: "#5935dc" },
       sombre: { paper: "#1a1a1a", ink: "#dcdcdc", accent: "#aa96ff" },
-      nuit: { paper: "#1e1633", ink: "#cfc4ea", accent: "#a48dff" }
+      nuit: { paper: "#1d1929", ink: "#e9e4f2", accent: "#d6c2ff" }
     };
 
+    const THEME_COLORS = { clair: "#faf0e6", sombre: "#1a1a1a", nuit: "#14111d" };
+    const THEME_STORAGE_KEY = "omni-liseuse-theme";
+
     const prefs = {
-      theme: "nuit",
+      /* Thème déjà restauré dans <head> : évite un changement de couleur au démarrage. */
+      theme: readerColors[document.documentElement.dataset.theme]
+        ? document.documentElement.dataset.theme
+        : "nuit",
       fontSize: 19,
       warmth: 0,
       lastWarmth: 20
@@ -1221,13 +1273,10 @@
     let opening = false;
     let sessionToken = 0;
     let navigationBusy = false;
-    let queuedDirection = 0;
     let toastTimer = 0;
     let chromeTimer = 0;
     let fontTimer = 0;
     let deferredInstallPrompt = null;
-    let fullscreenPending = false;
-    let suppressTapUntil = 0;
     let confirmResolver = null;
     const libraryCoverUrls = new Set();
 
@@ -1485,56 +1534,16 @@
       return canvas.toDataURL("image/png");
     }
 
-    function setupManifest() {
-      const icon192 = makeIcon(192);
-      const icon512 = makeIcon(512);
-      $("brandIcon").src = icon192;
-      $("aboutIcon").src = icon192;
-
-      const favicon = document.createElement("link");
-      favicon.rel = "icon";
-      favicon.href = icon192;
-      document.head.appendChild(favicon);
-
-      const appleIcon = document.createElement("link");
-      appleIcon.rel = "apple-touch-icon";
-      appleIcon.href = icon192;
-      document.head.appendChild(appleIcon);
-
-      let startUrl = "./";
-      let scope = "./";
-
-      if (/^https?:$/.test(location.protocol)) {
-        startUrl = location.href.split("#")[0];
-        scope = new URL(".", location.href).href;
-      }
-
-      const manifest = {
-        id: scope,
-        name: APP_NAME,
-        short_name: APP_NAME,
-        description: "Liseuse numérique locale pour EPUB, PDF, FB2, TXT, HTML et CBZ.",
-        lang: "fr",
-        version: APP_VERSION,
-        start_url: startUrl,
-        scope,
-        display: "fullscreen",
-        display_override: ["fullscreen", "standalone"],
-        orientation: "any",
-        background_color: "#171226",
-        theme_color: "#171226",
-        icons: [
-          { src: icon192, sizes: "192x192", type: "image/png", purpose: "any maskable" },
-          { src: icon512, sizes: "512x512", type: "image/png", purpose: "any maskable" }
-        ]
-      };
-
-      const link = document.createElement("link");
-      link.rel = "manifest";
-      link.href = URL.createObjectURL(
-        new Blob([JSON.stringify(manifest)], { type: "application/manifest+json" })
-      );
-      document.head.appendChild(link);
+    /*
+     * Le manifeste et les icônes d'installation sont des fichiers à part
+     * (manifest.webmanifest, icons/). Ils s'affichent en mode « standalone » :
+     * les boutons et gestes du téléphone restent disponibles, donc glisser
+     * depuis le bas ferme ou réduit l'application du premier coup.
+     */
+    function setupIcons() {
+      const icon = makeIcon(192);
+      $("brandIcon").src = icon;
+      $("aboutIcon").src = icon;
     }
 
     /* ============================================================
@@ -1646,11 +1655,8 @@
        ============================================================ */
     function applyTheme() {
       document.documentElement.dataset.theme = prefs.theme;
-      $("metaThemeColor").content = {
-        clair: "#faf0e6",
-        sombre: "#1a1a1a",
-        nuit: "#171226"
-      }[prefs.theme];
+      $("metaThemeColor").content = THEME_COLORS[prefs.theme];
+      try { localStorage.setItem(THEME_STORAGE_KEY, prefs.theme); } catch (_) {}
 
       document.querySelectorAll("[data-set-theme]").forEach(button => {
         button.setAttribute("aria-pressed", String(button.dataset.setTheme === prefs.theme));
@@ -1920,17 +1926,17 @@
       const ctx = canvas.getContext("2d");
 
       const gradient = ctx.createLinearGradient(0, 0, 480, 720);
-      gradient.addColorStop(0, "#342254");
-      gradient.addColorStop(.6, "#1e1633");
-      gradient.addColorStop(1, "#120d21");
+      gradient.addColorStop(0, "#2b1f4d");
+      gradient.addColorStop(.6, "#1d1929");
+      gradient.addColorStop(1, "#14111d");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, 480, 720);
 
-      ctx.fillStyle = "#6d4aff";
+      ctx.fillStyle = "#a777ff";
       ctx.fillRect(0, 0, 15, 720);
       ctx.fillRect(54, 82, 72, 7);
 
-      ctx.fillStyle = "#cfc4ea";
+      ctx.fillStyle = "#e9e4f2";
       ctx.textBaseline = "top";
       ctx.font = "600 47px 'EB Garamond', Georgia, serif";
 
@@ -1956,11 +1962,11 @@
         y += 58;
       }
 
-      ctx.fillStyle = "#aa9dcc";
+      ctx.fillStyle = "#a59cbb";
       ctx.font = "25px 'EB Garamond', Georgia, serif";
       ctx.fillText(author.slice(0, 38), 54, Math.min(y + 35, 545));
 
-      ctx.fillStyle = "#927be5";
+      ctx.fillStyle = "#d6c2ff";
       ctx.font = "700 18px system-ui, sans-serif";
       ctx.fillText(formatLabel(format), 54, 635);
 
@@ -2188,6 +2194,14 @@
       $("fileInput").value = "";
       await renderLibrary();
 
+      /*
+       * Demande au navigateur de ne pas effacer les livres de lui-même
+       * quand l'appareil manque de place (sinon le stockage est « au mieux »).
+       */
+      if (imported) {
+        try { await navigator.storage?.persist?.(); } catch (_) {}
+      }
+
       const messages = [];
       if (imported) messages.push(`${imported} livre${imported > 1 ? "s" : ""} ajouté${imported > 1 ? "s" : ""}.`);
       if (errors.length) messages.push(errors.slice(0, 3).join("\n"));
@@ -2326,7 +2340,7 @@
           longPressed = false;
           return;
         }
-        void openBook(book.id, { userGesture: true });
+        void openBook(book.id);
       });
     }
 
@@ -2513,6 +2527,12 @@
           }
           a{color:${colors.accent}!important}
           img,svg{max-width:100%!important}
+          html,body{
+            touch-action:none!important;
+            -webkit-user-select:none!important;
+            user-select:none!important;
+            -webkit-touch-callout:none!important;
+          }
         `;
       }
 
@@ -2547,6 +2567,20 @@
         return direction > 0 ? !this.location.atEnd : !this.location.atStart;
       }
 
+      /*
+       * Vrai si la page voisine est dans le même chapitre. Sinon, Epub.js
+       * remplace l'iframe du chapitre, ce qui interromprait un geste du doigt
+       * commencé dans cette iframe.
+       */
+      staysInSection(direction) {
+        const displayed = direction > 0
+          ? this.location?.end?.displayed
+          : this.location?.start?.displayed;
+
+        if (!displayed?.total) return false;
+        return direction > 0 ? displayed.page < displayed.total : displayed.page > 1;
+      }
+
       async go(direction) {
         if (direction > 0) await this.rendition.next();
         else await this.rendition.prev();
@@ -2561,7 +2595,51 @@
         }
       }
 
-      snapshot() { return null; }
+      /*
+       * Copie de la page affichée : le chapitre est cloné dans un
+       * « shadow DOM » (styles isolés du reste de l'application), avec les
+       * règles CSS du livre, puis placé exactement comme l'iframe visible.
+       */
+      snapshot() {
+        const viewport = $("epubViewport");
+        const base = viewport.getBoundingClientRect();
+        const wrapper = document.createElement("div");
+        wrapper.className = "snapshot-epub";
+        let found = false;
+
+        for (const frame of viewport.querySelectorAll("iframe")) {
+          const doc = frame.contentDocument;
+          if (!doc?.documentElement) continue;
+
+          const rect = frame.getBoundingClientRect();
+          if (rect.right <= base.left || rect.left >= base.right) continue;
+
+          const css = Array.from(doc.styleSheets, sheet => {
+            try { return Array.from(sheet.cssRules, rule => rule.cssText).join("\n"); }
+            catch (_) { return ""; }
+          }).join("\n");
+
+          const clone = document.importNode(doc.documentElement, true);
+          clone.querySelectorAll("script,style,link").forEach(node => node.remove());
+
+          /*
+           * Dans l'iframe, le « overflow » du <body> s'applique à la fenêtre ;
+           * dans la copie, il couperait les colonnes après la première page.
+           */
+          const style = document.createElement("style");
+          style.textContent = css + "\nhtml,body{overflow:visible!important}";
+
+          const host = document.createElement("div");
+          host.style.cssText =
+            `position:absolute;left:${rect.left - base.left}px;top:${rect.top - base.top}px;` +
+            `width:${rect.width}px;height:${rect.height}px;overflow:hidden`;
+          host.attachShadow({ mode: "open" }).append(style, clone);
+          wrapper.appendChild(host);
+          found = true;
+        }
+
+        return found ? wrapper : null;
+      }
 
       destroy() {
         this.destroyed = true;
@@ -2610,18 +2688,90 @@
       };
     }
 
+    const BLOCK_SELECTOR = "p,h1,h2,h3,h4,h5,h6,li,ul,ol,blockquote,pre,figure,div,section";
+
+    /*
+     * Un long livre n'est jamais affiché d'un seul bloc : au-delà d'environ
+     * 150 000 caractères, la bande de colonnes devient si large que le
+     * navigateur met plusieurs secondes à dessiner chaque image (la liseuse
+     * se figeait). Le texte est donc découpé en morceaux ; seul celui de la
+     * page courante est dans la page.
+     */
+    const TEXT_CHUNK_SIZE = 60000;
+
+    function splitIntoChunks(root) {
+      const chunks = [];
+      let nodes = [];
+      let size = 0;
+
+      const flush = () => {
+        if (nodes.length) chunks.push(nodes);
+        nodes = [];
+        size = 0;
+      };
+
+      const visit = node => {
+        const length = node.textContent.length;
+
+        /* Grand conteneur (chapitre FB2, <div> englobant) : on descend dedans. */
+        if (
+          length > TEXT_CHUNK_SIZE &&
+          node.nodeType === Node.ELEMENT_NODE &&
+          node.matches("section,div,article,main") &&
+          node.childNodes.length > 1
+        ) {
+          for (const child of Array.from(node.childNodes)) visit(child);
+          return;
+        }
+
+        if (size && size + length > TEXT_CHUNK_SIZE) flush();
+        nodes.push(node);
+        size += length;
+      };
+
+      for (const child of Array.from(root.childNodes)) visit(child);
+      flush();
+      return chunks.length ? chunks : [[]];
+    }
+
+    /* Paragraphe TXT : un très long bloc sans ligne vide est coupé aux retours à la ligne. */
+    function appendTextParagraphs(fragment, block) {
+      const pieces = [];
+      let piece = "";
+
+      for (const line of block.split("\n")) {
+        if (piece && piece.length + line.length > 4000) {
+          pieces.push(piece);
+          piece = line;
+        } else {
+          piece = piece ? piece + "\n" + line : line;
+        }
+      }
+
+      pieces.push(piece);
+
+      pieces.forEach((text, index) => {
+        const paragraph = document.createElement("p");
+        paragraph.textContent = text;
+        paragraph.style.whiteSpace = "pre-wrap";
+        if (index < pieces.length - 1) paragraph.style.marginBottom = "0";
+        fragment.appendChild(paragraph);
+      });
+    }
+
     class TextEngine {
       constructor(record, content) {
         this.record = record;
         this.content = content;
-        this.page = 0;
+        this.page = 0;           /* page dans tout le livre */
         this.total = 1;
         this.width = 1;
         this.gap = 40;
         this.ready = false;
         this.anchor = Number(record.position?.offset) || 0;
+        this.chunks = [];
+        this.shownChunk = -1;
         this.segments = [];
-        this.nodeStarts = new WeakMap();
         this.characterCount = 0;
         this.objectUrls = [];
         this.destroyed = false;
@@ -2631,26 +2781,24 @@
         /* String récupérée directement d’IndexedDB. */
         const source = getTextContent(this.content);
         const content = $("textContent");
+        const fragment = document.createDocumentFragment();
         content.replaceChildren();
 
         if (this.record.format === "fb2") {
           const parsed = parseFictionBook(source);
-          content.appendChild(buildFb2Fragment(parsed, this.objectUrls));
+          fragment.appendChild(buildFb2Fragment(parsed, this.objectUrls));
           if (parsed.language) content.lang = parsed.language;
         } else if (this.record.format === "html") {
           const clean = sanitizeHtml(source);
-          content.innerHTML = clean.html || "<p>Document vide.</p>";
+          const template = document.createElement("template");
+          template.innerHTML = clean.html || "<p>Document vide.</p>";
+          fragment.appendChild(template.content);
           if (clean.language) content.lang = clean.language;
         } else {
-          const fragment = document.createDocumentFragment();
           const normalized = source.replace(/\r\n?/g, "\n").replace(/\f/g, "\n\n");
 
           for (const block of normalized.split(/\n[\t ]*\n/)) {
-            if (!block.trim()) continue;
-            const paragraph = document.createElement("p");
-            paragraph.textContent = block.trim();
-            paragraph.style.whiteSpace = "pre-wrap";
-            fragment.appendChild(paragraph);
+            if (block.trim()) appendTextParagraphs(fragment, block.trim());
           }
 
           if (!fragment.childNodes.length) {
@@ -2658,97 +2806,174 @@
             paragraph.textContent = "Ce document texte est vide.";
             fragment.appendChild(paragraph);
           }
-
-          content.appendChild(fragment);
         }
 
+        this.chunks = splitIntoChunks(fragment).map(nodes => ({
+          nodes, start: 0, end: 0, firstPage: 0, pages: 1
+        }));
+
+        this.measureTextSegments();
         $("textViewport").hidden = false;
         await nextFrame();
 
-        this.measureTextSegments();
         this.layout();
         this.saveState();
       }
 
       measureTextSegments() {
         this.segments = [];
-        this.nodeStarts = new WeakMap();
         let offset = 0;
 
-        const walker = document.createTreeWalker($("textContent"), NodeFilter.SHOW_TEXT);
-        let node;
-
-        while ((node = walker.nextNode())) {
+        const add = node => {
           const length = node.nodeValue?.length || 0;
-          if (!length) continue;
-
-          this.nodeStarts.set(node, offset);
+          if (!length) return;
           this.segments.push({ node, start: offset, end: offset + length });
           offset += length;
+        };
+
+        for (const chunk of this.chunks) {
+          chunk.start = offset;
+
+          for (const node of chunk.nodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+              add(node);
+              continue;
+            }
+
+            const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+            let text;
+            while ((text = walker.nextNode())) add(text);
+          }
+
+          chunk.end = offset;
         }
 
         this.characterCount = offset;
       }
 
+      showChunk(index) {
+        if (index === this.shownChunk || !this.chunks[index]) return;
+        $("textContent").replaceChildren(...this.chunks[index].nodes);
+        this.shownChunk = index;
+      }
+
+      chunkOfPage(page) {
+        let index = 0;
+        while (index < this.chunks.length - 1 && this.chunks[index + 1].firstPage <= page) index++;
+        return index;
+      }
+
+      chunkOfOffset(offset) {
+        let index = 0;
+        while (index < this.chunks.length - 1 && this.chunks[index + 1].start <= offset) index++;
+        return index;
+      }
+
+      /*
+       * Premier caractère de la page affichée. Calculé d'après la mise en
+       * page (et non en « touchant » l'écran) : fiable même pendant
+       * l'animation du tournepage.
+       */
       readVisibleAnchor() {
-        const viewport = $("textViewport");
-        const content = $("textContent");
-        const rect = viewport.getBoundingClientRect();
-        if (!rect.width || !rect.height) return this.anchor;
+        if (!this.ready || !this.segments.length) return this.anchor;
+        return clamp(this.firstOffsetOfPage(this.page), 0, this.characterCount);
+      }
 
-        const x = rect.left + Math.min(10, rect.width / 4);
-        const maxY = Math.min(rect.top + 180, rect.top + rect.height * .5);
+      /* Position dans le texte → nœud texte et décalage dans ce nœud. */
+      pointAt(offset) {
+        const segments = this.segments;
+        if (!segments.length) return null;
 
-        for (let y = rect.top + 4; y <= maxY; y += 22) {
-          let node = null;
-          let offset = 0;
+        const target = clamp(offset, 0, this.characterCount);
+        let low = 0;
+        let high = segments.length - 1;
 
-          if (document.caretRangeFromPoint) {
-            const range = document.caretRangeFromPoint(x, y);
-            node = range?.startContainer;
-            offset = range?.startOffset || 0;
-          } else if (document.caretPositionFromPoint) {
-            const position = document.caretPositionFromPoint(x, y);
-            node = position?.offsetNode;
-            offset = position?.offset || 0;
-          }
+        while (low < high) {
+          const middle = (low + high + 1) >> 1;
+          if (segments[middle].start <= target) low = middle;
+          else high = middle - 1;
+        }
 
-          if (
-            node?.nodeType === Node.TEXT_NODE &&
-            content.contains(node) &&
-            this.nodeStarts.has(node)
-          ) {
-            return clamp(this.nodeStarts.get(node) + offset, 0, this.characterCount);
+        const segment = segments[low];
+        return {
+          node: segment.node,
+          offset: clamp(target - segment.start, 0, segment.node.nodeValue.length)
+        };
+      }
+
+      /* Page (dans le morceau affiché) d'un caractère, ou null s'il n'occupe aucune place. */
+      pageOfCharacter(offset, contentLeft) {
+        const point = this.pointAt(offset);
+        if (!point || point.offset >= point.node.nodeValue.length) return null;
+
+        const range = document.createRange();
+        range.setStart(point.node, point.offset);
+        range.setEnd(point.node, point.offset + 1);
+
+        for (const rect of range.getClientRects()) {
+          if (rect.width || rect.height) {
+            return Math.max(0, Math.floor((rect.left - contentLeft + 1) / (this.width + this.gap)));
           }
         }
 
-        return this.anchor;
+        return null;
+      }
+
+      /* Page du premier caractère mesurable à partir de « offset », sans sortir du morceau. */
+      pageFrom(offset, contentLeft, end) {
+        const limit = Math.min(end, offset + 400);
+
+        for (let index = Math.max(0, offset); index < limit; index++) {
+          const page = this.pageOfCharacter(index, contentLeft);
+          if (page !== null) return page;
+        }
+
+        return Infinity;
+      }
+
+      /* Recherche dichotomique du premier caractère d'une page. */
+      firstOffsetOfPage(page) {
+        const index = this.chunkOfPage(page);
+        const chunk = this.chunks[index];
+        const local = page - chunk.firstPage;
+        if (local <= 0) return chunk.start;
+
+        this.showChunk(index);
+        const contentLeft = $("textContent").getBoundingClientRect().left;
+        let low = chunk.start;
+        let high = chunk.end;
+
+        while (low < high) {
+          const middle = (low + high) >> 1;
+          if (this.pageFrom(middle, contentLeft, chunk.end) >= local) high = middle;
+          else low = middle + 1;
+        }
+
+        return low;
+      }
+
+      /* Dernier caractère (exclu) d'une page. */
+      endOffsetOfPage(page) {
+        const chunk = this.chunks[this.chunkOfPage(page)];
+        return page - chunk.firstPage >= chunk.pages - 1 ? chunk.end : this.firstOffsetOfPage(page + 1);
       }
 
       findPageForOffset(offset) {
         if (!this.segments.length) return 0;
 
-        const target = clamp(offset, 0, this.characterCount);
-        const segment = this.segments.find(item =>
-          target >= item.start && target <= item.end
-        ) || this.segments[this.segments.length - 1];
+        const index = this.chunkOfOffset(offset);
+        const chunk = this.chunks[index];
+        this.showChunk(index);
 
-        try {
-          const local = clamp(target - segment.start, 0, segment.node.nodeValue.length - 1);
-          const range = document.createRange();
-          range.setStart(segment.node, local);
-          range.setEnd(segment.node, Math.min(local + 1, segment.node.nodeValue.length));
+        const contentLeft = $("textContent").getBoundingClientRect().left;
+        const local = this.pageFrom(clamp(offset, chunk.start, Math.max(chunk.start, chunk.end - 1)), contentLeft, chunk.end);
+        return chunk.firstPage + (Number.isFinite(local) ? Math.min(local, chunk.pages - 1) : chunk.pages - 1);
+      }
 
-          const rect = range.getBoundingClientRect();
-          const contentRect = $("textContent").getBoundingClientRect();
-
-          return Math.max(
-            0,
-            Math.round((rect.left - contentRect.left) / (this.width + this.gap))
-          );
-        } catch (_) {
-          return 0;
-        }
+      blockOf(offset) {
+        const element = this.pointAt(offset)?.node.parentElement;
+        const block = element?.closest(BLOCK_SELECTOR);
+        return block && block !== $("textContent") ? block : null;
       }
 
       layout() {
@@ -2759,9 +2984,7 @@
         if (!viewport.clientWidth || !viewport.clientHeight) return;
 
         const wasReady = this.ready;
-        const oldAnchor = wasReady
-          ? this.readVisibleAnchor()
-          : Number(this.record.position?.offset) || 0;
+        const oldAnchor = wasReady ? this.readVisibleAnchor() : this.anchor;
         const oldRatio = wasReady && this.total > 1 ? this.page / (this.total - 1) : 0;
 
         content.style.transform = "translate3d(0,0,0)";
@@ -2774,14 +2997,24 @@
         content.style.columnGap = this.gap + "px";
         content.style.fontSize = prefs.fontSize + "px";
 
+        /* Nombre de pages de chaque morceau (mise en page sans affichage). */
         const stride = this.width + this.gap;
-        const overflow = Math.max(0, content.scrollWidth - this.width);
-        this.total = Math.max(1, Math.ceil(Math.max(0, overflow - 1) / stride) + 1);
+        let firstPage = 0;
 
-        if (!wasReady && typeof this.record.position?.page === "number") {
-          this.page = clamp(this.record.position.page, 0, this.total - 1);
-        } else if (oldAnchor > 0) {
+        this.chunks.forEach((chunk, index) => {
+          this.showChunk(index);
+          const overflow = Math.max(0, content.scrollWidth - this.width);
+          chunk.pages = Math.max(1, Math.ceil(Math.max(0, overflow - 1) / stride) + 1);
+          chunk.firstPage = firstPage;
+          firstPage += chunk.pages;
+        });
+
+        this.total = Math.max(1, firstPage);
+
+        if (oldAnchor > 0) {
           this.page = clamp(this.findPageForOffset(oldAnchor), 0, this.total - 1);
+        } else if (!wasReady && typeof this.record.position?.page === "number") {
+          this.page = clamp(this.record.position.page, 0, this.total - 1);
         } else {
           this.page = clamp(Math.round(oldRatio * (this.total - 1)), 0, this.total - 1);
         }
@@ -2791,8 +3024,12 @@
       }
 
       applyPage(save = true) {
+        const index = this.chunkOfPage(this.page);
+        this.showChunk(index);
+
+        const local = this.page - this.chunks[index].firstPage;
         const stride = this.width + this.gap;
-        $("textContent").style.transform = `translate3d(${-this.page * stride}px,0,0)`;
+        $("textContent").style.transform = `translate3d(${-local * stride}px,0,0)`;
 
         const progress = this.total > 1 ? this.page / (this.total - 1) : (this.page ? 1 : 0);
         updateReaderStatus(`Page ${this.page + 1} / ${this.total}`, progress);
@@ -2826,18 +3063,53 @@
       fontChanged() { this.layout(); }
       setTheme() {}
 
+      /*
+       * Copie de la page affichée : seul le texte de cette page est cloné,
+       * puis remis en page sur la même largeur.
+       */
       snapshot() {
-        if (this.characterCount > 180000) return null;
+        const content = $("textContent");
+        if (!this.ready || !this.segments.length) return null;
+
+        const chunk = this.chunks[this.chunkOfPage(this.page)];
+        const start = this.firstOffsetOfPage(this.page);
+        const end = this.endOffsetOfPage(this.page);
+
+        const range = document.createRange();
+        const from = start > chunk.start ? this.pointAt(start) : null;
+        const to = end < chunk.end ? this.pointAt(end) : null;
+
+        if (from) range.setStart(from.node, from.offset);
+        else range.setStart(content, 0);
+
+        if (to) range.setEnd(to.node, to.offset);
+        else range.setEnd(content, content.childNodes.length);
+
+        const copy = document.createElement("article");
+        copy.className = "reader-copy";
+        copy.lang = content.lang;
+        copy.style.width = this.width + "px";
+        copy.style.height = content.style.height;
+        copy.style.fontSize = prefs.fontSize + "px";
+        copy.appendChild(range.cloneContents());
+
+        /* En haut de colonne, le navigateur supprime la marge des titres. */
+        for (let node = copy.firstElementChild; node; node = node.firstElementChild) {
+          node.style.marginTop = "0";
+        }
+
+        /* Page coupée au milieu d'un paragraphe : sa dernière ligne reste justifiée. */
+        const block = to ? this.blockOf(end) : null;
+
+        if (block && block === this.blockOf(end - 1)) {
+          let last = copy.lastElementChild;
+          while (last?.lastElementChild?.matches(BLOCK_SELECTOR)) last = last.lastElementChild;
+          if (last) last.style.textAlignLast = "justify";
+        }
 
         const wrapper = document.createElement("div");
         wrapper.className = "snapshot-text";
-
-        const clone = $("textContent").cloneNode(true);
-        clone.removeAttribute("id");
-        clone.style.position = "absolute";
-        clone.style.left = "0";
-        clone.style.top = "0";
-        wrapper.appendChild(clone);
+        wrapper.appendChild(copy);
         return wrapper;
       }
 
@@ -2845,6 +3117,8 @@
         this.destroyed = true;
         for (const url of this.objectUrls) URL.revokeObjectURL(url);
         this.objectUrls = [];
+        this.chunks = [];
+        this.segments = [];
         this.content = null;
         $("textContent").replaceChildren();
       }
@@ -3104,6 +3378,7 @@
           if (this.destroyed || token !== this.renderToken) return;
 
           viewportElement.replaceChildren(canvas);
+          this.updatePanning();
           this.updateStatus();
           if (save) this.saveState();
         } catch (error) {
@@ -3113,6 +3388,22 @@
           if (token === this.renderToken) this.renderTask = null;
           try { page.cleanup(); } catch (_) {}
         }
+      }
+
+      /*
+       * Page agrandie plus grande que l'écran : le doigt la fait défiler.
+       * Les pages se tournent alors en touchant les bords ou au clavier.
+       */
+      updatePanning() {
+        const viewport = $("pdfViewport");
+        const wide = viewport.scrollWidth > viewport.clientWidth + 2;
+        const tall = viewport.scrollHeight > viewport.clientHeight + 2;
+        viewport.style.touchAction = [wide && "pan-x", tall && "pan-y"].filter(Boolean).join(" ") || "none";
+      }
+
+      pansHorizontally() {
+        const viewport = $("pdfViewport");
+        return viewport.scrollWidth > viewport.clientWidth + 2;
       }
 
       updateStatus() {
@@ -3159,34 +3450,26 @@
       fontChanged() {}
       setTheme() {}
 
+      /* Copie de la page telle qu'elle est affichée (zoom et défilement compris). */
       snapshot() {
         const source = $("pdfViewport").querySelector("canvas");
         if (!source) return null;
 
-        const width = Math.max(1, $("readerSurface").clientWidth);
-        const height = Math.max(1, $("readerSurface").clientHeight);
+        const base = $("readerSurface").getBoundingClientRect();
+        const rect = source.getBoundingClientRect();
         const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        canvas.className = "snapshot-pdf";
+        canvas.width = source.width;
+        canvas.height = source.height;
+        canvas.getContext("2d").drawImage(source, 0, 0);
+        canvas.style.left = (rect.left - base.left) + "px";
+        canvas.style.top = (rect.top - base.top) + "px";
+        canvas.style.width = rect.width + "px";
+        canvas.style.height = rect.height + "px";
 
-        const context = canvas.getContext("2d");
-        context.fillStyle = readerColors[prefs.theme].paper;
-        context.fillRect(0, 0, width, height);
-
-        const scale = Math.min(width / source.width, height / source.height);
-        const drawWidth = source.width * scale;
-        const drawHeight = source.height * scale;
-
-        context.drawImage(
-          source,
-          (width - drawWidth) / 2,
-          (height - drawHeight) / 2,
-          drawWidth,
-          drawHeight
-        );
-
-        return canvas;
+        const wrapper = document.createElement("div");
+        wrapper.className = "snapshot-pdf";
+        wrapper.appendChild(canvas);
+        return wrapper;
       }
 
       destroy() {
@@ -3208,12 +3491,15 @@
     /* ============================================================
        OUVERTURE DEPUIS INDEXEDDB UNIQUEMENT
        ============================================================ */
-    async function openBook(bookId, options = {}) {
+    /*
+     * Le plein écran n'est plus demandé automatiquement : sur Android, il
+     * masque la barre de navigation et le premier glissement depuis le bas
+     * ne faisait que la réafficher au lieu de fermer l'application.
+     */
+    async function openBook(bookId) {
       if (opening) return;
 
       opening = true;
-      if (options.userGesture) void requestFullscreen(false);
-
       const token = ++sessionToken;
       let engine = null;
       let bookTitle = "Ce livre";
@@ -3284,7 +3570,6 @@
 
         current.engine = engine;
         $("readerLoading").hidden = true;
-        fullscreenPending = !options.userGesture && !document.fullscreenElement;
         scheduleChromeHide();
       } catch (error) {
         console.error("Ouverture impossible :", error);
@@ -3320,8 +3605,10 @@
 
       current = null;
       navigationBusy = false;
-      queuedDirection = 0;
-      fullscreenPending = false;
+      gesture = null;
+      activeTurn?.abort();
+      activeTurn = null;
+      resetRubberBand();
 
       try { engine?.destroy(); } catch (_) {}
 
@@ -3335,78 +3622,375 @@
     }
 
     /* ============================================================
-       TOURNEPAGE ET SWIPE
+       TOURNEPAGE ET GESTES
+
+       La feuille suit le doigt : elle se plie le long d'une ligne qui
+       avance avec lui, montre son verso et découvre la page suivante.
+       Au lâcher, elle finit de tourner ou revient à plat selon la
+       distance parcourue et la vitesse du geste.
+
+       Géométrie : on tire le coin libre de la feuille (en bas ou en haut,
+       selon l'endroit touché). Le pli est la médiatrice entre la position
+       d'origine du coin et sa position actuelle ; la partie soulevée est
+       dessinée par symétrie autour de ce pli. Le coin reste toujours à une
+       largeur de page de la reliure : le papier ne se « déchire » pas.
        ============================================================ */
-    function makePaperAbstract() {
-      const abstract = document.createElement("div");
-      abstract.className = "paper-abstract";
-      for (let index = 0; index < 13; index++) {
-        abstract.appendChild(document.createElement("span"));
+    const TURN_COMPLETE_RATIO = .28;   /* part tournée au-delà de laquelle la page passe */
+    const TURN_FLICK_SPEED = .35;      /* px/ms : un geste vif tourne la page */
+    const TURN_TAP_DURATION = 560;     /* ms : page tournée par un toucher ou une touche */
+    const SYSTEM_EDGE = 32;            /* px en bas d'écran réservés au geste du téléphone */
+
+    let activeTurn = null;
+    let gesture = null;
+
+    const easeOut = t => 1 - Math.pow(1 - t, 3);
+    const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    const prefersReducedMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* Garde la partie d'un polygone située du côté demandé d'une droite. */
+    function clipPolygon(points, distance, sign) {
+      const result = [];
+
+      for (let index = 0; index < points.length; index++) {
+        const a = points[index];
+        const b = points[(index + 1) % points.length];
+        const da = sign * distance(a[0], a[1]);
+        const db = sign * distance(b[0], b[1]);
+
+        if (da >= 0) result.push(a);
+
+        if ((da >= 0) !== (db >= 0)) {
+          const t = da / (da - db);
+          result.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]);
+        }
       }
-      return abstract;
+
+      return result;
     }
 
-    async function playPageTurn(direction, action, engine) {
-      const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const layer = $("turnLayer");
-      const leaf = $("turnLeaf");
-      const front = $("leafFront");
-      const shadow = $("pageShadow");
+    function polygonCss(points) {
+      if (points.length < 3) return "polygon(0 0, 0 0, 0 0)";
+      return `polygon(${points.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(",")})`;
+    }
 
-      if (reduced || !leaf.animate) {
-        await action();
-        return;
+    function takeSnapshot(engine) {
+      try { return engine.snapshot?.() || null; } catch (_) { return null; }
+    }
+
+    function blankPaper() {
+      const blank = document.createElement("div");
+      blank.className = "turn-blank";
+      return blank;
+    }
+
+    class PageTurn {
+      constructor(engine, direction, options = {}) {
+        const surface = $("readerSurface");
+
+        this.engine = engine;
+        this.direction = direction;
+        this.width = Math.max(1, surface.clientWidth);
+        this.height = Math.max(1, surface.clientHeight);
+        this.cornerY = typeof options.grabY === "number" && options.grabY < this.height / 2 ? 0 : this.height;
+        this.live = options.live !== false;
+        this.previous = options.previous || null;
+
+        /* 0 : feuille à plat sur la page actuelle ; 1 : feuille tournée vers la gauche. */
+        this.progress = direction > 0 ? 0 : 1;
+        this.dy = 0;
+        this.offset = 0;         /* pages déjà tournées dans le moteur, sous la feuille */
+        this.started = false;
+        this.aborted = false;
+        this.hurried = false;
+        this.blocked = false;    /* aucune page dans ce sens */
+        this.error = null;
+        this.frame = 0;
+        this.drawQueued = false;
+        this.done = null;
+
+        this.ready = this.prepare();
       }
 
-      front.replaceChildren();
+      async prepare() {
+        if (this.previous) {
+          this.previous.hurry();
+          await this.previous.finished();
+        }
 
-      let snapshot = null;
-      try { snapshot = engine.snapshot?.(); } catch (_) {}
-      front.appendChild(snapshot || makePaperAbstract());
+        if (this.aborted || current?.engine !== this.engine) return;
 
-      layer.classList.add("active");
-      leaf.className = direction > 0 ? "next" : "previous";
-      shadow.className = direction > 0 ? "" : "previous";
+        if (this.engine.canGo && !this.engine.canGo(this.direction)) {
+          this.blocked = true;
+          return;
+        }
 
-      const degrees = direction > 0 ? -179 : 179;
+        const layer = $("turnLayer");
+        const page = takeSnapshot(this.engine);
 
-      const leafAnimation = leaf.animate([
-        { transform: "rotateY(0deg)", opacity: 0 },
-        { transform: "rotateY(0deg)", opacity: 1, offset: .025 },
-        { transform: `rotateY(${degrees * .65}deg)`, opacity: 1, offset: .65 },
-        { transform: `rotateY(${degrees}deg)`, opacity: 0 }
-      ], {
-        duration: 350,
-        easing: "cubic-bezier(.28,.68,.26,1)",
-        fill: "forwards"
-      });
+        layer.classList.toggle("pdf", this.engine instanceof PdfEngine);
+        layer.classList.add("active");
+        this.started = true;
 
-      const shadowAnimation = shadow.animate([
-        { opacity: 0 },
-        { opacity: .35, offset: .55 },
-        { opacity: 0 }
-      ], {
-        duration: 350,
-        easing: "ease-in-out",
-        fill: "forwards"
-      });
+        if (this.direction > 0) {
+          /* La feuille montre la page actuelle ; le moteur passe à la suivante dessous. */
+          this.setSheet(page, takeSnapshot(this.engine));
+          this.setUnder(this.live ? null : blankPaper());
+          this.render();
+          if (this.live) await this.move(1);
+        } else {
+          /* La page actuelle reste dessous ; la précédente revient par-dessus. */
+          this.setUnder(page || blankPaper());
+          this.setSheet(null, null);
+          this.render();
+          if (this.live) await this.move(-1);
+        }
+      }
 
-      const navigation = (async () => {
-        await sleep(112);
-        await action();
-      })();
+      async move(direction) {
+        try {
+          await this.engine.go(direction);
+          this.offset += direction;
+          if (direction > 0) this.setUnder(null);
+          else this.setSheet(takeSnapshot(this.engine), takeSnapshot(this.engine));
+        } catch (error) {
+          this.error = error;
+        }
+      }
 
-      try {
-        await Promise.all([
-          leafAnimation.finished.catch(() => {}),
-          shadowAnimation.finished.catch(() => {}),
-          navigation
-        ]);
-      } finally {
-        leafAnimation.cancel();
-        shadowAnimation.cancel();
-        layer.classList.remove("active");
-        front.replaceChildren();
+      setSheet(front, ghost) {
+        $("turnSheet").replaceChildren(front || blankPaper());
+        $("turnGhost").replaceChildren(...(ghost ? [ghost] : []));
+      }
+
+      setUnder(node) {
+        $("turnUnder").replaceChildren(...(node ? [node] : []));
+        $("turnUnder").hidden = !node;
+      }
+
+      /* Suivi du doigt : dx et dy depuis le début du geste. */
+      drag(dx, dy) {
+        if (this.done) return;
+
+        this.progress = this.direction > 0
+          ? clamp(-dx / this.width, 0, 1)
+          : clamp(1 - dx / this.width, 0, 1);
+        this.dy = dy;
+
+        if (!this.drawQueued) {
+          this.drawQueued = true;
+          requestAnimationFrame(() => {
+            this.drawQueued = false;
+            if (!this.done) this.render();
+          });
+        }
+      }
+
+      render() {
+        if (!this.started || this.aborted) return;
+
+        const W = this.width;
+        const H = this.height;
+        const p = this.progress;
+        const fromBottom = this.cornerY === H;
+
+        /* Le coin se soulève légèrement pendant le geste, puis se repose. */
+        const lift = Math.sin(Math.PI * p) * H * .08;
+        let x = W - 2 * W * p;
+        let y = this.cornerY + (fromBottom ? -lift : lift) + clamp(this.dy * .5, -H * .3, H * .3);
+        y = fromBottom ? Math.min(H, y) : Math.max(0, y);
+
+        const keepWithin = (ax, ay, radius) => {
+          const distance = Math.hypot(x - ax, y - ay);
+          if (distance > radius) {
+            x = ax + (x - ax) * radius / distance;
+            y = ay + (y - ay) * radius / distance;
+          }
+        };
+
+        keepWithin(0, this.cornerY, W);
+        keepWithin(0, H - this.cornerY, Math.hypot(W, H));
+
+        const sheet = $("turnSheet");
+        const flapWrap = $("turnFlapWrap");
+        const shade = $("turnShade");
+        const vx = W - x;
+        const vy = this.cornerY - y;
+        const length = Math.hypot(vx, vy);
+
+        if (length < .5) {
+          sheet.style.clipPath = "none";
+          flapWrap.style.visibility = "hidden";
+          shade.style.opacity = "0";
+          return;
+        }
+
+        /* Pli : droite passant par le milieu du coin d'origine et du coin tiré. */
+        const nx = vx / length;
+        const ny = vy / length;
+        const mx = (W + x) / 2;
+        const my = (this.cornerY + y) / 2;
+        const side = (px, py) => (px - mx) * nx + (py - my) * ny;
+        const page = [[0, 0], [W, 0], [W, H], [0, H]];
+        const flat = clipPolygon(page, side, -1);
+        const lifted = clipPolygon(page, side, 1);
+        const reach = Math.max(1, ...lifted.map(([px, py]) => side(px, py)));
+        const diagonal = Math.hypot(W, H);
+        const angle = Math.atan2(ny, nx);
+        const alongFold = `translate(${mx.toFixed(1)}px,${my.toFixed(1)}px) rotate(${angle}rad) translate(0,${-diagonal}px)`;
+
+        sheet.style.clipPath = polygonCss(flat);
+
+        /* Verso : symétrie de la feuille par rapport au pli. */
+        const k = mx * nx + my * ny;
+        const flap = $("turnFlap");
+        flap.style.transform =
+          `matrix(${1 - 2 * nx * nx},${-2 * nx * ny},${-2 * nx * ny},${1 - 2 * ny * ny},${2 * k * nx},${2 * k * ny})`;
+        flap.style.clipPath = polygonCss(lifted);
+        flapWrap.style.visibility = "visible";
+
+        const flapShade = $("turnFlapShade");
+        flapShade.style.width = reach + "px";
+        flapShade.style.height = 2 * diagonal + "px";
+        flapShade.style.transform = alongFold;
+
+        /* Ombre portée sur la page découverte, plus marquée au milieu du geste. */
+        shade.style.width = clamp(reach * .55, 14, W * .32) + "px";
+        shade.style.height = 2 * diagonal + "px";
+        shade.style.transform = alongFold;
+        shade.style.opacity = String(Math.min(1, 2.4 * Math.sin(Math.PI * clamp(p, 0, 1))));
+      }
+
+      animateTo(target, duration, easing) {
+        return new Promise(resolve => {
+          const from = this.progress;
+          const fromDy = this.dy;
+          const start = performance.now();
+
+          const step = now => {
+            if (this.aborted) return resolve();
+
+            const t = this.hurried ? 1 : clamp((now - start) / duration, 0, 1);
+            const eased = easing(t);
+            this.progress = from + (target - from) * eased;
+            this.dy = fromDy * (1 - eased);
+            this.render();
+
+            if (t < 1) this.frame = requestAnimationFrame(step);
+            else resolve();
+          };
+
+          this.frame = requestAnimationFrame(step);
+        });
+      }
+
+      /* Fin du geste : la page passe ou revient selon la distance et la vitesse. */
+      release(velocity = 0) {
+        const toward = this.direction > 0 ? -velocity : velocity;
+        const amount = this.direction > 0 ? this.progress : 1 - this.progress;
+        let complete = amount > TURN_COMPLETE_RATIO || toward > TURN_FLICK_SPEED;
+        if (toward < -TURN_FLICK_SPEED * .6) complete = false;
+        return this.settle(complete, Math.abs(velocity), false);
+      }
+
+      /* Page tournée par un toucher sur le bord ou par le clavier. */
+      play() {
+        return this.settle(true, 0, true);
+      }
+
+      settle(complete, speed, automatic) {
+        if (this.done) return this.done;
+
+        this.done = (async () => {
+          if (!this.started) await this.ready;
+
+          if (this.blocked || this.aborted) {
+            if (this.blocked && !this.aborted) edgeFeedback(this.direction);
+            return;
+          }
+
+          if (this.error) complete = false;
+
+          const target = complete === (this.direction > 0) ? 1 : 0;
+          const distance = Math.abs(target - this.progress);
+          let duration = automatic ? TURN_TAP_DURATION : clamp(distance * 620, 150, 480);
+          if (!automatic && speed > .6) duration = Math.max(130, duration * .7);
+
+          const moving = complete && !this.live ? this.move(this.direction) : null;
+          await this.animateTo(target, duration, automatic ? easeInOut : easeOut);
+          await this.ready;
+          if (moving) await moving;
+
+          if (!complete && this.offset && !this.aborted) {
+            try { await this.engine.go(-this.offset); } catch (_) {}
+            this.offset = 0;
+          }
+
+          if (this.error && !this.aborted) {
+            showToast("Page illisible : " + this.error.message, 6000, true);
+          }
+        })().finally(() => this.cleanup());
+
+        return this.done;
+      }
+
+      /* Termine tout de suite l'animation (un nouveau geste commence). */
+      hurry() {
+        this.hurried = true;
+        if (!this.done) this.settle(this.direction > 0 ? this.progress > .5 : this.progress < .5, 0, false);
+      }
+
+      finished() {
+        return (this.done || this.ready).catch(() => {});
+      }
+
+      abort() {
+        this.aborted = true;
+        this.cleanup();
+      }
+
+      cleanup() {
+        cancelAnimationFrame(this.frame);
+        if (activeTurn === this) activeTurn = null;
+        if (!this.started) return;
+
+        this.started = false;
+        const layer = $("turnLayer");
+        layer.classList.remove("active", "pdf");
+        $("turnSheet").replaceChildren();
+        $("turnSheet").style.clipPath = "";
+        $("turnGhost").replaceChildren();
+        $("turnFlapWrap").style.visibility = "hidden";
+        $("turnShade").style.opacity = "0";
+        this.setUnder(null);
+      }
+    }
+
+    function edgeFeedback(direction) {
+      const surface = $("readerSurface");
+      surface.animate?.([
+        { transform: "translateX(0)" },
+        { transform: `translateX(${direction > 0 ? -14 : 14}px)` },
+        { transform: "translateX(0)" }
+      ], { duration: 260, easing: "ease-out" });
+      showToast(direction > 0 ? "Dernière page du livre." : "Première page du livre.", 1600);
+    }
+
+    /* Résistance élastique quand il n'y a plus de page dans ce sens. */
+    function rubberBand(dx) {
+      const offset = Math.sign(dx) * Math.min(40, Math.abs(dx) * .2);
+      $("readerSurface").style.transform = `translateX(${offset}px)`;
+    }
+
+    function resetRubberBand(animated = false) {
+      const surface = $("readerSurface");
+      const from = surface.style.transform;
+      surface.style.transform = "";
+
+      if (animated && from && surface.animate) {
+        surface.animate([{ transform: from }, { transform: "translateX(0)" }], {
+          duration: 220,
+          easing: "ease-out"
+        });
       }
     }
 
@@ -3414,184 +3998,249 @@
       const engine = current?.engine;
       if (!engine || opening) return;
 
-      if (navigationBusy) {
-        queuedDirection = direction;
+      if (!activeTurn && engine.canGo && !engine.canGo(direction)) {
+        edgeFeedback(direction);
         return;
       }
 
-      if (engine.canGo && !engine.canGo(direction)) return;
-
-      navigationBusy = true;
-      showReaderChrome();
-
-      try {
-        await playPageTurn(direction, () => engine.go(direction), engine);
-      } catch (error) {
-        showToast("Page illisible : " + error.message, 6000, true);
-      } finally {
-        navigationBusy = false;
-
-        if (queuedDirection) {
-          const next = queuedDirection;
-          queuedDirection = 0;
-          setTimeout(() => navigate(next), 0);
-        }
+      if (prefersReducedMotion()) {
+        if (navigationBusy) return;
+        navigationBusy = true;
+        try { await engine.go(direction); }
+        catch (error) { showToast("Page illisible : " + error.message, 6000, true); }
+        finally { navigationBusy = false; }
+        return;
       }
+
+      const turn = new PageTurn(engine, direction, { previous: activeTurn });
+      activeTurn = turn;
+      await turn.play();
     }
 
-    let outerGesture = null;
+    function toggleReaderChrome() {
+      const hidden = $("readerView").classList.toggle("chrome-hidden");
+      if (!hidden) scheduleChromeHide();
+    }
+
+    /* Toucher court : bords = page précédente / suivante, centre = commandes. */
+    function handleTap(x) {
+      const rect = $("readerStage").getBoundingClientRect();
+      const ratio = (x - rect.left) / Math.max(1, rect.width);
+
+      if (ratio < .22) navigate(-1);
+      else if (ratio > .78) navigate(1);
+      else toggleReaderChrome();
+    }
+
+    /*
+     * Gestes partagés par la page et par l'iframe des EPUB.
+     * Les coordonnées sont toujours celles de la fenêtre principale.
+     */
+    function gestureStart(x, y, pointerId, fromFrame) {
+      if (!current?.engine || opening) return false;
+      if (!$("settingsPanel").hidden || !$("aboutModal").hidden) return false;
+
+      /* Bas de l'écran : on laisse le téléphone gérer « glisser pour quitter ». */
+      if (y > window.innerHeight - SYSTEM_EDGE) return false;
+
+      if (gesture) gestureEnd(gesture.lastX, gesture.lastY, gesture.pointerId, true);
+
+      const now = performance.now();
+      gesture = {
+        pointerId,
+        fromFrame,
+        x0: x,
+        y0: y,
+        lastX: x,
+        lastY: y,
+        t0: now,
+        mode: "pending",
+        samples: [{ x, t: now }],
+        turn: null,
+        direction: 0
+      };
+      return true;
+    }
+
+    function beginDrag(state, direction) {
+      const engine = current.engine;
+      state.direction = direction;
+      $("readerStage").classList.add("dragging");
+
+      try { window.getSelection()?.removeAllRanges(); } catch (_) {}
+
+      if (prefersReducedMotion()) {
+        state.mode = "swipe";
+        return;
+      }
+
+      if (!activeTurn && engine.canGo && !engine.canGo(direction)) {
+        state.mode = "edge";
+        return;
+      }
+
+      const surfaceTop = $("readerSurface").getBoundingClientRect().top;
+      const live = !state.fromFrame || !engine.staysInSection || engine.staysInSection(direction);
+
+      state.turn = new PageTurn(engine, direction, {
+        grabY: state.y0 - surfaceTop,
+        live,
+        previous: activeTurn
+      });
+      activeTurn = state.turn;
+      state.mode = "turn";
+    }
+
+    function gestureMove(x, y, pointerId) {
+      const state = gesture;
+      if (!state || state.pointerId !== pointerId) return;
+
+      const now = performance.now();
+      state.lastX = x;
+      state.lastY = y;
+      state.samples.push({ x, t: now });
+      while (state.samples.length > 2 && now - state.samples[0].t > 100) state.samples.shift();
+
+      const dx = x - state.x0;
+      const dy = y - state.y0;
+
+      if (state.mode === "pending") {
+        if (Math.hypot(dx, dy) < 10) return;
+
+        const horizontal = Math.abs(dx) > Math.abs(dy) * 1.2;
+        const pdfScrolls = !state.fromFrame && current.engine.pansHorizontally?.();
+
+        if (!horizontal || pdfScrolls) {
+          state.mode = "ignore";
+          return;
+        }
+
+        beginDrag(state, dx < 0 ? 1 : -1);
+      }
+
+      if (state.mode === "turn") state.turn.drag(dx, dy);
+      else if (state.mode === "edge") rubberBand(dx);
+    }
+
+    function gestureEnd(x, y, pointerId, cancelled, onLink = false) {
+      const state = gesture;
+      if (!state || state.pointerId !== pointerId) return;
+
+      gesture = null;
+      $("readerStage").classList.remove("dragging");
+
+      const first = state.samples[0];
+      const last = state.samples[state.samples.length - 1];
+      const velocity = last.t > first.t ? (last.x - first.x) / (last.t - first.t) : 0;
+      const dx = (cancelled ? state.lastX : x) - state.x0;
+
+      if (state.mode === "pending") {
+        if (!cancelled && !onLink && performance.now() - state.t0 < 650) handleTap(x);
+      } else if (state.mode === "turn") {
+        void state.turn.release(cancelled ? 0 : velocity);
+      } else if (state.mode === "edge") {
+        resetRubberBand(true);
+        if (!cancelled) edgeFeedback(state.direction);
+      } else if (state.mode === "swipe" && !cancelled) {
+        if (Math.abs(dx) > 45 || Math.abs(velocity) > TURN_FLICK_SPEED) navigate(state.direction);
+      }
+    }
 
     function setupGestures() {
       const stage = $("readerStage");
 
       stage.addEventListener("pointerdown", event => {
-        if (event.button !== 0) return;
+        if (event.button !== 0 || !event.isPrimary) return;
 
-        outerGesture = {
-          id: event.pointerId,
-          x: event.clientX,
-          y: event.clientY,
-          time: performance.now(),
-          horizontal: false
-        };
-
-        try { stage.setPointerCapture(event.pointerId); } catch (_) {}
+        if (gestureStart(event.clientX, event.clientY, event.pointerId, false)) {
+          try { stage.setPointerCapture(event.pointerId); } catch (_) {}
+        }
       });
 
       stage.addEventListener("pointermove", event => {
-        const gesture = outerGesture;
-        if (!gesture || gesture.id !== event.pointerId) return;
-
-        const dx = event.clientX - gesture.x;
-        const dy = event.clientY - gesture.y;
-
-        if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-          gesture.horizontal = true;
-          event.preventDefault();
-        }
-      }, { passive: false });
+        gestureMove(event.clientX, event.clientY, event.pointerId);
+      });
 
       stage.addEventListener("pointerup", event => {
-        const gesture = outerGesture;
-        if (!gesture || gesture.id !== event.pointerId) return;
-
-        outerGesture = null;
-        if (!gesture.horizontal) return;
-
-        const dx = event.clientX - gesture.x;
-        const elapsed = Math.max(1, performance.now() - gesture.time);
-
-        if (
-          Math.abs(dx) > 45 ||
-          (Math.abs(dx) > 28 && Math.abs(dx) / elapsed > .38)
-        ) {
-          suppressTapUntil = Date.now() + 450;
-          navigate(dx < 0 ? 1 : -1);
-        }
+        gestureEnd(event.clientX, event.clientY, event.pointerId, false);
       });
 
-      stage.addEventListener("pointercancel", () => { outerGesture = null; });
-
-      $("tapLeft").addEventListener("click", () => {
-        if (Date.now() >= suppressTapUntil) navigate(-1);
-      });
-
-      $("tapRight").addEventListener("click", () => {
-        if (Date.now() >= suppressTapUntil) navigate(1);
-      });
-
-      $("tapCenter").addEventListener("click", () => {
-        if (Date.now() < suppressTapUntil) return;
-        const hidden = $("readerView").classList.toggle("chrome-hidden");
-        if (!hidden) scheduleChromeHide();
+      stage.addEventListener("pointercancel", event => {
+        gestureEnd(event.clientX, event.clientY, event.pointerId, true);
       });
     }
 
+    /*
+     * Les pages EPUB sont dans une iframe : ses événements n'arrivent pas
+     * à la page principale. On les convertit en coordonnées de la fenêtre.
+     */
     function bindEpubGestures(doc) {
-      let gesture = null;
-      let suppressClickUntil = 0;
-
-      doc.addEventListener("touchstart", event => {
-        if (event.touches.length !== 1) return;
-        const touch = event.touches[0];
-        gesture = {
-          x: touch.clientX,
-          y: touch.clientY,
-          time: performance.now(),
-          horizontal: false
+      const outer = event => {
+        const rect = doc.defaultView?.frameElement?.getBoundingClientRect();
+        return {
+          x: (rect?.left || 0) + event.clientX,
+          y: (rect?.top || 0) + event.clientY
         };
-      }, { passive: true });
+      };
 
-      doc.addEventListener("touchmove", event => {
-        if (!gesture || !event.touches.length) return;
+      doc.addEventListener("pointerdown", event => {
+        if (event.button !== 0 || !event.isPrimary) return;
+        const point = outer(event);
 
-        const touch = event.touches[0];
-        const dx = touch.clientX - gesture.x;
-        const dy = touch.clientY - gesture.y;
-
-        if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.15) {
-          gesture.horizontal = true;
-          event.preventDefault();
-        }
-      }, { passive: false });
-
-      doc.addEventListener("touchend", event => {
-        if (!gesture?.horizontal || !event.changedTouches.length) {
-          gesture = null;
-          return;
-        }
-
-        const touch = event.changedTouches[0];
-        const dx = touch.clientX - gesture.x;
-        const elapsed = Math.max(1, performance.now() - gesture.time);
-
-        if (Math.abs(dx) > 45 || (Math.abs(dx) > 28 && Math.abs(dx) / elapsed > .38)) {
-          suppressClickUntil = Date.now() + 450;
-          navigate(dx < 0 ? 1 : -1);
-        }
-
-        gesture = null;
-      }, { passive: true });
-
-      doc.addEventListener("click", event => {
-        if (Date.now() < suppressClickUntil) return;
-
-        const width = doc.documentElement.clientWidth || 1;
-        const ratio = event.clientX / width;
-
-        if (ratio < .22) navigate(-1);
-        else if (ratio > .78) navigate(1);
-        else {
-          const hidden = $("readerView").classList.toggle("chrome-hidden");
-          if (!hidden) scheduleChromeHide();
+        if (gestureStart(point.x, point.y, event.pointerId, true)) {
+          try { event.target.setPointerCapture?.(event.pointerId); } catch (_) {}
         }
       });
+
+      doc.addEventListener("pointermove", event => {
+        const point = outer(event);
+        gestureMove(point.x, point.y, event.pointerId);
+      });
+
+      doc.addEventListener("pointerup", event => {
+        const point = outer(event);
+        const onLink = Boolean(event.target.closest?.("a[href]"));
+        gestureEnd(point.x, point.y, event.pointerId, false, onLink);
+      });
+
+      doc.addEventListener("pointercancel", event => {
+        const point = outer(event);
+        gestureEnd(point.x, point.y, event.pointerId, true);
+      });
+
+      /* Le clavier reste actif quand l'iframe a le focus. */
+      doc.addEventListener("keydown", handleReaderKey);
     }
 
     /* ============================================================
        PLEIN ÉCRAN, PANNEAUX ET INTERFACE
        ============================================================ */
-    async function requestFullscreen(notify = true) {
-      const request = document.documentElement.requestFullscreen ||
-        document.documentElement.webkitRequestFullscreen;
-
-      if (!request) {
-        if (notify) showToast("Le plein écran n’est pas proposé par ce navigateur.");
-        return false;
-      }
+    /* Plein écran à la demande seulement (bouton des réglages). */
+    async function toggleFullscreen() {
+      const root = document.documentElement;
+      const active = document.fullscreenElement || document.webkitFullscreenElement;
 
       try {
-        await request.call(document.documentElement, { navigationUI: "hide" });
-        return true;
+        if (active) {
+          await (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+          return;
+        }
+
+        const request = root.requestFullscreen || root.webkitRequestFullscreen;
+        if (!request) {
+          showToast("Le plein écran n’est pas proposé par ce navigateur.");
+          return;
+        }
+
+        await request.call(root, { navigationUI: "hide" });
       } catch (_) {
-        if (notify) showToast("Le navigateur a refusé le plein écran.");
-        return false;
+        showToast("Le navigateur a refusé le plein écran.");
       }
     }
 
-    function showReaderChrome() {
-      $("readerView").classList.remove("chrome-hidden");
-      scheduleChromeHide();
+    function updateFullscreenButton() {
+      const active = document.fullscreenElement || document.webkitFullscreenElement;
+      $("fullscreenButton").textContent = active ? "Quitter le plein écran" : "Passer en plein écran";
     }
 
     function scheduleChromeHide() {
@@ -3612,8 +4261,23 @@
     }
 
     function closeSettings() {
+      const wasOpen = !$("settingsPanel").hidden;
       $("panelBackdrop").hidden = true;
       $("settingsPanel").hidden = true;
+      if (wasOpen) scheduleChromeHide();
+    }
+
+    function handleReaderKey(event) {
+      if (!current?.engine || !$("settingsPanel").hidden || !$("aboutModal").hidden || !$("confirmModal").hidden) return;
+      if (event.target?.closest?.("input, select, textarea")) return;
+
+      if (["ArrowRight", "PageDown", " "].includes(event.key)) {
+        event.preventDefault();
+        navigate(1);
+      } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
+        event.preventDefault();
+        navigate(-1);
+      }
     }
 
     function showAbout() {
@@ -3700,7 +4364,9 @@
         setWarmth(prefs.warmth ? 0 : prefs.lastWarmth);
       });
 
-      $("fullscreenButton").addEventListener("click", () => requestFullscreen(true));
+      $("fullscreenButton").addEventListener("click", toggleFullscreen);
+      document.addEventListener("fullscreenchange", updateFullscreenButton);
+      document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
       $("readerBackButton").addEventListener("click", closeReader);
 
       $("pdfZoomOut").addEventListener("click", () => {
@@ -3718,13 +4384,6 @@
           .catch(error => showToast(error.message, 5000, true));
       });
 
-      document.addEventListener("pointerdown", () => {
-        if (fullscreenPending) {
-          fullscreenPending = false;
-          void requestFullscreen(false);
-        }
-      }, { capture: true });
-
       setupGestures();
 
       window.addEventListener("keydown", event => {
@@ -3735,15 +4394,7 @@
           return;
         }
 
-        if (!current?.engine) return;
-
-        if (["ArrowRight", "PageDown", " "].includes(event.key)) {
-          event.preventDefault();
-          navigate(1);
-        } else if (["ArrowLeft", "PageUp"].includes(event.key)) {
-          event.preventDefault();
-          navigate(-1);
-        }
+        handleReaderKey(event);
       });
 
       window.addEventListener("beforeinstallprompt", event => {
@@ -3755,7 +4406,12 @@
       $("installButton").addEventListener("click", async () => {
         if (!deferredInstallPrompt) return;
         deferredInstallPrompt.prompt();
-        await deferredInstallPrompt.userChoice;
+        try { await deferredInstallPrompt.userChoice; } catch (_) {}
+        deferredInstallPrompt = null;
+        $("installButton").hidden = true;
+      });
+
+      window.addEventListener("appinstalled", () => {
         deferredInstallPrompt = null;
         $("installButton").hidden = true;
       });
@@ -3784,37 +4440,34 @@
     }
 
     /* ============================================================
-       CACHE PWA — LE SERVICE WORKER BLOB RESTE UNE TENTATIVE
+       MODE HORS LIGNE
 
-       Certains navigateurs imposent un script service worker HTTP(S)
-       distinct. Cette limite ne concerne pas la persistance des livres.
+       L'ancienne version remplissait un cache sans service worker pour le
+       lire : rien ne fonctionnait réellement hors ligne. Le service worker
+       (fichier service-worker.js) garde maintenant l'application et ses
+       bibliothèques. Il exige une adresse https:// (ou localhost).
        ============================================================ */
     async function setupOfflineSupport() {
-      if (!("caches" in window) || !/^https?:$/.test(location.protocol)) {
-        $("pwaStatus").textContent = "Le stockage des livres reste local et persistant.";
+      const status = $("pwaStatus");
+      const secure = location.protocol === "https:" ||
+        ["localhost", "127.0.0.1", "[::1]"].includes(location.hostname);
+
+      if (!("serviceWorker" in navigator) || !secure) {
+        status.textContent =
+          "Livres et positions restent enregistrés sur cet appareil. " +
+          "Le mode hors ligne nécessite une adresse https://.";
         return;
       }
 
       try {
-        const cache = await caches.open(CACHE_NAME);
-        const resources = [location.href.split("#")[0], ...CDN_RESOURCES];
-
-        await Promise.allSettled(resources.map(async url => {
-          const crossOrigin = !url.startsWith(location.origin);
-          const response = await fetch(url, {
-            mode: crossOrigin ? "no-cors" : "same-origin",
-            credentials: crossOrigin ? "omit" : "same-origin"
-          });
-
-          if (response.ok || response.type === "opaque") {
-            await cache.put(url, response);
-          }
-        }));
-
-        $("pwaStatus").textContent =
-          "Livres et positions stockés dans IndexedDB. Ressources de l’application mises en cache lorsque le navigateur l’autorise.";
-      } catch (_) {
-        $("pwaStatus").textContent = "Les livres restent disponibles dans IndexedDB.";
+        await navigator.serviceWorker.register("service-worker.js");
+        await navigator.serviceWorker.ready;
+        status.textContent =
+          "Application disponible hors ligne. Livres et positions enregistrés sur cet appareil.";
+      } catch (error) {
+        console.warn("Service worker non enregistré :", error);
+        status.textContent =
+          "Mode hors ligne indisponible ; les livres restent enregistrés sur cet appareil.";
       }
     }
 
@@ -3822,7 +4475,7 @@
        DÉMARRAGE
        ============================================================ */
     async function boot() {
-      setupManifest();
+      setupIcons();
       bindInterface();
       applyTheme();
       applyWarmth();
@@ -3875,7 +4528,7 @@
 
         if (book && !book.needsReimport) {
           setTimeout(() => {
-            void openBook(book.id, { userGesture: false, automatic: true });
+            void openBook(book.id);
           }, 180);
         } else {
           await db.settings.put({ key: "resumeBookId", value: null });
