@@ -137,7 +137,9 @@
     html[data-theme="nuit"] .reader-heading small,
     html[data-theme="nuit"] .primary-button,
     html[data-theme="nuit"] .secondary-button,
-    html[data-theme="nuit"] .theme-choice {
+    html[data-theme="nuit"] .theme-choice,
+    html[data-theme="nuit"] .nav-tabs button,
+    html[data-theme="nuit"] .sheet h2 {
       font-family: var(--f-titre);
     }
 
@@ -951,6 +953,242 @@
 
     #toast.error { color: #fff; border-color: transparent; background: #893147; }
 
+    /* ============================================================
+       SIGNETS, NAVIGATION, SURLIGNAGE ET LECTURE À VOIX HAUTE
+       ============================================================ */
+    /* Petit marque-page en haut de la page quand elle a un signet. */
+    #pageRibbon {
+      position: absolute;
+      z-index: 9;
+      top: 0;
+      right: 18px;
+      width: 22px;
+      height: 34px;
+      pointer-events: none;
+      background: var(--accent);
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 74%, 0 100%);
+      box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    }
+
+    #turnLayer.active ~ #pageRibbon { display: none; }
+
+    .icon-button[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); }
+    #bookmarkButton[aria-pressed="true"] svg { fill: currentColor; }
+
+    /* Surlignages (pages TXT, HTML et FB2) dessinés sans modifier le texte. */
+    ::highlight(omni-jaune) { background-color: rgba(255, 210, 60, .42); }
+    ::highlight(omni-vert) { background-color: rgba(110, 220, 130, .38); }
+    ::highlight(omni-bleu) { background-color: rgba(110, 180, 255, .38); }
+    ::highlight(omni-rose) { background-color: rgba(255, 130, 190, .38); }
+    ::highlight(omni-selection) { background-color: rgba(167, 119, 255, .35); }
+    ::highlight(omni-search) { background-color: rgba(255, 150, 40, .55); }
+
+    .reader-status {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      line-height: 1.35;
+    }
+
+    #timeLeft {
+      min-height: 1.35em;
+      overflow: hidden;
+      max-width: 52vw;
+      color: var(--muted);
+      font-size: 11px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .reader-footer .icon-button { width: 38px; height: 38px; border-radius: 12px; }
+    .reader-footer .icon-button svg { width: 20px; height: 20px; }
+
+    /* Panneau de navigation (à gauche) : sommaire, signets et notes, recherche. */
+    .side-panel.left-panel {
+      right: auto;
+      left: 0;
+      padding: calc(20px + var(--safe-top)) 22px calc(24px + var(--safe-bottom)) calc(22px + var(--safe-left));
+    }
+
+    .nav-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      margin-bottom: 16px;
+      padding: 4px;
+      border-radius: 14px;
+      background: var(--button);
+    }
+
+    .nav-tabs button {
+      min-height: 40px;
+      padding: 6px 4px;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .nav-tabs button[aria-selected="true"] { color: var(--ink); background: var(--accent-soft); }
+
+    .nav-list { margin: 0; padding: 0; list-style: none; }
+
+    .nav-list > li { border-bottom: 1px solid var(--line); }
+
+    .nav-entry {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 4px;
+      display: block;
+      background: transparent;
+      color: var(--ink);
+      line-height: 1.4;
+      text-align: left;
+    }
+
+    .nav-entry:hover { background: var(--button); }
+    .nav-entry[aria-current="true"] { color: var(--accent); font-weight: 700; }
+    .nav-entry small { display: block; color: var(--muted); font-size: 12px; }
+
+    .nav-entry .excerpt {
+      display: -webkit-box;
+      overflow: hidden;
+      margin-top: 3px;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      font: 16px/1.4 "EB Garamond", Georgia, serif;
+    }
+
+    .nav-entry .note-text { display: block; margin-top: 4px; color: var(--muted); font-size: 13px; font-style: italic; }
+    .nav-entry mark { color: inherit; border-radius: 3px; background: rgba(255, 150, 40, .45); }
+
+    .note-row { display: flex; align-items: flex-start; gap: 6px; }
+    .note-row .nav-entry { flex: 1 1 auto; min-width: 0; }
+    .note-row .icon-button { width: 38px; height: 38px; margin-top: 6px; }
+    .note-row .icon-button svg { width: 18px; height: 18px; }
+
+    .note-swatch {
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+      display: inline-block;
+      vertical-align: -1px;
+      border-radius: 50%;
+    }
+
+    .nav-status { color: var(--muted); font-size: 13px; line-height: 1.55; }
+
+    .search-form { display: flex; gap: 8px; margin-bottom: 10px; }
+
+    .search-form input,
+    .sheet textarea {
+      width: 100%;
+      min-width: 0;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--button);
+    }
+
+    .search-form input { min-height: 46px; padding: 0 12px; }
+
+    /* Fenêtre de surlignage et de note, en bas de l'écran. */
+    #sheetBackdrop { position: fixed; z-index: 1099; inset: 0; background: transparent; }
+
+    .sheet {
+      position: fixed;
+      z-index: 1100;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: min(620px, 100%);
+      max-height: 75vh;
+      margin: 0 auto;
+      padding: 18px calc(18px + var(--safe-right)) calc(18px + var(--safe-bottom)) calc(18px + var(--safe-left));
+      overflow-y: auto;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-bottom: 0;
+      border-radius: 22px 22px 0 0;
+      background: var(--panel);
+      box-shadow: 0 -12px 40px rgba(0,0,0,.3);
+    }
+
+    .sheet h2 { margin: 0 0 8px; font-size: 15px; }
+
+    .sheet-excerpt {
+      display: -webkit-box;
+      overflow: hidden;
+      margin: 0 0 14px;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+      color: var(--muted);
+      font: italic 17px/1.45 "EB Garamond", Georgia, serif;
+    }
+
+    .sheet-colors { display: flex; gap: 12px; margin-bottom: 14px; }
+
+    .sheet-colors button {
+      width: 40px;
+      height: 40px;
+      border: 3px solid transparent;
+      border-radius: 50%;
+    }
+
+    .sheet-colors button[aria-pressed="true"] { border-color: var(--ink); }
+    [data-color="jaune"] { background: #ffd84d; }
+    [data-color="vert"] { background: #7ee08a; }
+    [data-color="bleu"] { background: #7cc4ff; }
+    [data-color="rose"] { background: #ff8fc7; }
+
+    .sheet textarea { min-height: 76px; padding: 10px 12px; resize: vertical; font: inherit; }
+
+    .sheet-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .sheet-actions .primary-button, .sheet-actions .secondary-button { min-height: 42px; padding: 8px 14px; }
+    .sheet-actions .push-left { margin-right: auto; }
+    .danger-text { color: var(--danger); }
+
+    /* Bandeau « Nouvelle version disponible ». */
+    #updateBanner {
+      position: fixed;
+      z-index: 9500;
+      right: 12px;
+      bottom: calc(12px + var(--safe-bottom));
+      left: 12px;
+      width: min(560px, calc(100% - 24px));
+      margin: 0 auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--ink);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: 0 12px 40px rgba(0,0,0,.3);
+    }
+
+    #updateBanner .primary-button { min-height: 40px; padding: 6px 14px; }
+
+    .backup-status { margin: 10px 0 0; }
+    .setting-group .wide-button + .wide-button { margin-top: 8px; }
+
+    @media (max-width: 420px) {
+      .reader-topbar { gap: 6px; padding-right: calc(8px + var(--safe-right)); padding-left: calc(8px + var(--safe-left)); }
+      .reader-topbar .icon-button { width: 40px; height: 40px; }
+    }
+
     @media (max-width: 720px) {
       .brand p { display: none; }
       .brand img { width: 44px; height: 44px; }
@@ -1057,6 +1295,14 @@
           <small id="readerFormatLabel">Omni-Liseuse</small>
         </div>
 
+        <button id="bookmarkButton" class="icon-button" title="Ajouter un signet à cette page" aria-label="Ajouter un signet à cette page" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4.5L6 21Z"/></svg>
+        </button>
+
+        <button id="navButton" class="icon-button" title="Sommaire, signets et recherche" aria-label="Ouvrir le sommaire, les signets et la recherche">
+          <svg viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1" fill="currentColor"/><circle cx="4" cy="12" r="1" fill="currentColor"/><circle cx="4" cy="18" r="1" fill="currentColor"/></svg>
+        </button>
+
         <button id="warmQuickButton" class="icon-button" title="Filtre de lumière chaude" aria-label="Activer ou couper le filtre chaud">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
         </button>
@@ -1092,6 +1338,8 @@
             </div>
           </div>
 
+          <div id="pageRibbon" aria-hidden="true" hidden></div>
+
           <div id="readerLoading">
             <div class="loading-box">
               <div class="spinner" aria-hidden="true"></div>
@@ -1102,7 +1350,14 @@
       </main>
 
       <footer class="reader-footer">
-        <span id="pageIndicator">Lecture</span>
+        <button id="readAloudButton" class="icon-button" title="Lire à voix haute" aria-label="Lire à voix haute" aria-pressed="false" hidden>
+          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+        </button>
+
+        <div class="reader-status">
+          <span id="pageIndicator">Lecture</span>
+          <small id="timeLeft" title="Temps de lecture restant, estimé d’après votre vitesse de lecture"></small>
+        </div>
         <div class="reading-progress" aria-hidden="true"><div id="readingProgressBar"></div></div>
 
         <div id="pdfZoomControls" hidden>
@@ -1156,6 +1411,24 @@
       <button id="toggleWarmthButton" class="secondary-button wide-button">Activer le filtre</button>
     </section>
 
+    <section id="speechSettings" class="setting-group" hidden>
+      <h3>Lecture à voix haute</h3>
+      <div class="range-row">
+        <input id="speechRateRange" type="range" min="0.6" max="1.8" step="0.1" value="1" aria-label="Vitesse de la voix">
+        <span id="speechRateValue">× 1</span>
+      </div>
+      <p>Le bouton haut-parleur, en bas de la page, lit le livre avec la voix du téléphone et tourne les pages tout seul.</p>
+    </section>
+
+    <section class="setting-group">
+      <h3>Sauvegarde de la bibliothèque</h3>
+      <p>Vos livres ne sont enregistrés que sur cet appareil. Une sauvegarde les garde dans un fichier, avec vos positions, signets et notes : utile pour changer de téléphone ou si les données du navigateur sont effacées.</p>
+      <button id="exportButton" class="secondary-button wide-button">Exporter ma bibliothèque</button>
+      <button id="restoreButton" class="secondary-button wide-button">Restaurer une sauvegarde</button>
+      <input id="restoreInput" type="file" accept=".zip,application/zip" hidden>
+      <p id="backupStatus" class="backup-status" role="status"></p>
+    </section>
+
     <section class="setting-group">
       <h3>Affichage et application</h3>
       <button id="fullscreenButton" class="secondary-button wide-button">Passer en plein écran</button>
@@ -1164,13 +1437,76 @@
     </section>
   </aside>
 
+  <!-- ====================== SOMMAIRE, SIGNETS ET RECHERCHE ====================== -->
+  <aside id="navPanel" class="side-panel left-panel" aria-label="Sommaire, signets et recherche" hidden>
+    <div class="panel-header">
+      <h2>Navigation</h2>
+      <button id="closeNavButton" class="icon-button" aria-label="Fermer la navigation">
+        <svg viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="nav-tabs" role="tablist" aria-label="Navigation dans le livre">
+      <button id="navTabToc" role="tab" data-nav-tab="toc" aria-selected="true" aria-controls="navToc">Sommaire</button>
+      <button id="navTabNotes" role="tab" data-nav-tab="notes" aria-selected="false" aria-controls="navNotes">Signets et notes</button>
+      <button id="navTabSearch" role="tab" data-nav-tab="search" aria-selected="false" aria-controls="navSearch">Recherche</button>
+    </div>
+
+    <section id="navToc" role="tabpanel" aria-labelledby="navTabToc" data-nav-panel="toc">
+      <p id="tocStatus" class="nav-status"></p>
+      <ol id="tocList" class="nav-list"></ol>
+    </section>
+
+    <section id="navNotes" role="tabpanel" aria-labelledby="navTabNotes" data-nav-panel="notes" hidden>
+      <p id="notesStatus" class="nav-status"></p>
+      <ul id="notesList" class="nav-list"></ul>
+      <p class="nav-status">Le marque-page, en haut de l’écran, ajoute un signet à la page. Un appui long sur une phrase permet de la surligner ou d’y ajouter une note.</p>
+    </section>
+
+    <section id="navSearch" role="tabpanel" aria-labelledby="navTabSearch" data-nav-panel="search" hidden>
+      <form id="searchForm" class="search-form" role="search">
+        <input id="searchInput" type="search" placeholder="Mot ou expression" enterkeyhint="search" autocomplete="off" aria-label="Rechercher dans le livre">
+        <button class="primary-button" type="submit">Chercher</button>
+      </form>
+      <p id="searchStatus" class="nav-status" role="status"></p>
+      <ul id="searchResults" class="nav-list"></ul>
+    </section>
+  </aside>
+
+  <!-- ====================== SURLIGNAGE ET NOTES ====================== -->
+  <div id="sheetBackdrop" hidden></div>
+  <section id="annotationSheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+    <h2 id="sheetTitle">Surligner</h2>
+    <p id="sheetExcerpt" class="sheet-excerpt"></p>
+    <div id="sheetColors" class="sheet-colors">
+      <button data-color="jaune" aria-label="Jaune" aria-pressed="true"></button>
+      <button data-color="vert" aria-label="Vert" aria-pressed="false"></button>
+      <button data-color="bleu" aria-label="Bleu" aria-pressed="false"></button>
+      <button data-color="rose" aria-label="Rose" aria-pressed="false"></button>
+    </div>
+    <textarea id="sheetNote" rows="3" placeholder="Ajouter une note (facultatif)" aria-label="Note"></textarea>
+    <div class="sheet-actions">
+      <button id="sheetDelete" class="secondary-button danger-text push-left" hidden>Supprimer</button>
+      <button id="sheetExtend" class="secondary-button push-left">+ Phrase suivante</button>
+      <button id="sheetCopy" class="secondary-button">Copier</button>
+      <button id="sheetCancel" class="secondary-button">Annuler</button>
+      <button id="sheetSave" class="primary-button">Enregistrer</button>
+    </div>
+  </section>
+
+  <div id="updateBanner" role="alert" hidden>
+    <span>Une nouvelle version d’Omni-Liseuse est disponible.</span>
+    <button id="updateButton" class="primary-button">Mettre à jour</button>
+  </div>
+
   <!-- ====================== À PROPOS ====================== -->
   <div id="aboutModal" class="modal-backdrop" hidden>
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 3.1.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <p><strong>Version 3.2.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
       <p class="credit">Application développée par Ferrus Dantioch avec l'aide de l'IA.</p>
+      <p>Pensez à exporter votre bibliothèque de temps en temps (Réglages → Sauvegarde) : les livres ne sont enregistrés que sur cet appareil.</p>
       <p>Les textes sont enregistrés sous forme de chaînes de caractères et les livres binaires sous forme d’ArrayBuffer dans IndexedDB. La lecture ne dépend jamais du fichier original sélectionné lors de l’import.</p>
 
       <h3>Formats pris en charge</h3>
@@ -1180,6 +1516,14 @@
         <li><strong>FB2</strong> — métadonnées, couverture et texte extraits du XML.</li>
         <li><strong>TXT et HTML</strong> — texte adaptable paginé localement.</li>
         <li><strong>CBZ</strong> — images extraites à la demande avec JSZip.</li>
+      </ul>
+
+      <h3>Pendant la lecture</h3>
+      <ul>
+        <li><strong>Sommaire, signets, notes et recherche</strong> — bouton « liste » en haut de l’écran.</li>
+        <li><strong>Surligner une phrase</strong> — appui long dessus (EPUB, TXT, HTML, FB2). Sur un PDF ou une BD, l’appui long ajoute une note à la page.</li>
+        <li><strong>Lecture à voix haute</strong> — bouton haut-parleur en bas (EPUB, PDF, TXT, HTML, FB2).</li>
+        <li><strong>Temps restant</strong> — estimé d’après votre propre vitesse de lecture.</li>
       </ul>
 
       <h3>Et pour les autres formats ? Calibre fait le pont</h3>
@@ -1237,6 +1581,8 @@
     const SUPPORTED_FORMATS = new Set(["epub", "pdf", "fb2", "txt", "html", "cbz"]);
     const TEXT_FORMATS = new Set(["txt", "fb2", "html"]);
     const IMAGE_PATTERN = /\.(jpe?g|png|gif|webp|avif|bmp)$/i;
+    const EPUB_LOCATION_CHARS = 1600;  /* caractères par « position » EPUB (progression) */
+    const LONG_PRESS_DELAY = 550;      /* ms : appui long pour surligner */
 
     const FORMAT_LABELS = {
       epub: "EPUB", pdf: "PDF", fb2: "FB2",
@@ -1259,7 +1605,10 @@
         : "nuit",
       fontSize: 19,
       warmth: 0,
-      lastWarmth: 20
+      lastWarmth: 20,
+      speechRate: 1,
+      readingSpeed: 1300,              /* caractères lus par minute, mesurés pendant la lecture */
+      pageSeconds: { pdf: 75, cbz: 20 } /* secondes par page pour les PDF et les BD */
     };
 
     const $ = id => document.getElementById(id);
@@ -1352,6 +1701,252 @@
 
     function typedImageBlob(blob, name) {
       return blob.type ? blob : new Blob([blob], { type: imageMime(name) });
+    }
+
+    /* ============================================================
+       TEXTE : RECHERCHE, PHRASES ET POSITION DU DOIGT
+       ============================================================ */
+    const MAX_SEARCH_RESULTS = 200;
+    const HIGHLIGHT_COLORS = ["jaune", "vert", "bleu", "rose"];
+    const HIGHLIGHT_FILL = { jaune: "#ffd84d", vert: "#7ee08a", bleu: "#7cc4ff", rose: "#ff8fc7" };
+    const TEXT_BLOCKS = "p,li,h1,h2,h3,h4,h5,h6,blockquote,pre,dd,dt,td,th,figcaption,div,section,article,body";
+    const SENTENCE_END = /[.!?…]/;
+    const CLOSING_MARKS = /[»”"’')\]]/;
+
+    /*
+     * Minuscules sans accents, caractère par caractère : le texte garde
+     * sa longueur, donc une position trouvée vaut aussi dans l'original.
+     * « Eté », « été » et « ÉTÉ » se retrouvent ainsi tous.
+     */
+    function foldText(text) {
+      let result = "";
+
+      for (let index = 0; index < text.length; index++) {
+        const character = text[index];
+
+        if (character.charCodeAt(0) < 128) {
+          result += character.toLowerCase();
+        } else if (character === "’" || character === "‘") {
+          result += "'";
+        } else {
+          result += (character.normalize("NFD")[0] || character).toLowerCase()[0] || character;
+        }
+      }
+
+      return result;
+    }
+
+    /* Extrait autour d'un résultat de recherche. */
+    function excerptAround(text, index, length, before = 50, after = 80) {
+      const start = Math.max(0, index - before);
+      const end = Math.min(text.length, index + length + after);
+      return {
+        before: (start > 0 ? "…" : "") + text.slice(start, index).replace(/\s+/g, " ").trimStart(),
+        match: text.slice(index, index + length),
+        after: text.slice(index + length, end).replace(/\s+/g, " ").trimEnd() + (end < text.length ? "…" : "")
+      };
+    }
+
+    /* Durée lisible : « 12 min », « 3 h 05 ». */
+    function formatDuration(minutes) {
+      if (minutes < 1) return "moins d’une minute";
+      if (minutes < 59.5) return Math.round(minutes) + " min";
+
+      const hours = Math.floor(minutes / 60);
+      const rest = Math.round(minutes - hours * 60);
+      if (rest === 60) return (hours + 1) + " h";
+      return rest ? `${hours} h ${String(rest).padStart(2, "0")}` : `${hours} h`;
+    }
+
+    /*
+     * Caractère sous le doigt : nœud de texte et position dans ce nœud.
+     * Rien si le doigt est dans une marge, loin de tout texte.
+     */
+    function caretAt(doc, x, y) {
+      let node = null;
+      let offset = 0;
+
+      try {
+        if (doc.caretPositionFromPoint) {
+          const position = doc.caretPositionFromPoint(x, y);
+          node = position?.offsetNode;
+          offset = position?.offset || 0;
+        } else if (doc.caretRangeFromPoint) {
+          const range = doc.caretRangeFromPoint(x, y);
+          node = range?.startContainer;
+          offset = range?.startOffset || 0;
+        }
+      } catch (_) {
+        return null;
+      }
+
+      if (!node || node.nodeType !== Node.TEXT_NODE || !node.nodeValue.length) return null;
+
+      /* Le caractère trouvé doit vraiment être sous le doigt. */
+      const range = doc.createRange();
+      const index = Math.min(offset, node.nodeValue.length - 1);
+      range.setStart(node, index);
+      range.setEnd(node, index + 1);
+      const rect = range.getBoundingClientRect();
+      const distance = Math.hypot(
+        Math.max(rect.left - x, 0, x - rect.right),
+        Math.max(rect.top - y, 0, y - rect.bottom)
+      );
+
+      return distance > 36 ? null : { node, offset: Math.min(offset, node.nodeValue.length) };
+    }
+
+    function blockFor(node) {
+      const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+      return element?.closest(TEXT_BLOCKS) || element;
+    }
+
+    function textNodesIn(root) {
+      const nodes = [];
+      const walker = root.ownerDocument.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      let node;
+      while ((node = walker.nextNode())) {
+        if (node.nodeValue.length) nodes.push(node);
+      }
+      return nodes;
+    }
+
+    /* Texte d'un passage, avec un espace entre deux paragraphes. */
+    function rangeText(range) {
+      const root = range.commonAncestorContainer;
+      const nodes = root.nodeType === Node.TEXT_NODE
+        ? [root]
+        : textNodesIn(root).filter(node => range.intersectsNode(node));
+      let text = "";
+      let lastBlock = null;
+
+      for (const node of nodes) {
+        const start = node === range.startContainer ? range.startOffset : 0;
+        const end = node === range.endContainer ? range.endOffset : node.nodeValue.length;
+        const block = blockFor(node);
+
+        if (lastBlock && block !== lastBlock) text += " ";
+        text += node.nodeValue.slice(start, end);
+        lastBlock = block;
+      }
+
+      return cleanText(text);
+    }
+
+    /* Range DOM entre deux positions d'un texte formé de plusieurs nœuds. */
+    function rangeFromPositions(nodes, start, end) {
+      const range = nodes[0].ownerDocument.createRange();
+      let position = 0;
+      let startSet = false;
+
+      for (let index = 0; index < nodes.length; index++) {
+        const node = nodes[index];
+        const length = node.nodeValue.length;
+        const last = index === nodes.length - 1;
+
+        if (!startSet && (start < position + length || last)) {
+          range.setStart(node, clamp(start - position, 0, length));
+          startSet = true;
+        }
+
+        if (startSet && (end <= position + length || last)) {
+          range.setEnd(node, clamp(end - position, 0, length));
+          break;
+        }
+
+        position += length;
+      }
+
+      return range;
+    }
+
+    /* Texte d'un bloc et position d'un point (nœud, décalage) dans ce texte. */
+    function blockText(block, node, offset) {
+      const nodes = textNodesIn(block);
+      let position = -1;
+      let total = 0;
+
+      for (const item of nodes) {
+        if (item === node) position = total + offset;
+        total += item.nodeValue.length;
+      }
+
+      return { nodes, text: nodes.map(item => item.nodeValue).join(""), position };
+    }
+
+    function sentenceBounds(text, position) {
+      let start = clamp(position, 0, text.length);
+      while (start > 0) {
+        const previous = text[start - 1];
+        const after = text[start] || " ";
+        if (SENTENCE_END.test(previous) && (/\s/.test(after) || CLOSING_MARKS.test(after))) break;
+        start--;
+      }
+
+      let end = clamp(position, 0, text.length);
+      while (end < text.length && !SENTENCE_END.test(text[end])) end++;
+      while (end < text.length && (SENTENCE_END.test(text[end]) || CLOSING_MARKS.test(text[end]))) end++;
+
+      while (start < end && (/\s/.test(text[start]) || CLOSING_MARKS.test(text[start]))) start++;
+      while (end > start && /\s/.test(text[end - 1])) end--;
+
+      /* Très long passage sans ponctuation : on se limite autour du doigt. */
+      if (end - start > 1500) {
+        start = Math.max(start, position - 300);
+        end = Math.min(end, position + 300);
+      }
+
+      return { start, end };
+    }
+
+    /* Phrase entière sous le doigt. */
+    function sentenceRange(node, offset) {
+      const block = blockFor(node);
+      if (!block) return null;
+
+      const { nodes, text, position } = blockText(block, node, offset);
+      if (position < 0 || !text.trim()) return null;
+
+      const { start, end } = sentenceBounds(text, position);
+      return end > start ? rangeFromPositions(nodes, start, end) : null;
+    }
+
+    /* Bloc de texte suivant dans le document (paragraphe d'après). */
+    function nextTextBlock(block, root) {
+      const walker = block.ownerDocument.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      walker.currentNode = block;
+      let node;
+
+      while ((node = walker.nextNode())) {
+        if (block.contains(node) || !node.nodeValue.trim()) continue;
+        return node;
+      }
+
+      return null;
+    }
+
+    /* Ajoute la phrase suivante à une sélection, même dans le paragraphe d'après. */
+    function extendRange(range, root) {
+      const block = blockFor(range.endContainer);
+      const { nodes, text, position } = blockText(block, range.endContainer, range.endOffset);
+      let rest = position;
+      while (rest < text.length && /[\s»”"’')\]]/.test(text[rest])) rest++;
+
+      let next = null;
+
+      if (position >= 0 && rest < text.length) {
+        const bounds = sentenceBounds(text, rest);
+        if (bounds.end > position) next = rangeFromPositions(nodes, rest, bounds.end);
+      } else {
+        const node = nextTextBlock(block, root);
+        if (node) next = sentenceRange(node, node.nodeValue.search(/\S/));
+      }
+
+      if (!next) return null;
+
+      const extended = range.cloneRange();
+      extended.setEnd(next.endContainer, next.endOffset);
+      return extended;
     }
 
     /* ============================================================
@@ -1608,6 +2203,14 @@
           });
         }
       });
+
+      /* Version 4 : signets, surlignages et notes, rangés par livre. */
+      db.version(4).stores({
+        books: "id,title,author,format,addedAt,lastOpenedAt",
+        contents: "id",
+        settings: "key",
+        annotations: "id,bookId,type,createdAt"
+      });
     }
 
     async function savePreference(key, value) {
@@ -1626,6 +2229,14 @@
         if (row.key === "fontSize") prefs.fontSize = clamp(Number(row.value) || 19, 14, 28);
         if (row.key === "warmth") prefs.warmth = clamp(Number(row.value) || 0, 0, 45);
         if (row.key === "lastWarmth") prefs.lastWarmth = clamp(Number(row.value) || 20, 5, 45);
+        if (row.key === "speechRate") prefs.speechRate = clamp(Number(row.value) || 1, .6, 1.8);
+        if (row.key === "readingSpeed") prefs.readingSpeed = clamp(Number(row.value) || 1300, 300, 4000);
+        if (row.key === "pageSeconds" && row.value && typeof row.value === "object") {
+          for (const format of ["pdf", "cbz"]) {
+            const seconds = Number(row.value[format]);
+            if (seconds >= 3 && seconds <= 600) prefs.pageSeconds[format] = seconds;
+          }
+        }
       }
     }
 
@@ -2344,9 +2955,11 @@
       });
     }
 
-    function askConfirmation(title, message) {
+    function askConfirmation(title, message, acceptLabel = "Supprimer") {
       $("confirmTitle").textContent = title;
       $("confirmMessage").textContent = message;
+      $("confirmAcceptButton").textContent = acceptLabel;
+      $("confirmAcceptButton").classList.toggle("danger-button", acceptLabel === "Supprimer");
       $("confirmModal").hidden = false;
       $("confirmCancelButton").focus();
       return new Promise(resolve => { confirmResolver = resolve; });
@@ -2361,14 +2974,15 @@
     async function confirmBookDeletion(book) {
       const accepted = await askConfirmation(
         "Supprimer ce livre ?",
-        `« ${book.title} », son contenu et sa position seront supprimés de cet appareil.`
+        `« ${book.title} », son contenu, sa position, ses signets et ses notes seront supprimés de cet appareil.`
       );
 
       if (!accepted) return;
 
-      await db.transaction("rw", db.books, db.contents, db.settings, async () => {
+      await db.transaction("rw", db.books, db.contents, db.settings, db.annotations, async () => {
         await db.books.delete(book.id);
         await db.contents.delete(book.id);
+        await db.annotations.where("bookId").equals(book.id).delete();
 
         const resume = await db.settings.get("resumeBookId");
         if (resume?.value === book.id) {
@@ -2391,6 +3005,8 @@
       } else {
         $("readingProgressBar").style.width = "0";
       }
+
+      onReaderPageChanged();
     }
 
     function resetReaderViewports() {
@@ -2471,26 +3087,7 @@
           bindEpubGestures(doc);
         });
 
-        this.rendition.on("relocated", location => {
-          if (this.destroyed || !location?.start) return;
-
-          this.location = location;
-          const percentage = typeof location.start.percentage === "number"
-            ? location.start.percentage
-            : null;
-
-          const displayed = location.start.displayed;
-          updateReaderStatus(
-            displayed?.total
-              ? `Section · ${displayed.page} / ${displayed.total}`
-              : "Lecture EPUB",
-            percentage
-          );
-
-          if (location.start.cfi) {
-            void persistPosition(this.record.id, { cfi: location.start.cfi }, percentage);
-          }
-        });
+        this.rendition.on("relocated", location => this.reportLocation(location));
 
         const savedCfi = this.record.position?.cfi;
 
@@ -2504,6 +3101,9 @@
           if (!savedCfi) throw error;
           await this.rendition.display();
         }
+
+        void this.toc().catch(() => {});
+        void this.prepareLocations();
       }
 
       styleDocument(doc) {
@@ -2641,6 +3241,390 @@
         return found ? wrapper : null;
       }
 
+      /* --- Position, progression et temps restant --- */
+
+      reportLocation(location) {
+        if (this.destroyed || !location?.start) return;
+
+        this.location = location;
+        let percentage = typeof location.start.percentage === "number"
+          ? location.start.percentage
+          : null;
+
+        if (percentage === null && this.book.locations.length()) {
+          percentage = this.book.locations.percentageFromCfi(location.start.cfi);
+        }
+
+        const displayed = location.start.displayed;
+        updateReaderStatus(
+          displayed?.total
+            ? `Section · ${displayed.page} / ${displayed.total}`
+            : "Lecture EPUB",
+          percentage
+        );
+
+        if (location.start.cfi) {
+          void persistPosition(this.record.id, { cfi: location.start.cfi }, percentage);
+        }
+      }
+
+      /*
+       * Epub.js ne connaît la progression dans tout le livre qu'après avoir
+       * découpé le texte en « positions ». Ce calcul prend quelques secondes
+       * la première fois, puis il est gardé avec le livre.
+       */
+      async prepareLocations() {
+        const locations = this.book.locations;
+
+        try {
+          if (this.record.epubLocations) {
+            locations.load(this.record.epubLocations);
+          } else {
+            await sleep(1500);
+            if (this.destroyed) return;
+
+            await locations.generate(EPUB_LOCATION_CHARS);
+            if (this.destroyed) return;
+
+            const saved = locations.save();
+            this.record.epubLocations = saved;
+            await db.books.update(this.record.id, { epubLocations: saved });
+          }
+
+          if (!this.destroyed && this.location) {
+            this.reportLocation(this.location);
+            onReaderPageChanged();
+          }
+        } catch (error) {
+          console.warn("Positions EPUB non calculées :", error);
+        }
+      }
+
+      language() {
+        return this.book?.packaging?.metadata?.language || "";
+      }
+
+      /* Part du livre (0 à 1) avant une position. */
+      progressOf(cfi) {
+        try {
+          if (this.book.locations.length()) return this.book.locations.percentageFromCfi(cfi);
+          const section = this.book.spine.get(cfi);
+          return section ? section.index / Math.max(1, this.book.spine.length) : 0;
+        } catch (_) {
+          return 0;
+        }
+      }
+
+      describe(cfi) {
+        let chapter = "";
+
+        try {
+          const index = this.book.spine.get(cfi)?.index;
+          chapter = this.chapterAt(index)?.label || "";
+        } catch (_) {}
+
+        const percent = Math.round(this.progressOf(cfi) * 100) + " %";
+        return chapter ? `${chapter} · ${percent}` : percent;
+      }
+
+      positionInfo() {
+        const cfi = this.location?.start?.cfi;
+        return {
+          position: cfi ? { cfi } : null,
+          progress: cfi ? this.progressOf(cfi) : 0,
+          label: cfi ? this.describe(cfi) : ""
+        };
+      }
+
+      isOnPage(position) {
+        const start = this.location?.start?.cfi;
+        const end = this.location?.end?.cfi;
+        if (!position?.cfi || !start || !end) return false;
+
+        try {
+          const cfi = new ePub.CFI();
+          return cfi.compare(start, position.cfi) <= 0 && cfi.compare(position.cfi, end) <= 0;
+        } catch (_) {
+          return false;
+        }
+      }
+
+      /* Iframe du chapitre affiché (Epub.js en garde parfois deux). */
+      visibleContents() {
+        const all = this.rendition?.getContents?.() || [];
+        const index = this.location?.start?.index;
+        return all.find(contents => contents.sectionIndex === index) || all[0] || null;
+      }
+
+      /* Iframe sous un point de la fenêtre, et ce point dans l'iframe. */
+      contentsAt(x, y) {
+        for (const contents of this.rendition?.getContents?.() || []) {
+          const frame = contents.document?.defaultView?.frameElement;
+          const rect = frame?.getBoundingClientRect();
+          if (rect && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+            return { contents, x: x - rect.left, y: y - rect.top };
+          }
+        }
+        return null;
+      }
+
+      visibleRange() {
+        const start = this.location?.start?.cfi;
+        const end = this.location?.end?.cfi;
+        const contents = this.visibleContents();
+        if (!start || !end || !contents) return null;
+
+        try {
+          const from = contents.range(start);
+          const to = contents.range(end);
+          const range = contents.document.createRange();
+          range.setStart(from.startContainer, from.startOffset);
+          range.setEnd(to.endContainer, to.endOffset);
+          return range.collapsed ? null : range;
+        } catch (_) {
+          return null;
+        }
+      }
+
+      pageText() {
+        const range = this.visibleRange();
+        return range ? rangeText(range) : "";
+      }
+
+      pageCharCount() {
+        return this.pageText().length;
+      }
+
+      /* Caractères restants dans le chapitre (fichier du livre) et dans le livre. */
+      remaining() {
+        const displayed = this.location?.start?.displayed;
+        const chars = this.pageCharCount();
+        if (!displayed?.total || !chars) return null;
+
+        const result = {
+          chapterChars: chars * (displayed.total - displayed.page + 1),
+          bookChars: null
+        };
+
+        const total = this.book.locations.length();
+        if (total) {
+          const done = this.progressOf(this.location.start.cfi);
+          result.bookChars = Math.max(result.chapterChars, (1 - done) * total * EPUB_LOCATION_CHARS);
+        }
+
+        return result;
+      }
+
+      /* --- Sommaire, déplacement et recherche --- */
+
+      async toc() {
+        if (this.tocItems) return this.tocItems;
+
+        const navigation = await this.book.loaded.navigation;
+        const items = [];
+
+        const walk = (list, depth) => {
+          for (const item of list || []) {
+            const label = cleanText(item.label);
+
+            if (label && item.href) {
+              let index = null;
+              try { index = this.book.spine.get(item.href)?.index ?? null; } catch (_) {}
+              items.push({ label, depth, index, target: { href: item.href } });
+            }
+
+            walk(item.subitems, depth + 1);
+          }
+        };
+
+        walk(navigation?.toc, 0);
+        this.tocItems = items;
+        return items;
+      }
+
+      chapterAt(index) {
+        if (typeof index !== "number") return null;
+        let found = null;
+
+        for (const item of this.tocItems || []) {
+          if (item.index === null) continue;
+          if (item.index <= index && (!found || item.index >= found.index)) found = item;
+        }
+
+        return found;
+      }
+
+      tocIndex(items) {
+        const chapter = this.chapterAt(this.location?.start?.index);
+        return chapter ? items.indexOf(chapter) : -1;
+      }
+
+      async goTo(target) {
+        if (target?.cfi) await this.rendition.display(target.cfi);
+        else if (target?.href) await this.rendition.display(target.href);
+      }
+
+      async search(query, report, cancelled) {
+        const results = [];
+        const needle = foldText(query);
+        const sections = this.book.spine.spineItems || [];
+
+        for (let index = 0; index < sections.length; index++) {
+          if (cancelled() || results.length >= MAX_SEARCH_RESULTS) break;
+          report(index + 1, sections.length);
+
+          const section = sections[index];
+
+          try {
+            await section.load(this.book.load.bind(this.book));
+            const root = section.document?.body || section.document?.documentElement;
+
+            /* Recherche sans tenir compte des accents ni des majuscules. */
+            for (const node of root ? textNodesIn(root) : []) {
+              const folded = foldText(node.nodeValue);
+              let from = 0;
+              let at;
+
+              while ((at = folded.indexOf(needle, from)) >= 0 && results.length < MAX_SEARCH_RESULTS) {
+                const range = section.document.createRange();
+                range.setStart(node, at);
+                range.setEnd(node, at + needle.length);
+
+                const cfi = section.cfiFromRange(range);
+                const block = blockText(blockFor(node), node, at);
+
+                results.push({
+                  target: { cfi },
+                  excerpt: excerptAround(block.text, Math.max(0, block.position), needle.length),
+                  label: this.describe(cfi)
+                });
+
+                from = at + needle.length;
+              }
+            }
+          } catch (_) {
+            /* Chapitre illisible : on passe au suivant. */
+          } finally {
+            try { section.unload(); } catch (_) {}
+          }
+        }
+
+        return results;
+      }
+
+      /* Résultat de recherche mis en évidence quelques secondes. */
+      markSearch(target) {
+        if (!target?.cfi) return;
+        const annotations = this.rendition.annotations;
+
+        try {
+          annotations.highlight(target.cfi, {}, () => {}, "omni-search-mark", {
+            fill: "#ff9628", "fill-opacity": "0.45", stroke: "none"
+          });
+          setTimeout(() => {
+            try { annotations.remove(target.cfi, "highlight"); } catch (_) {}
+          }, 4500);
+        } catch (_) {}
+      }
+
+      /* --- Surlignage --- */
+
+      get supportsHighlights() { return true; }
+
+      setHighlights(notes) {
+        const annotations = this.rendition?.annotations;
+        if (!annotations) return;
+
+        for (const cfi of this.shownHighlights || []) {
+          try { annotations.remove(cfi, "highlight"); } catch (_) {}
+        }
+
+        this.shownHighlights = [];
+
+        for (const note of notes) {
+          if (!note.cfiRange) continue;
+
+          try {
+            annotations.highlight(note.cfiRange, { id: note.id }, () => {}, "omni-highlight", {
+              fill: HIGHLIGHT_FILL[note.color] || HIGHLIGHT_FILL.jaune,
+              "fill-opacity": "0.4",
+              stroke: "none"
+            });
+            this.shownHighlights.push(note.cfiRange);
+          } catch (_) {}
+        }
+      }
+
+      selectionFromPoint(x, y) {
+        const place = this.contentsAt(x, y);
+        if (!place) return null;
+
+        const caret = caretAt(place.contents.document, place.x, place.y);
+        const range = caret && sentenceRange(caret.node, caret.offset);
+        if (!range) return null;
+
+        return this.selectionFromRange(range, place.contents);
+      }
+
+      selectionFromRange(range, contents) {
+        try {
+          const cfiRange = contents.cfiFromRange(range);
+          return { range, contents, cfiRange, text: rangeText(range) };
+        } catch (_) {
+          return null;
+        }
+      }
+
+      extendSelection(selection) {
+        const extended = extendRange(selection.range, selection.contents.document.body);
+        return extended ? this.selectionFromRange(extended, selection.contents) : null;
+      }
+
+      showSelection(selection) {
+        this.clearSelection();
+        if (!selection?.cfiRange) return;
+
+        try {
+          this.rendition.annotations.highlight(selection.cfiRange, {}, () => {}, "omni-selection-mark", {
+            fill: "#a777ff", "fill-opacity": "0.35", stroke: "none"
+          });
+          this.selectionCfi = selection.cfiRange;
+        } catch (_) {}
+      }
+
+      clearSelection() {
+        if (!this.selectionCfi) return;
+        try { this.rendition.annotations.remove(this.selectionCfi, "highlight"); } catch (_) {}
+        this.selectionCfi = null;
+      }
+
+      /* Données à enregistrer pour un surlignage. */
+      highlightData(selection) {
+        return {
+          cfiRange: selection.cfiRange,
+          position: { cfi: selection.cfiRange },
+          progress: this.progressOf(selection.cfiRange),
+          label: this.describe(selection.cfiRange)
+        };
+      }
+
+      annotationAt(x, y, notes) {
+        const place = this.contentsAt(x, y);
+        const caret = place && caretAt(place.contents.document, place.x, place.y);
+        if (!caret) return null;
+
+        for (const note of notes) {
+          if (!note.cfiRange) continue;
+
+          try {
+            const range = place.contents.range(note.cfiRange);
+            if (range && range.isPointInRange(caret.node, caret.offset)) return note;
+          } catch (_) {}
+        }
+
+        return null;
+      }
+
       destroy() {
         this.destroyed = true;
         try { this.rendition?.destroy(); } catch (_) {}
@@ -2698,6 +3682,9 @@
      * page courante est dans la page.
      */
     const TEXT_CHUNK_SIZE = 60000;
+
+    /* Titres reconnus dans un TXT : « Chapitre 3 », « CHAPITRE III. Le départ », « Prologue », « XII »… */
+    const TXT_HEADING = /^(?:(?:chapitre|chapter|partie|part|livre|book|tome|acte|scène)\s+[\divxlcdm]+\b[^\n]{0,70}|(?:prologue|épilogue|epilogue|préface|preface|introduction|conclusion|avant-propos)\b[^\n]{0,70}|[IVXLCDM]{1,7}\.?|\d{1,3}\.)$/i;
 
     function splitIntoChunks(root) {
       const chunks = [];
@@ -2773,6 +3760,12 @@
         this.shownChunk = -1;
         this.segments = [];
         this.characterCount = 0;
+        this.nodeStart = new Map();  /* nœud de texte → position dans le livre */
+        this.headings = [];
+        this.highlights = [];
+        this.bounds = null;
+        this.text = null;
+        this.folded = null;
         this.objectUrls = [];
         this.destroyed = false;
       }
@@ -2798,7 +3791,18 @@
           const normalized = source.replace(/\r\n?/g, "\n").replace(/\f/g, "\n\n");
 
           for (const block of normalized.split(/\n[\t ]*\n/)) {
-            if (block.trim()) appendTextParagraphs(fragment, block.trim());
+            const text = block.trim();
+            if (!text) continue;
+
+            /* Ligne seule du type « Chapitre 3 » : titre, pour le sommaire. */
+            if (TXT_HEADING.test(text)) {
+              const heading = document.createElement("h2");
+              heading.className = "txt-heading";
+              heading.textContent = text;
+              fragment.appendChild(heading);
+            } else {
+              appendTextParagraphs(fragment, text);
+            }
           }
 
           if (!fragment.childNodes.length) {
@@ -2813,6 +3817,7 @@
         }));
 
         this.measureTextSegments();
+        this.collectHeadings();
         $("textViewport").hidden = false;
         await nextFrame();
 
@@ -2828,6 +3833,7 @@
           const length = node.nodeValue?.length || 0;
           if (!length) return;
           this.segments.push({ node, start: offset, end: offset + length });
+          this.nodeStart.set(node, offset);
           offset += length;
         };
 
@@ -2855,6 +3861,7 @@
         if (index === this.shownChunk || !this.chunks[index]) return;
         $("textContent").replaceChildren(...this.chunks[index].nodes);
         this.shownChunk = index;
+        this.renderHighlights();
       }
 
       chunkOfPage(page) {
@@ -3113,8 +4120,262 @@
         return wrapper;
       }
 
+      /* --- Titres, position et temps restant --- */
+
+      /* Titres de chapitre (h1 à h3) et leur position dans le texte. */
+      collectHeadings() {
+        this.headings = [];
+
+        for (const chunk of this.chunks) {
+          for (const node of chunk.nodes) {
+            if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+            const found = node.matches("h1,h2,h3") ? [node] : Array.from(node.querySelectorAll("h1,h2,h3"));
+
+            for (const heading of found) {
+              const first = textNodesIn(heading)[0];
+              const label = cleanText(heading.textContent).slice(0, 140);
+              if (!first || !label || !this.nodeStart.has(first)) continue;
+
+              this.headings.push({
+                label,
+                depth: Number(heading.localName[1]) - 1,
+                target: { offset: this.nodeStart.get(first) }
+              });
+            }
+          }
+        }
+
+        const top = Math.min(...this.headings.map(heading => heading.depth));
+        for (const heading of this.headings) heading.depth -= top;
+      }
+
+      language() {
+        return $("textContent").lang || "";
+      }
+
+      /* Premier et dernier caractère (exclu) de la page affichée. */
+      pageBounds() {
+        const key = `${this.page}|${this.total}|${this.width}|${prefs.fontSize}`;
+        if (this.bounds?.key === key) return this.bounds;
+
+        const start = this.firstOffsetOfPage(this.page);
+        const end = Math.max(start, this.endOffsetOfPage(this.page));
+        this.bounds = { key, start, end };
+        return this.bounds;
+      }
+
+      chapterAt(offset) {
+        let found = null;
+        for (const heading of this.headings) {
+          if (heading.target.offset <= offset) found = heading;
+          else break;
+        }
+        return found;
+      }
+
+      describe(offset) {
+        const percent = Math.round(offset / Math.max(1, this.characterCount) * 100) + " %";
+        const chapter = this.chapterAt(offset)?.label;
+        return chapter ? `${chapter} · ${percent}` : percent;
+      }
+
+      positionInfo() {
+        const { start } = this.pageBounds();
+        return {
+          position: { offset: start },
+          progress: start / Math.max(1, this.characterCount),
+          label: `Page ${this.page + 1} · ${this.describe(start)}`
+        };
+      }
+
+      isOnPage(position) {
+        if (typeof position?.offset !== "number") return false;
+        const { start, end } = this.pageBounds();
+        return position.offset >= start && (position.offset < end || position.offset === start);
+      }
+
+      fullText() {
+        if (this.text === null) this.text = this.segments.map(segment => segment.node.nodeValue).join("");
+        return this.text;
+      }
+
+      foldedText() {
+        if (this.folded === null) this.folded = foldText(this.fullText());
+        return this.folded;
+      }
+
+      pageText() {
+        const { start, end } = this.pageBounds();
+        const range = this.rangeBetween(start, end);
+        return range ? rangeText(range) : "";
+      }
+
+      pageCharCount() {
+        const { start, end } = this.pageBounds();
+        return end - start;
+      }
+
+      remaining() {
+        const { start } = this.pageBounds();
+        const next = this.headings.find(heading => heading.target.offset > start);
+
+        return {
+          chapterChars: this.headings.length ? (next ? next.target.offset : this.characterCount) - start : null,
+          bookChars: this.characterCount - start
+        };
+      }
+
+      /* --- Sommaire, déplacement et recherche --- */
+
+      async toc() { return this.headings; }
+
+      tocIndex(items) {
+        return items.indexOf(this.chapterAt(this.pageBounds().start));
+      }
+
+      async goTo(target) {
+        if (typeof target?.offset !== "number") return;
+        this.page = clamp(this.findPageForOffset(target.offset), 0, this.total - 1);
+        this.applyPage(true);
+      }
+
+      async search(query) {
+        const haystack = this.foldedText();
+        const needle = foldText(query);
+        const text = this.fullText();
+        const results = [];
+        let from = 0;
+
+        while (results.length < MAX_SEARCH_RESULTS) {
+          const index = haystack.indexOf(needle, from);
+          if (index < 0) break;
+
+          results.push({
+            target: { offset: index, length: needle.length },
+            excerpt: excerptAround(text, index, needle.length),
+            label: this.describe(index)
+          });
+
+          from = index + needle.length;
+        }
+
+        return results;
+      }
+
+      markSearch(target) {
+        clearTimeout(this.searchTimer);
+        this.mark("omni-search", target.offset, target.offset + (target.length || 1));
+        this.searchTimer = setTimeout(() => this.mark("omni-search", 0, 0), 4500);
+      }
+
+      /* --- Surlignage (API « CSS Custom Highlight » : le texte n'est pas modifié) --- */
+
+      get supportsHighlights() { return Boolean(window.CSS?.highlights && window.Highlight); }
+
+      /* Range DOM d'un passage, limité au morceau affiché. */
+      rangeBetween(start, end) {
+        const chunk = this.chunks[this.shownChunk];
+        if (!chunk) return null;
+
+        const from = Math.max(start, chunk.start);
+        const to = Math.min(end, chunk.end);
+        if (to <= from) return null;
+
+        const a = this.pointAt(from);
+        const b = this.pointAt(to);
+        if (!a || !b) return null;
+
+        const range = document.createRange();
+        range.setStart(a.node, a.offset);
+        range.setEnd(b.node, b.offset);
+        return range;
+      }
+
+      mark(name, start, end) {
+        if (!this.supportsHighlights) return;
+        const range = end > start ? this.rangeBetween(start, end) : null;
+        CSS.highlights.set(name, range ? new Highlight(range) : new Highlight());
+      }
+
+      setHighlights(notes) {
+        this.highlights = notes.filter(note => typeof note.start === "number");
+        this.renderHighlights();
+      }
+
+      renderHighlights() {
+        if (!this.supportsHighlights || this.destroyed) return;
+
+        /* Aucun surlignage dans ce livre : rien à dessiner. */
+        if (!this.highlights.length && !this.highlightsPainted) return;
+        this.highlightsPainted = this.highlights.length > 0;
+
+        for (const color of HIGHLIGHT_COLORS) {
+          const ranges = this.highlights
+            .filter(note => (note.color || "jaune") === color)
+            .map(note => this.rangeBetween(note.start, note.end))
+            .filter(Boolean);
+          CSS.highlights.set("omni-" + color, new Highlight(...ranges));
+        }
+      }
+
+      /* Position dans le livre d'un point du texte affiché. */
+      offsetOf(node, offset) {
+        return this.nodeStart.has(node) ? this.nodeStart.get(node) + offset : null;
+      }
+
+      selectionFromRange(range) {
+        const start = this.offsetOf(range.startContainer, range.startOffset);
+        const end = this.offsetOf(range.endContainer, range.endOffset);
+        if (start === null || end === null || end <= start) return null;
+        return { range, start, end, text: rangeText(range) };
+      }
+
+      selectionFromPoint(x, y) {
+        const caret = caretAt(document, x, y);
+        if (!caret || !$("textContent").contains(caret.node)) return null;
+
+        const range = sentenceRange(caret.node, caret.offset);
+        return range ? this.selectionFromRange(range) : null;
+      }
+
+      extendSelection(selection) {
+        const extended = extendRange(selection.range, $("textContent"));
+        return extended ? this.selectionFromRange(extended) : null;
+      }
+
+      showSelection(selection) {
+        this.mark("omni-selection", selection.start, selection.end);
+      }
+
+      clearSelection() {
+        this.mark("omni-selection", 0, 0);
+      }
+
+      highlightData(selection) {
+        return {
+          start: selection.start,
+          end: selection.end,
+          position: { offset: selection.start },
+          progress: selection.start / Math.max(1, this.characterCount),
+          label: this.describe(selection.start)
+        };
+      }
+
+      annotationAt(x, y, notes) {
+        const caret = caretAt(document, x, y);
+        const offset = caret && $("textContent").contains(caret.node)
+          ? this.offsetOf(caret.node, caret.offset)
+          : null;
+        if (offset === null) return null;
+
+        return notes.find(note => typeof note.start === "number" && note.start <= offset && offset < note.end) || null;
+      }
+
       destroy() {
         this.destroyed = true;
+        try { CSS.highlights?.clear(); } catch (_) {}
+        clearTimeout(this.searchTimer);
         for (const url of this.objectUrls) URL.revokeObjectURL(url);
         this.objectUrls = [];
         this.chunks = [];
@@ -3249,6 +4510,28 @@
       fontChanged() {}
       setTheme() {}
 
+      /* --- Position et déplacement (une BD n'a ni texte ni sommaire) --- */
+
+      language() { return ""; }
+
+      positionInfo() {
+        return {
+          position: { page: this.page },
+          progress: this.pages.length > 1 ? this.page / (this.pages.length - 1) : 0,
+          label: `Page ${this.page + 1}`
+        };
+      }
+
+      isOnPage(position) { return position?.page === this.page; }
+      remaining() { return { chapterPages: null, bookPages: this.pages.length - this.page }; }
+      async toc() { return []; }
+
+      async goTo(target) {
+        if (typeof target?.page === "number") await this.showPage(target.page, true);
+      }
+
+      get supportsHighlights() { return false; }
+
       snapshot() {
         const image = document.createElement("img");
         image.className = "snapshot-comic";
@@ -3317,6 +4600,7 @@
         await nextFrame();
         await this.renderPage(false);
         this.saveState();
+        void this.toc().catch(() => {});
       }
 
       updateZoomControls() {
@@ -3450,6 +4734,126 @@
       fontChanged() {}
       setTheme() {}
 
+      /* --- Position, sommaire, recherche et texte de la page --- */
+
+      language() { return ""; }
+
+      positionInfo() {
+        return {
+          position: { page: this.page },
+          progress: this.total > 1 ? this.page / (this.total - 1) : 0,
+          label: this.describe(this.page)
+        };
+      }
+
+      describe(page) {
+        const chapter = this.chapterAt(page)?.label;
+        return chapter ? `Page ${page + 1} · ${chapter}` : `Page ${page + 1}`;
+      }
+
+      isOnPage(position) { return position?.page === this.page; }
+
+      remaining() {
+        const next = (this.tocItems || []).find(item => item.target.page > this.page);
+        return {
+          chapterPages: this.tocItems?.length ? (next ? next.target.page : this.total) - this.page : null,
+          bookPages: this.total - this.page
+        };
+      }
+
+      /* Signets intégrés au PDF (le « plan » du document). */
+      async toc() {
+        if (this.tocItems) return this.tocItems;
+
+        const outline = await this.pdf.getOutline().catch(() => null);
+        const items = [];
+
+        const walk = async (list, depth) => {
+          for (const item of list || []) {
+            if (items.length >= 500 || this.destroyed) return;
+
+            let page = null;
+
+            try {
+              let destination = item.dest;
+              if (typeof destination === "string") destination = await this.pdf.getDestination(destination);
+
+              if (Array.isArray(destination) && destination[0] != null) {
+                page = typeof destination[0] === "number"
+                  ? destination[0]
+                  : await this.pdf.getPageIndex(destination[0]);
+              }
+            } catch (_) {}
+
+            const label = cleanText(item.title);
+            if (label && page !== null) items.push({ label, depth, target: { page } });
+            await walk(item.items, depth + 1);
+          }
+        };
+
+        await walk(outline, 0);
+        this.tocItems = items;
+        return items;
+      }
+
+      chapterAt(page) {
+        let found = null;
+        for (const item of this.tocItems || []) {
+          if (item.target.page <= page) found = item;
+        }
+        return found;
+      }
+
+      tocIndex(items) { return items.indexOf(this.chapterAt(this.page)); }
+
+      async goTo(target) {
+        if (typeof target?.page !== "number") return;
+        this.page = clamp(target.page, 0, this.total - 1);
+        $("pdfViewport").scrollTo(0, 0);
+        await this.renderPage(true);
+      }
+
+      async textOfPage(index) {
+        const page = await this.pdf.getPage(index + 1);
+        const content = await page.getTextContent();
+        return content.items.map(item => item.str + (item.hasEOL ? "\n" : "")).join(" ");
+      }
+
+      async pageText() {
+        try { return cleanText(await this.textOfPage(this.page)); } catch (_) { return ""; }
+      }
+
+      async search(query, report, cancelled) {
+        const needle = foldText(query);
+        const results = [];
+
+        if (!this.tocItems) await this.toc().catch(() => {});
+
+        for (let index = 0; index < this.total && results.length < MAX_SEARCH_RESULTS; index++) {
+          if (cancelled()) break;
+          if (index % 4 === 0) report(index + 1, this.total);
+
+          let text = "";
+          try { text = cleanText(await this.textOfPage(index)); } catch (_) { continue; }
+
+          const haystack = foldText(text);
+          let from = 0;
+          let perPage = 0;
+
+          while (perPage < 5) {
+            const at = haystack.indexOf(needle, from);
+            if (at < 0) break;
+            results.push({ target: { page: index }, excerpt: excerptAround(text, at, needle.length), label: this.describe(index) });
+            from = at + needle.length;
+            perPage++;
+          }
+        }
+
+        return results;
+      }
+
+      get supportsHighlights() { return false; }
+
       /* Copie de la page telle qu'elle est affichée (zoom et défilement compris). */
       snapshot() {
         const source = $("pdfViewport").querySelector("canvas");
@@ -3537,8 +4941,10 @@
           content = copyArrayBuffer(stored.content);
         }
 
+        const annotations = await db.annotations.where("bookId").equals(bookId).toArray();
+
         try { current?.engine?.destroy(); } catch (_) {}
-        current = { record, content, engine: null };
+        current = { record, content, engine: null, annotations };
 
         $("libraryView").hidden = true;
         $("readerView").hidden = false;
@@ -3570,6 +4976,9 @@
 
         current.engine = engine;
         $("readerLoading").hidden = true;
+        refreshHighlights();
+        updateReaderTools();
+        onReaderPageChanged();
         scheduleChromeHide();
       } catch (error) {
         console.error("Ouverture impossible :", error);
@@ -3598,7 +5007,18 @@
     async function closeReader() {
       sessionToken++;
       clearTimeout(chromeTimer);
+      clearTimeout(pageExtrasTimer);
+      stopReadAloud();
+      closeSheet();
+      closeNav();
       closeSettings();
+
+      /* La recherche et le sommaire concernent ce livre seulement. */
+      searchToken++;
+      lastSearch = "";
+      $("searchResults").replaceChildren();
+      $("searchStatus").textContent = "";
+      $("tocList").replaceChildren();
 
       const engine = current?.engine;
       try { engine?.saveState?.(); } catch (_) {}
@@ -4023,9 +5443,18 @@
     }
 
     /* Toucher court : bords = page précédente / suivante, centre = commandes. */
-    function handleTap(x) {
+    function handleTap(x, y) {
       const rect = $("readerStage").getBoundingClientRect();
       const ratio = (x - rect.left) / Math.max(1, rect.width);
+
+      /* Au centre, toucher un passage surligné ouvre sa note. */
+      if (ratio >= .22 && ratio <= .78) {
+        const note = current?.engine?.annotationAt?.(x, y, highlightsOf());
+        if (note) {
+          openSheet({ mode: "edit", note, text: note.text });
+          return;
+        }
+      }
 
       if (ratio < .22) navigate(-1);
       else if (ratio > .78) navigate(1);
@@ -4038,7 +5467,7 @@
      */
     function gestureStart(x, y, pointerId, fromFrame) {
       if (!current?.engine || opening) return false;
-      if (!$("settingsPanel").hidden || !$("aboutModal").hidden) return false;
+      if (anyOverlayOpen()) return false;
 
       /* Bas de l'écran : on laisse le téléphone gérer « glisser pour quitter ». */
       if (y > window.innerHeight - SYSTEM_EDGE) return false;
@@ -4057,8 +5486,18 @@
         mode: "pending",
         samples: [{ x, t: now }],
         turn: null,
-        direction: 0
+        direction: 0,
+        pressTimer: 0
       };
+
+      /* Appui long sans bouger : surligner la phrase (ou annoter la page). */
+      const state = gesture;
+      state.pressTimer = setTimeout(() => {
+        if (gesture !== state || state.mode !== "pending") return;
+        state.mode = "ignore";
+        void beginSelection(state.x0, state.y0);
+      }, LONG_PRESS_DELAY);
+
       return true;
     }
 
@@ -4106,6 +5545,7 @@
 
       if (state.mode === "pending") {
         if (Math.hypot(dx, dy) < 10) return;
+        clearTimeout(state.pressTimer);
 
         const horizontal = Math.abs(dx) > Math.abs(dy) * 1.2;
         const pdfScrolls = !state.fromFrame && current.engine.pansHorizontally?.();
@@ -4127,6 +5567,7 @@
       if (!state || state.pointerId !== pointerId) return;
 
       gesture = null;
+      clearTimeout(state.pressTimer);
       $("readerStage").classList.remove("dragging");
 
       const first = state.samples[0];
@@ -4135,7 +5576,7 @@
       const dx = (cancelled ? state.lastX : x) - state.x0;
 
       if (state.mode === "pending") {
-        if (!cancelled && !onLink && performance.now() - state.t0 < 650) handleTap(x);
+        if (!cancelled && !onLink && performance.now() - state.t0 < 650) handleTap(x, y);
       } else if (state.mode === "turn") {
         void state.turn.release(cancelled ? 0 : velocity);
       } else if (state.mode === "edge") {
@@ -4213,6 +5654,1000 @@
     }
 
     /* ============================================================
+       APRÈS CHAQUE CHANGEMENT DE PAGE
+
+       Signet affiché, vitesse de lecture, temps restant et lecture à
+       voix haute suivent la page courante.
+       ============================================================ */
+    let pageExtrasTimer = 0;
+
+    function onReaderPageChanged() {
+      if (!current?.engine) return;
+      clearTimeout(pageExtrasTimer);
+      pageExtrasTimer = setTimeout(refreshPageExtras, 120);
+      speechPageChanged();
+    }
+
+    async function refreshPageExtras() {
+      const engine = current?.engine;
+      if (!engine) return;
+
+      try {
+        updateBookmarkButton();
+        measureReadingSpeed(engine);
+        updateTimeLeft(engine);
+      } catch (error) {
+        console.warn("Mise à jour de la page :", error);
+      }
+    }
+
+    function stopTurns() {
+      gesture = null;
+      activeTurn?.abort();
+      activeTurn = null;
+      resetRubberBand();
+    }
+
+    /* ============================================================
+       TEMPS DE LECTURE RESTANT
+
+       La vitesse de lecture est mesurée pendant qu'on lit : temps passé
+       sur une page avant de passer à la suivante, rapporté au nombre de
+       caractères de cette page (ou au nombre de pages pour les PDF et BD).
+       ============================================================ */
+    const readingClock = { key: "", since: 0, chars: 0, progress: 0 };
+
+    function measureReadingSpeed(engine) {
+      const info = engine.positionInfo?.();
+      if (!info) return;
+
+      const key = engine.record.id + JSON.stringify(info.position);
+      if (key === readingClock.key) return;
+
+      const now = Date.now();
+      const seconds = (now - readingClock.since) / 1000;
+      const forward = readingClock.key.startsWith(engine.record.id) && info.progress > readingClock.progress;
+
+      /* Une page lue normalement : ni sautée en quelques secondes, ni laissée ouverte des heures. */
+      if (forward && !speech.active && seconds >= 4 && seconds <= 480) {
+        if (engine.pageCharCount && readingClock.chars > 150) {
+          const sample = clamp(readingClock.chars / (seconds / 60), 300, 4000);
+          prefs.readingSpeed = Math.round(prefs.readingSpeed * .8 + sample * .2);
+          void savePreference("readingSpeed", prefs.readingSpeed);
+        } else if (!engine.pageCharCount) {
+          const format = engine.record.format;
+          prefs.pageSeconds[format] = Math.round((prefs.pageSeconds[format] || 60) * .8 + seconds * .2);
+          void savePreference("pageSeconds", prefs.pageSeconds);
+        }
+      }
+
+      readingClock.key = key;
+      readingClock.since = now;
+      readingClock.progress = info.progress;
+      readingClock.chars = engine.pageCharCount ? engine.pageCharCount() : 0;
+    }
+
+    function updateTimeLeft(engine) {
+      const output = $("timeLeft");
+      const left = engine.remaining?.();
+      let chapter = null;
+      let book = null;
+
+      if (left && "bookChars" in left) {
+        if (left.chapterChars != null) chapter = left.chapterChars / prefs.readingSpeed;
+        if (left.bookChars != null) book = left.bookChars / prefs.readingSpeed;
+      } else if (left) {
+        const seconds = prefs.pageSeconds[engine.record.format] || 60;
+        if (left.chapterPages != null) chapter = left.chapterPages * seconds / 60;
+        if (left.bookPages != null) book = left.bookPages * seconds / 60;
+      }
+
+      const parts = [];
+      if (chapter !== null) parts.push(`≈ ${formatDuration(chapter)} avant la fin du chapitre`);
+      if (book !== null && (chapter === null || book - chapter > 1)) {
+        parts.push(chapter === null ? `≈ ${formatDuration(book)} avant la fin` : `${formatDuration(book)} pour le livre`);
+      }
+
+      output.textContent = parts.join(" · ");
+    }
+
+    /* ============================================================
+       SIGNETS
+       ============================================================ */
+    function bookmarksOnPage() {
+      const engine = current?.engine;
+      if (!engine?.isOnPage) return [];
+      return current.annotations.filter(note => note.type === "bookmark" && engine.isOnPage(note.position));
+    }
+
+    function updateBookmarkButton() {
+      const marked = bookmarksOnPage().length > 0;
+      const button = $("bookmarkButton");
+      const label = marked ? "Retirer le signet de cette page" : "Ajouter un signet à cette page";
+
+      button.setAttribute("aria-pressed", String(marked));
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      $("pageRibbon").hidden = !marked;
+    }
+
+    async function toggleBookmark() {
+      const engine = current?.engine;
+      if (!engine || opening) return;
+
+      const existing = bookmarksOnPage();
+
+      if (existing.length) {
+        await db.annotations.bulkDelete(existing.map(note => note.id));
+        current.annotations = current.annotations.filter(note => !existing.includes(note));
+        showToast("Signet retiré.", 1800);
+      } else {
+        const info = engine.positionInfo();
+        if (!info.position) return;
+
+        const text = cleanText(await engine.pageText?.() || "").slice(0, 160);
+        const note = {
+          id: uid(),
+          bookId: engine.record.id,
+          type: "bookmark",
+          createdAt: Date.now(),
+          position: info.position,
+          progress: info.progress,
+          label: info.label,
+          text
+        };
+
+        await db.annotations.put(note);
+        current.annotations.push(note);
+        showToast("Signet ajouté. Retrouvez-le dans « Signets et notes ».", 2400);
+      }
+
+      updateBookmarkButton();
+      if (!$("navPanel").hidden) renderNotes();
+    }
+
+    /* ============================================================
+       SURLIGNAGES ET NOTES
+
+       Appui long sur une phrase : elle est sélectionnée et une fenêtre
+       propose une couleur et une note. Sur un PDF ou une BD (pas de texte
+       sélectionnable), l'appui long ajoute une note à la page.
+       ============================================================ */
+    let sheetState = null;
+    let sheetOpenedAt = 0;
+
+    function highlightsOf() {
+      return (current?.annotations || []).filter(note => note.type === "highlight");
+    }
+
+    function refreshHighlights() {
+      try { current?.engine?.setHighlights?.(highlightsOf()); } catch (_) {}
+    }
+
+    async function beginSelection(x, y) {
+      const engine = current?.engine;
+      if (!engine || anyOverlayOpen()) return;
+
+      if (!engine.supportsHighlights) {
+        const info = engine.positionInfo();
+        navigator.vibrate?.(15);
+        openSheet({ mode: "new", kind: "note", info, text: cleanText(await engine.pageText?.() || "").slice(0, 160) });
+        return;
+      }
+
+      const selection = engine.selectionFromPoint(x, y);
+      if (!selection) return;
+
+      navigator.vibrate?.(15);
+      engine.showSelection(selection);
+      openSheet({ mode: "new", kind: "highlight", selection, text: selection.text, color: "jaune" });
+    }
+
+    function openSheet(state) {
+      sheetState = state;
+      sheetOpenedAt = Date.now();
+      clearTimeout(chromeTimer);
+
+      const note = state.note || null;
+      const kind = note ? note.type : state.kind;
+      const color = note?.color || state.color || "jaune";
+      state.color = color;
+
+      $("sheetTitle").textContent = kind === "highlight"
+        ? (state.mode === "edit" ? "Surlignage" : "Surligner")
+        : `Note · ${(note || state.info)?.label || "cette page"}`;
+      $("sheetExcerpt").textContent = state.text || note?.text || "";
+      $("sheetExcerpt").hidden = !$("sheetExcerpt").textContent;
+      $("sheetColors").hidden = kind !== "highlight";
+      $("sheetNote").value = note?.note || "";
+      $("sheetExtend").hidden = !(state.mode === "new" && kind === "highlight");
+      $("sheetDelete").hidden = state.mode !== "edit";
+      $("sheetCopy").hidden = !(state.text || note?.text);
+
+      updateSheetColors();
+      $("sheetBackdrop").hidden = false;
+      $("annotationSheet").hidden = false;
+      if (kind !== "highlight") $("sheetNote").focus();
+    }
+
+    function updateSheetColors() {
+      document.querySelectorAll("#sheetColors [data-color]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.color === sheetState?.color));
+      });
+    }
+
+    function closeSheet() {
+      if ($("annotationSheet").hidden) return;
+      $("annotationSheet").hidden = true;
+      $("sheetBackdrop").hidden = true;
+      try { current?.engine?.clearSelection?.(); } catch (_) {}
+      sheetState = null;
+      scheduleChromeHide();
+    }
+
+    function extendSheetSelection() {
+      const engine = current?.engine;
+      if (!engine || !sheetState?.selection) return;
+
+      const extended = engine.extendSelection(sheetState.selection);
+      if (!extended) {
+        showToast("Pas d’autre phrase à ajouter sur cette page.", 2000);
+        return;
+      }
+
+      sheetState.selection = extended;
+      sheetState.text = extended.text;
+      $("sheetExcerpt").textContent = extended.text;
+      engine.showSelection(extended);
+    }
+
+    async function saveSheet() {
+      const engine = current?.engine;
+      const state = sheetState;
+      if (!engine || !state) return;
+
+      const text = $("sheetNote").value.trim();
+
+      try {
+        if (state.mode === "edit") {
+          const changes = { note: text };
+          if (state.note.type === "highlight") changes.color = state.color;
+          Object.assign(state.note, changes);
+          await db.annotations.update(state.note.id, changes);
+        } else {
+          const base = {
+            id: uid(),
+            bookId: engine.record.id,
+            type: state.kind,
+            createdAt: Date.now(),
+            note: text,
+            text: (state.text || "").slice(0, 1200)
+          };
+
+          const note = state.kind === "highlight"
+            ? { ...base, color: state.color, ...engine.highlightData(state.selection) }
+            : { ...base, position: state.info.position, progress: state.info.progress, label: state.info.label };
+
+          if (note.type === "note" && !note.note) {
+            showToast("Écrivez une note avant d’enregistrer.", 2200);
+            return;
+          }
+
+          await db.annotations.put(note);
+          current.annotations.push(note);
+        }
+      } catch (error) {
+        showToast("Enregistrement impossible : " + error.message, 5000, true);
+        return;
+      }
+
+      closeSheet();
+      refreshHighlights();
+      if (!$("navPanel").hidden) renderNotes();
+      showToast(state.mode === "edit" ? "Modifications enregistrées." : (state.kind === "highlight" ? "Passage surligné." : "Note ajoutée."), 1800);
+    }
+
+    async function deleteSheetNote() {
+      const note = sheetState?.note;
+      if (!note) return;
+
+      await db.annotations.delete(note.id);
+      current.annotations = current.annotations.filter(item => item.id !== note.id);
+      closeSheet();
+      refreshHighlights();
+      updateBookmarkButton();
+      if (!$("navPanel").hidden) renderNotes();
+      showToast(note.type === "highlight" ? "Surlignage supprimé." : "Note supprimée.", 1800);
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Passage copié.", 1600);
+      } catch (_) {
+        showToast("La copie a été refusée par le navigateur.", 2500);
+      }
+    }
+
+    /* ============================================================
+       PANNEAU DE NAVIGATION : SOMMAIRE, SIGNETS ET NOTES, RECHERCHE
+       ============================================================ */
+    let searchToken = 0;
+    let lastSearch = "";
+
+    function openNav(tab = "toc") {
+      if (!current?.engine) return;
+      closeSettings();
+      clearTimeout(chromeTimer);
+      $("panelBackdrop").hidden = false;
+      $("navPanel").hidden = false;
+      selectNavTab(tab);
+    }
+
+    function closeNav() {
+      if ($("navPanel").hidden) return;
+      $("navPanel").hidden = true;
+      $("panelBackdrop").hidden = $("settingsPanel").hidden;
+      scheduleChromeHide();
+    }
+
+    function selectNavTab(tab) {
+      document.querySelectorAll("[data-nav-tab]").forEach(button => {
+        const active = button.dataset.navTab === tab;
+        button.setAttribute("aria-selected", String(active));
+        button.tabIndex = active ? 0 : -1;
+      });
+
+      document.querySelectorAll("[data-nav-panel]").forEach(panel => {
+        panel.hidden = panel.dataset.navPanel !== tab;
+      });
+
+      if (tab === "toc") void renderToc();
+      if (tab === "notes") renderNotes();
+      if (tab === "search") {
+        const input = $("searchInput");
+        input.value = lastSearch;
+        if (!document.querySelector("#searchResults li")) $("searchStatus").textContent =
+          current?.engine?.search
+            ? "Les majuscules et les accents sont ignorés."
+            : "La recherche n’est pas possible dans une bande dessinée (pages en images).";
+        if (current?.engine?.search) setTimeout(() => input.focus(), 60);
+      }
+    }
+
+    function navButton(label, small, onClick) {
+      const button = document.createElement("button");
+      button.className = "nav-entry";
+      button.type = "button";
+      button.textContent = label;
+
+      if (small) {
+        const detail = document.createElement("small");
+        detail.textContent = small;
+        button.appendChild(detail);
+      }
+
+      button.addEventListener("click", onClick);
+      return button;
+    }
+
+    async function jumpTo(target, afterJump) {
+      const engine = current?.engine;
+      if (!engine || !target) return;
+
+      closeNav();
+      stopTurns();
+
+      try {
+        await engine.goTo(target);
+        afterJump?.(engine);
+      } catch (error) {
+        showToast("Impossible d’aller à cet endroit : " + error.message, 5000, true);
+      }
+    }
+
+    async function renderToc() {
+      const engine = current?.engine;
+      const list = $("tocList");
+      list.replaceChildren();
+      $("tocStatus").textContent = "Chargement du sommaire…";
+
+      let items = [];
+      try { items = await engine?.toc?.() || []; } catch (_) {}
+      if (engine !== current?.engine || $("navToc").hidden) return;
+
+      $("tocStatus").textContent = items.length ? "" :
+        engine.record.format === "cbz"
+          ? "Une bande dessinée n’a pas de sommaire. Utilisez les signets pour marquer vos pages."
+          : "Ce livre n’a pas de sommaire : aucun titre de chapitre n’a été trouvé.";
+
+      const active = engine.tocIndex?.(items) ?? -1;
+
+      items.forEach((item, index) => {
+        const entry = document.createElement("li");
+        const button = navButton(item.label, "", () => jumpTo(item.target));
+        button.style.paddingLeft = (4 + Math.min(item.depth, 4) * 16) + "px";
+        if (index === active) button.setAttribute("aria-current", "true");
+        entry.appendChild(button);
+        list.appendChild(entry);
+      });
+
+      list.querySelector('[aria-current="true"]')?.scrollIntoView({ block: "center" });
+    }
+
+    function renderNotes() {
+      const list = $("notesList");
+      list.replaceChildren();
+
+      const notes = (current?.annotations || [])
+        .slice()
+        .sort((a, b) => (a.progress || 0) - (b.progress || 0) || a.createdAt - b.createdAt);
+
+      $("notesStatus").textContent = notes.length
+        ? `${notes.length} élément${notes.length > 1 ? "s" : ""}`
+        : "Aucun signet ni note dans ce livre pour l’instant.";
+
+      for (const note of notes) {
+        const entry = document.createElement("li");
+        const row = document.createElement("div");
+        row.className = "note-row";
+
+        const kind = { bookmark: "Signet", highlight: "Surlignage", note: "Note" }[note.type] || "Note";
+        const button = navButton("", "", () => jumpTo(note.position));
+
+        const head = document.createElement("small");
+        if (note.type === "highlight") {
+          const swatch = document.createElement("span");
+          swatch.className = "note-swatch";
+          swatch.style.background = HIGHLIGHT_FILL[note.color] || HIGHLIGHT_FILL.jaune;
+          head.appendChild(swatch);
+        }
+        head.append(`${kind} · ${note.label || ""}`);
+        button.appendChild(head);
+
+        if (note.text) {
+          const excerpt = document.createElement("span");
+          excerpt.className = "excerpt";
+          excerpt.textContent = note.type === "highlight" ? `« ${note.text} »` : note.text;
+          button.appendChild(excerpt);
+        }
+
+        if (note.note) {
+          const text = document.createElement("span");
+          text.className = "note-text";
+          text.textContent = note.note;
+          button.appendChild(text);
+        }
+
+        const action = document.createElement("button");
+        action.className = "icon-button";
+        action.type = "button";
+
+        if (note.type === "bookmark") {
+          action.setAttribute("aria-label", "Supprimer ce signet");
+          action.title = "Supprimer";
+          action.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13"/></svg>';
+          action.addEventListener("click", async () => {
+            await db.annotations.delete(note.id);
+            current.annotations = current.annotations.filter(item => item.id !== note.id);
+            updateBookmarkButton();
+            renderNotes();
+          });
+        } else {
+          action.setAttribute("aria-label", "Modifier");
+          action.title = "Modifier ou supprimer";
+          action.innerHTML = '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16Z"/></svg>';
+          action.addEventListener("click", async () => {
+            await jumpTo(note.position);
+            openSheet({ mode: "edit", note, text: note.text });
+          });
+        }
+
+        row.append(button, action);
+        entry.appendChild(row);
+        list.appendChild(entry);
+      }
+    }
+
+    function excerptNode(excerpt) {
+      const span = document.createElement("span");
+      span.className = "excerpt";
+      const mark = document.createElement("mark");
+      mark.textContent = excerpt.match;
+      span.append(excerpt.before, mark, excerpt.after);
+      return span;
+    }
+
+    async function runSearch(query) {
+      const engine = current?.engine;
+      const token = ++searchToken;
+      const list = $("searchResults");
+      const status = $("searchStatus");
+
+      lastSearch = query.trim();
+      list.replaceChildren();
+
+      if (!engine?.search) return;
+
+      if (lastSearch.length < 2) {
+        status.textContent = "Tapez au moins deux lettres.";
+        return;
+      }
+
+      status.textContent = "Recherche…";
+      let results = [];
+
+      try {
+        results = await engine.search(
+          lastSearch,
+          (done, total) => {
+            if (token === searchToken) status.textContent = `Recherche… ${Math.round(done / Math.max(1, total) * 100)} %`;
+          },
+          () => token !== searchToken || engine !== current?.engine
+        );
+      } catch (error) {
+        if (token === searchToken) status.textContent = "Recherche impossible : " + error.message;
+        return;
+      }
+
+      if (token !== searchToken || engine !== current?.engine) return;
+
+      status.textContent = results.length
+        ? `${results.length}${results.length >= MAX_SEARCH_RESULTS ? " premiers" : ""} résultat${results.length > 1 ? "s" : ""}`
+        : `Aucun résultat pour « ${lastSearch} ».`;
+
+      for (const result of results) {
+        const entry = document.createElement("li");
+        const button = navButton("", "", () => jumpTo(result.target, done => done.markSearch?.(result.target)));
+        const label = document.createElement("small");
+        label.textContent = result.label;
+        button.append(label, excerptNode(result.excerpt));
+        entry.appendChild(button);
+        list.appendChild(entry);
+      }
+    }
+
+    /* ============================================================
+       LECTURE À VOIX HAUTE
+
+       La voix du téléphone lit la page, phrase par phrase, puis la
+       liseuse tourne la page et continue. L'écran reste allumé.
+       ============================================================ */
+    const speech = { active: false, token: 0, timer: 0, queue: [], wakeLock: null };
+
+    function speechSupported() {
+      return "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+    }
+
+    function chooseVoice(language) {
+      const voices = speechSynthesis.getVoices();
+      const wanted = (language || document.documentElement.lang || "fr").toLowerCase().slice(0, 2);
+      const matching = voices.filter(voice => voice.lang.toLowerCase().startsWith(wanted));
+      return matching.find(voice => voice.localService && voice.default) ||
+        matching.find(voice => voice.localService) ||
+        matching[0] || null;
+    }
+
+    /* Morceaux courts : certaines voix s'arrêtent sur les phrases trop longues. */
+    function speechChunks(text) {
+      const sentences = text.match(/[^.!?…]+[.!?…]+[»”"’)\]]*\s*|[^.!?…]+$/g) || [];
+      const chunks = [];
+
+      for (let sentence of sentences) {
+        sentence = sentence.trim();
+
+        while (sentence.length > 220) {
+          let cut = sentence.lastIndexOf(", ", 220);
+          if (cut < 80) cut = sentence.lastIndexOf(" ", 220);
+          if (cut < 40) cut = 220;
+          chunks.push(sentence.slice(0, cut + 1).trim());
+          sentence = sentence.slice(cut + 1).trim();
+        }
+
+        if (sentence) chunks.push(sentence);
+      }
+
+      return chunks;
+    }
+
+    async function speakCurrentPage() {
+      const engine = current?.engine;
+      if (!speech.active || !engine) return;
+
+      const token = ++speech.token;
+      speechSynthesis.cancel();
+
+      let text = "";
+      try { text = await engine.pageText(); } catch (_) {}
+      if (token !== speech.token || !speech.active) return;
+
+      const chunks = speechChunks(text);
+      const voice = chooseVoice(engine.language?.());
+      speech.queue = [];
+
+      if (!chunks.length) {
+        advanceReading(token);
+        return;
+      }
+
+      chunks.forEach((chunk, index) => {
+        const utterance = new SpeechSynthesisUtterance(chunk);
+        if (voice) utterance.voice = voice;
+        utterance.lang = voice?.lang || engine.language?.() || "fr-FR";
+        utterance.rate = prefs.speechRate;
+
+        if (index === chunks.length - 1) {
+          utterance.onend = () => advanceReading(token);
+        }
+
+        utterance.onerror = event => {
+          if (token === speech.token && !["interrupted", "canceled"].includes(event.error)) {
+            stopReadAloud("La voix de lecture s’est arrêtée : " + event.error);
+          }
+        };
+
+        speech.queue.push(utterance);
+        speechSynthesis.speak(utterance);
+      });
+    }
+
+    function advanceReading(token) {
+      const engine = current?.engine;
+      if (token !== speech.token || !speech.active || !engine) return;
+
+      if (engine.canGo && !engine.canGo(1)) {
+        stopReadAloud("Fin du livre : lecture à voix haute terminée.");
+        return;
+      }
+
+      /* Le changement de page relance la lecture (voir speechPageChanged). */
+      void navigate(1);
+    }
+
+    function speechPageChanged() {
+      if (!speech.active) return;
+      speech.token++;
+      speechSynthesis.cancel();
+      clearTimeout(speech.timer);
+      speech.timer = setTimeout(speakCurrentPage, 450);
+    }
+
+    async function keepScreenOn() {
+      try {
+        if (speech.active && !speech.wakeLock && navigator.wakeLock && document.visibilityState === "visible") {
+          speech.wakeLock = await navigator.wakeLock.request("screen");
+          speech.wakeLock.addEventListener?.("release", () => { speech.wakeLock = null; });
+        }
+      } catch (_) {
+        speech.wakeLock = null;
+      }
+    }
+
+    function updateReadAloudButton() {
+      const button = $("readAloudButton");
+      const label = speech.active ? "Arrêter la lecture à voix haute" : "Lire à voix haute";
+
+      button.setAttribute("aria-pressed", String(speech.active));
+      button.setAttribute("aria-label", label);
+      button.title = label;
+      button.innerHTML = speech.active
+        ? '<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></svg>'
+        : '<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9Z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>';
+    }
+
+    function startReadAloud() {
+      if (!speechSupported() || !current?.engine?.pageText) return;
+
+      speech.active = true;
+      updateReadAloudButton();
+      void keepScreenOn();
+      showToast("Lecture à voix haute. Touchez ■ pour l’arrêter.", 2500);
+      void speakCurrentPage();
+    }
+
+    function stopReadAloud(message = "") {
+      if (!speech.active) return;
+
+      speech.active = false;
+      speech.token++;
+      clearTimeout(speech.timer);
+      speech.queue = [];
+
+      try { speechSynthesis.cancel(); } catch (_) {}
+      try { speech.wakeLock?.release(); } catch (_) {}
+      speech.wakeLock = null;
+
+      updateReadAloudButton();
+      if (message) showToast(message, 3500);
+    }
+
+    function updateReaderTools() {
+      const engine = current?.engine;
+      $("readAloudButton").hidden = !(speechSupported() && engine?.pageText);
+      $("speechSettings").hidden = !speechSupported();
+      updateReadAloudButton();
+    }
+
+    function applySpeechRate() {
+      $("speechRateRange").value = String(prefs.speechRate);
+      $("speechRateValue").textContent = "× " + String(prefs.speechRate).replace(".", ",");
+    }
+
+    /* ============================================================
+       SAUVEGARDE ET RESTAURATION DE LA BIBLIOTHÈQUE
+
+       Le fichier .zip contient omni-liseuse.json (fiches des livres,
+       signets, notes et réglages), le contenu de chaque livre et sa
+       couverture. Les livres déjà présents ne sont pas dupliqués.
+       ============================================================ */
+    const BACKUP_SETTINGS = ["theme", "fontSize", "warmth", "lastWarmth", "speechRate", "readingSpeed", "pageSeconds"];
+
+    function formatDate(time) {
+      return new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(time));
+    }
+
+    async function updateBackupStatus() {
+      const last = await db.settings.get("lastBackupAt").catch(() => null);
+      $("backupStatus").textContent = last?.value
+        ? `Dernière sauvegarde : ${formatDate(last.value)}.`
+        : "Aucune sauvegarde pour l’instant.";
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    }
+
+    async function exportLibrary() {
+      const button = $("exportButton");
+      const status = $("backupStatus");
+      if (!db || !window.JSZip) return;
+
+      const books = await db.books.toArray();
+      if (!books.length) {
+        status.textContent = "La bibliothèque est vide : rien à sauvegarder.";
+        return;
+      }
+
+      button.disabled = true;
+
+      try {
+        const zip = new JSZip();
+        const manifest = {
+          app: "omni-liseuse",
+          backupVersion: 1,
+          exportedAt: new Date().toISOString(),
+          books: [],
+          annotations: await db.annotations.toArray(),
+          settings: (await db.settings.toArray()).filter(row => BACKUP_SETTINGS.includes(row.key))
+        };
+
+        for (let index = 0; index < books.length; index++) {
+          const { cover, ...book } = books[index];
+          status.textContent = `Préparation ${index + 1}/${books.length} · ${book.title}`;
+
+          const stored = await db.contents.get(book.id);
+          if (!stored || stored.content == null) continue;
+
+          const contentPath = `livres/${book.id}.${stored.kind === "text" ? "txt" : "bin"}`;
+          zip.file(contentPath, stored.kind === "text" ? stored.content : copyArrayBuffer(stored.content));
+
+          let coverPath = null;
+          if (cover instanceof Blob) {
+            coverPath = `couvertures/${book.id}`;
+            zip.file(coverPath, cover);
+          }
+
+          manifest.books.push({ ...book, contentKind: stored.kind, contentPath, coverPath, coverType: cover?.type || null });
+        }
+
+        zip.file("omni-liseuse.json", JSON.stringify(manifest));
+
+        /* Pas de compression : EPUB, PDF et images sont déjà compressés. */
+        const blob = await zip.generateAsync({ type: "blob", compression: "STORE" }, meta => {
+          status.textContent = `Création du fichier… ${Math.round(meta.percent)} %`;
+        });
+
+        const date = new Date().toISOString().slice(0, 10);
+        downloadBlob(blob, `omni-liseuse-sauvegarde-${date}.zip`);
+        await db.settings.put({ key: "lastBackupAt", value: Date.now() });
+        await updateBackupStatus();
+        showToast(`Sauvegarde créée : ${manifest.books.length} livre${manifest.books.length > 1 ? "s" : ""}. Gardez ce fichier en lieu sûr.`, 5000);
+      } catch (error) {
+        console.error("Sauvegarde impossible :", error);
+        status.textContent = "Sauvegarde impossible : " + error.message;
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    /* Fiche d'un livre lue dans une sauvegarde : seuls les champs connus sont gardés. */
+    function restoredRecord(entry, cover) {
+      return {
+        id: entry.id,
+        title: cleanText(entry.title) || "Sans titre",
+        author: cleanText(entry.author) || "Auteur inconnu",
+        format: entry.format,
+        cover,
+        addedAt: Number(entry.addedAt) || Date.now(),
+        lastOpenedAt: Number(entry.lastOpenedAt) || 0,
+        position: entry.position && typeof entry.position === "object" ? entry.position : null,
+        progress: clamp(Number(entry.progress) || 0, 0, 1),
+        needsReimport: false,
+        ...(typeof entry.epubLocations === "string" ? { epubLocations: entry.epubLocations } : {})
+      };
+    }
+
+    async function restoreLibrary(file) {
+      const status = $("backupStatus");
+      if (!file || !db || !window.JSZip) return;
+
+      let zip;
+      let manifest;
+
+      try {
+        zip = await JSZip.loadAsync(file);
+        const index = zip.file("omni-liseuse.json");
+        if (!index) throw new Error("ce fichier n’est pas une sauvegarde d’Omni-Liseuse");
+        manifest = JSON.parse(await index.async("string"));
+        if (manifest?.app !== "omni-liseuse" || !Array.isArray(manifest.books)) {
+          throw new Error("sauvegarde illisible");
+        }
+      } catch (error) {
+        status.textContent = "Restauration impossible : " + error.message + ".";
+        return;
+      }
+
+      const existing = new Map((await db.books.toArray()).map(book => [book.id, book]));
+      const fresh = manifest.books.filter(entry => !existing.has(entry.id)).length;
+
+      closeSettings();
+      const accepted = await askConfirmation(
+        "Restaurer cette sauvegarde ?",
+        (manifest.exportedAt ? `Sauvegarde du ${formatDate(manifest.exportedAt)} : ` : "Sauvegarde : ") +
+        `${manifest.books.length} livre${manifest.books.length > 1 ? "s" : ""}. ` +
+        (fresh ? `${fresh} ${fresh > 1 ? "seront ajoutés" : "sera ajouté"} à la bibliothèque. ` : "Aucun nouveau livre à ajouter. ") +
+        "Les livres déjà présents gardent leur position de lecture la plus récente. Rien n’est supprimé.",
+        "Restaurer"
+      );
+
+      if (!accepted) return;
+
+      const restoredIds = new Set();
+      let added = 0;
+      let updated = 0;
+      const failures = [];
+
+      for (let index = 0; index < manifest.books.length; index++) {
+        const entry = manifest.books[index];
+        showToast(`Restauration ${index + 1}/${manifest.books.length}…`, 60000);
+
+        try {
+          if (typeof entry.id !== "string" || !SUPPORTED_FORMATS.has(entry.format)) throw new Error("fiche invalide");
+
+          const known = existing.get(entry.id);
+
+          if (known) {
+            if ((Number(entry.lastOpenedAt) || 0) > (known.lastOpenedAt || 0)) {
+              await db.books.update(entry.id, {
+                position: entry.position || null,
+                progress: clamp(Number(entry.progress) || 0, 0, 1),
+                lastOpenedAt: Number(entry.lastOpenedAt)
+              });
+              updated++;
+            }
+            restoredIds.add(entry.id);
+            continue;
+          }
+
+          const contentFile = zip.file(entry.contentPath || "");
+          if (!contentFile) throw new Error("contenu absent de la sauvegarde");
+
+          const isText = TEXT_FORMATS.has(entry.format);
+          const content = isText ? await contentFile.async("string") : await contentFile.async("arraybuffer");
+
+          let cover = null;
+          const coverFile = entry.coverPath && zip.file(entry.coverPath);
+          if (coverFile) cover = new Blob([await coverFile.async("arraybuffer")], { type: entry.coverType || "image/jpeg" });
+
+          const record = restoredRecord(entry, cover);
+          if (!record.cover) record.cover = await generateCover(record.title, record.author, record.format);
+
+          await db.transaction("rw", db.books, db.contents, async () => {
+            await db.contents.put({ id: record.id, kind: isText ? "text" : "binary", content });
+            await db.books.put(record);
+          });
+
+          restoredIds.add(entry.id);
+          added++;
+        } catch (error) {
+          failures.push(`${entry?.title || "Livre"} — ${error.message}`);
+        }
+      }
+
+      /* Signets et notes des livres restaurés (sans doublon). */
+      const known = new Set((await db.annotations.toArray()).map(note => note.id));
+      const notes = (Array.isArray(manifest.annotations) ? manifest.annotations : [])
+        .filter(note => note && typeof note.id === "string" && restoredIds.has(note.bookId) && !known.has(note.id));
+      if (notes.length) await db.annotations.bulkPut(notes);
+
+      /* Réglages : seulement sur un appareil encore vide (nouveau téléphone). */
+      if (!existing.size && Array.isArray(manifest.settings)) {
+        for (const row of manifest.settings) {
+          if (BACKUP_SETTINGS.includes(row?.key)) await db.settings.put({ key: row.key, value: row.value });
+        }
+        await loadPreferences();
+        applyTheme();
+        applyWarmth();
+        applyFontSize(false);
+        applySpeechRate();
+      }
+
+      if (added) {
+        try { await navigator.storage?.persist?.(); } catch (_) {}
+      }
+
+      await renderLibrary();
+
+      const summary = [`${added} livre${added > 1 ? "s" : ""} ajouté${added > 1 ? "s" : ""}`];
+      if (updated) summary.push(`${updated} position${updated > 1 ? "s" : ""} mise${updated > 1 ? "s" : ""} à jour`);
+      if (notes.length) summary.push(`${notes.length} signet${notes.length > 1 ? "s" : ""} ou note${notes.length > 1 ? "s" : ""}`);
+      const message = "Restauration terminée : " + summary.join(", ") + "." +
+        (failures.length ? "\n" + failures.slice(0, 3).join("\n") : "");
+      showToast(message, failures.length ? 10000 : 5000, failures.length > 0);
+    }
+
+    /* ============================================================
+       MISE À JOUR DE L'APPLICATION
+
+       Une nouvelle version du service worker attend qu'on appuie sur
+       « Mettre à jour » : la lecture n'est jamais interrompue d'elle-même.
+       ============================================================ */
+    let waitingWorker = null;
+    let updateRequested = false;
+
+    function offerUpdate(worker) {
+      waitingWorker = worker;
+      $("updateBanner").hidden = false;
+    }
+
+    function watchForUpdates(registration) {
+      if (registration.waiting && navigator.serviceWorker.controller) offerUpdate(registration.waiting);
+
+      registration.addEventListener("updatefound", () => {
+        const worker = registration.installing;
+        worker?.addEventListener("statechange", () => {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) offerUpdate(worker);
+        });
+      });
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") registration.update().catch(() => {});
+      });
+
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (updateRequested) {
+          updateRequested = false;
+          try { current?.engine?.saveState?.(); } catch (_) {}
+          location.reload();
+        }
+      });
+    }
+
+    function applyUpdate() {
+      if (!waitingWorker) return;
+      updateRequested = true;
+      $("updateButton").disabled = true;
+      waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    }
+
+    /* ============================================================
        PLEIN ÉCRAN, PANNEAUX ET INTERFACE
        ============================================================ */
     /* Plein écran à la demande seulement (bouton des réglages). */
@@ -4243,32 +6678,40 @@
       $("fullscreenButton").textContent = active ? "Quitter le plein écran" : "Passer en plein écran";
     }
 
+    /* Un panneau ou une fenêtre est ouvert par-dessus la page. */
+    function anyOverlayOpen() {
+      return ["settingsPanel", "navPanel", "aboutModal", "confirmModal", "annotationSheet"]
+        .some(id => !$(id).hidden);
+    }
+
     function scheduleChromeHide() {
       clearTimeout(chromeTimer);
-      if (!current?.engine || !$("settingsPanel").hidden) return;
+      if (!current?.engine || anyOverlayOpen()) return;
 
       chromeTimer = setTimeout(() => {
-        if (current?.engine && $("settingsPanel").hidden && $("aboutModal").hidden) {
+        if (current?.engine && !anyOverlayOpen()) {
           $("readerView").classList.add("chrome-hidden");
         }
       }, 4200);
     }
 
     function openSettings() {
+      closeNav();
       clearTimeout(chromeTimer);
+      void updateBackupStatus();
       $("panelBackdrop").hidden = false;
       $("settingsPanel").hidden = false;
     }
 
     function closeSettings() {
       const wasOpen = !$("settingsPanel").hidden;
-      $("panelBackdrop").hidden = true;
+      $("panelBackdrop").hidden = $("navPanel").hidden;
       $("settingsPanel").hidden = true;
       if (wasOpen) scheduleChromeHide();
     }
 
     function handleReaderKey(event) {
-      if (!current?.engine || !$("settingsPanel").hidden || !$("aboutModal").hidden || !$("confirmModal").hidden) return;
+      if (!current?.engine || anyOverlayOpen()) return;
       if (event.target?.closest?.("input, select, textarea")) return;
 
       if (["ArrowRight", "PageDown", " "].includes(event.key)) {
@@ -4327,9 +6770,72 @@
       });
 
       $("librarySettingsButton").addEventListener("click", openSettings);
+
+      $("bookmarkButton").addEventListener("click", () => void toggleBookmark());
+      $("navButton").addEventListener("click", () => openNav("toc"));
+      $("closeNavButton").addEventListener("click", closeNav);
+
+      document.querySelectorAll("[data-nav-tab]").forEach(button => {
+        button.addEventListener("click", () => selectNavTab(button.dataset.navTab));
+      });
+
+      $("searchForm").addEventListener("submit", event => {
+        event.preventDefault();
+        void runSearch($("searchInput").value);
+      });
+
+      document.querySelectorAll("#sheetColors [data-color]").forEach(button => {
+        button.addEventListener("click", () => {
+          if (!sheetState) return;
+          sheetState.color = button.dataset.color;
+          updateSheetColors();
+        });
+      });
+
+      $("sheetSave").addEventListener("click", () => void saveSheet());
+      $("sheetCancel").addEventListener("click", closeSheet);
+      $("sheetDelete").addEventListener("click", () => void deleteSheetNote());
+      $("sheetExtend").addEventListener("click", extendSheetSelection);
+      $("sheetCopy").addEventListener("click", () => {
+        const text = sheetState?.text || sheetState?.note?.text;
+        if (text) void copyText(text);
+      });
+
+      /* Le doigt qui vient de faire l'appui long ne doit pas refermer la fenêtre. */
+      $("sheetBackdrop").addEventListener("click", () => {
+        if (Date.now() - sheetOpenedAt > 450) closeSheet();
+      });
+
+      $("readAloudButton").addEventListener("click", () => {
+        if (speech.active) stopReadAloud();
+        else startReadAloud();
+      });
+
+      $("speechRateRange").addEventListener("input", event => {
+        prefs.speechRate = clamp(Number(event.target.value) || 1, .6, 1.8);
+        applySpeechRate();
+      });
+
+      $("speechRateRange").addEventListener("change", () => {
+        void savePreference("speechRate", prefs.speechRate);
+        if (speech.active) speechPageChanged();
+      });
+
+      $("exportButton").addEventListener("click", () => void exportLibrary());
+      $("restoreButton").addEventListener("click", () => $("restoreInput").click());
+      $("restoreInput").addEventListener("change", event => {
+        const file = event.target.files?.[0];
+        event.target.value = "";
+        if (file) void restoreLibrary(file);
+      });
+
+      $("updateButton").addEventListener("click", applyUpdate);
       $("readerSettingsButton").addEventListener("click", openSettings);
       $("closeSettingsButton").addEventListener("click", closeSettings);
-      $("panelBackdrop").addEventListener("click", closeSettings);
+      $("panelBackdrop").addEventListener("click", () => {
+        closeNav();
+        closeSettings();
+      });
       $("aboutButton").addEventListener("click", showAbout);
       $("settingsAboutButton").addEventListener("click", showAbout);
       $("closeAboutButton").addEventListener("click", closeAbout);
@@ -4389,7 +6895,9 @@
       window.addEventListener("keydown", event => {
         if (event.key === "Escape") {
           if (!$("confirmModal").hidden) finishConfirmation(false);
+          else if (!$("annotationSheet").hidden) closeSheet();
           else if (!$("aboutModal").hidden) closeAbout();
+          else if (!$("navPanel").hidden) closeNav();
           else closeSettings();
           return;
         }
@@ -4435,6 +6943,8 @@
       document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "hidden") {
           try { current?.engine?.saveState?.(); } catch (_) {}
+        } else {
+          void keepScreenOn();
         }
       });
     }
@@ -4460,7 +6970,8 @@
       }
 
       try {
-        await navigator.serviceWorker.register("service-worker.js");
+        const registration = await navigator.serviceWorker.register("service-worker.js");
+        watchForUpdates(registration);
         await navigator.serviceWorker.ready;
         status.textContent =
           "Application disponible hors ligne. Livres et positions enregistrés sur cet appareil.";
@@ -4499,6 +7010,7 @@
         applyTheme();
         applyWarmth();
         applyFontSize(false);
+        applySpeechRate();
         await renderLibrary();
       } catch (error) {
         $("importButton").disabled = true;

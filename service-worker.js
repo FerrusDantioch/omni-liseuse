@@ -5,13 +5,15 @@
  *
  * - La page (index.html) est d'abord demandée au réseau, pour recevoir
  *   les mises à jour ; sans connexion, la copie en cache est utilisée.
- *   Pas besoin de changer CACHE_NAME à chaque mise à jour de la page.
+ * - À chaque nouvelle version, changez le numéro de CACHE_NAME : la
+ *   liseuse affiche alors « Nouvelle version disponible » et la mise à
+ *   jour se fait d'un appui, sans interrompre une lecture en cours.
  * - Les bibliothèques (versions figées) et les icônes sont servies
  *   depuis le cache.
  * - Les livres ne passent jamais par ici : ils sont dans IndexedDB.
  */
 
-const CACHE_NAME = "omni-liseuse-v3.1.0";
+const CACHE_NAME = "omni-liseuse-v3.2.0";
 const CACHE_PREFIX = "omni-liseuse-";
 
 const APP_SHELL = [
@@ -68,9 +70,12 @@ self.addEventListener("install", event => {
         await cache.put(url, response);
       }
     }));
-
-    await self.skipWaiting();
   })());
+});
+
+/* Appui sur « Mettre à jour » : la nouvelle version remplace l'ancienne. */
+self.addEventListener("message", event => {
+  if (event.data?.type === "SKIP_WAITING") self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
