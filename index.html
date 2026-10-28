@@ -351,6 +351,64 @@
     .section-heading h2 { margin: 0; font-size: 18px; }
     .section-heading span { color: var(--muted); font-size: 13px; }
 
+    .library-tools { margin: -6px 0 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+    .library-tools-row { min-width: 0; display: flex; gap: 8px; }
+
+    .library-tools input,
+    .library-tools select {
+      min-width: 0;
+      min-height: 44px;
+      padding: 0 12px;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--button);
+      font: inherit;
+      font-size: 15px;
+    }
+
+    .library-tools input { flex: 1 1 0; width: 0; }
+    .library-tools select { flex: 0 1 auto; max-width: 46%; }
+
+    .library-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+
+    .library-filters button {
+      min-height: 36px;
+      padding: 6px 13px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--button);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .library-filters button[aria-pressed="true"] {
+      color: var(--ink);
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .library-no-match { margin: 6px 2px; color: var(--muted); }
+
+    .book-progress.done span { background: var(--accent); }
+
+    /* Petite étiquette « Terminé » sur la couverture. */
+    .book-done {
+      position: absolute;
+      z-index: 2;
+      left: 8px;
+      bottom: 8px;
+      padding: 3px 9px;
+      pointer-events: none;
+      color: #fff;
+      border-radius: 999px;
+      background: rgba(88, 52, 215, .92);
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
     .book-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(145px, 1fr));
@@ -976,6 +1034,53 @@
 
     #turnLayer.active ~ #pageRibbon { display: none; }
 
+    /* « Revenir où j'étais », au-dessus du bas de l'écran, même barres masquées. */
+    #returnBar {
+      position: fixed;
+      z-index: 25;
+      left: 50%;
+      bottom: calc(64px + var(--safe-bottom));
+      max-width: calc(100% - 32px);
+      display: flex;
+      overflow: hidden;
+      transform: translateX(-50%);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      box-shadow: 0 8px 26px rgba(0,0,0,.28);
+    }
+
+    #returnBar[hidden] { display: none; }
+
+    #returnButton, #returnDismiss { background: transparent; }
+
+    #returnButton {
+      min-width: 0;
+      min-height: 46px;
+      padding: 6px 4px 6px 15px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    #returnButton svg, #returnDismiss svg { flex: none; width: 20px; height: 20px; }
+    #returnButton span { min-width: 0; display: flex; flex-direction: column; }
+
+    #returnLabel {
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    #returnDismiss { width: 44px; display: grid; place-items: center; color: var(--muted); }
+
     .icon-button[aria-pressed="true"] { color: var(--accent); background: var(--accent-soft); }
     #bookmarkButton[aria-pressed="true"] svg { fill: currentColor; }
 
@@ -1273,7 +1378,29 @@
           <span id="bookCount">0 livre</span>
         </div>
 
+        <!-- Recherche, tri et filtre : affichés à partir de deux livres. -->
+        <div id="libraryTools" class="library-tools" hidden>
+          <div class="library-tools-row">
+            <input id="librarySearch" type="search" placeholder="Titre ou auteur" autocomplete="off"
+                   enterkeyhint="search" aria-label="Rechercher un livre par titre ou auteur">
+            <select id="librarySort" aria-label="Trier les livres">
+              <option value="recent">Lus récemment</option>
+              <option value="added">Ajoutés récemment</option>
+              <option value="title">Titre (A → Z)</option>
+              <option value="author">Auteur (A → Z)</option>
+              <option value="progress">Progression</option>
+            </select>
+          </div>
+          <div class="library-filters" role="group" aria-label="Livres affichés">
+            <button type="button" data-filter="all" aria-pressed="true">Tous</button>
+            <button type="button" data-filter="reading" aria-pressed="false">En cours</button>
+            <button type="button" data-filter="unread" aria-pressed="false">À lire</button>
+            <button type="button" data-filter="done" aria-pressed="false">Terminés</button>
+          </div>
+        </div>
+
         <div id="bookGrid" class="book-grid"></div>
+        <p id="libraryNoMatch" class="library-no-match" hidden>Aucun livre ne correspond.</p>
 
         <div id="emptyState" class="empty-state">
           <strong>Votre bibliothèque est prête</strong>
@@ -1352,6 +1479,17 @@
           </div>
         </div>
       </main>
+
+      <!-- Proposé après un saut (sommaire, recherche, notes) pour retrouver sa page. -->
+      <div id="returnBar" hidden>
+        <button id="returnButton" type="button">
+          <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg>
+          <span>Revenir où j’étais<small id="returnLabel"></small></span>
+        </button>
+        <button id="returnDismiss" type="button" title="Rester ici" aria-label="Rester ici et masquer ce bouton">
+          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
 
       <footer class="reader-footer">
         <button id="readAloudButton" class="icon-button" title="Lire à voix haute" aria-label="Lire à voix haute" aria-pressed="false" hidden>
@@ -1464,6 +1602,7 @@
     <section id="navNotes" role="tabpanel" aria-labelledby="navTabNotes" data-nav-panel="notes" hidden>
       <p id="notesStatus" class="nav-status"></p>
       <ul id="notesList" class="nav-list"></ul>
+      <button id="exportNotesButton" class="secondary-button wide-button" type="button" hidden>Exporter dans un fichier texte</button>
       <p class="nav-status">Le marque-page, en haut de l’écran, ajoute un signet à la page. Un appui long sur une phrase permet de la surligner ou d’y ajouter une note.</p>
     </section>
 
@@ -1508,7 +1647,7 @@
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 3.2.1</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <p><strong>Version 3.3.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
       <div class="credit">
         <p>Application développée par <strong>Ferrus Dantioch</strong> avec l'aide de l'IA.</p>
         <p>© 2026 Ferrus Dantioch. Omni-Liseuse est publiée sous licence
@@ -1534,6 +1673,9 @@
         <li><strong>Surligner une phrase</strong> — appui long dessus (EPUB, TXT, HTML, FB2). Sur un PDF ou une BD, l’appui long ajoute une note à la page.</li>
         <li><strong>Lecture à voix haute</strong> — bouton haut-parleur en bas (EPUB, PDF, TXT, HTML, FB2).</li>
         <li><strong>Temps restant</strong> — estimé d’après votre propre vitesse de lecture.</li>
+        <li><strong>Revenir où j’étais</strong> — après un saut par le sommaire, la recherche ou les notes, un bouton ramène à votre page.</li>
+        <li><strong>Exporter ses notes</strong> — onglet « Signets et notes », en fichier texte.</li>
+        <li><strong>Bibliothèque</strong> — recherche par titre ou auteur, tri, et filtre « En cours », « À lire », « Terminés ».</li>
       </ul>
 
       <h3>Et pour les autres formats ? Calibre fait le pont</h3>
@@ -2840,20 +2982,66 @@
       libraryCoverUrls.clear();
     }
 
-    async function renderLibrary() {
-      const books = await db.books.toArray();
+    /* Tri et filtre retenus sur cet appareil ; la recherche, elle, repart à vide. */
+    const LIBRARY_VIEW_KEY = "omni-liseuse-bibliotheque";
+    const LIBRARY_SORTS = {
+      recent: (a, b) => (b.lastOpenedAt || b.addedAt) - (a.lastOpenedAt || a.addedAt),
+      added: (a, b) => (b.addedAt || 0) - (a.addedAt || 0),
+      title: (a, b) => collator.compare(a.title, b.title),
+      author: (a, b) => collator.compare(a.author, b.author),
+      progress: (a, b) => (b.finishedAt ? 1 : b.progress || 0) - (a.finishedAt ? 1 : a.progress || 0)
+    };
 
-      books.sort((a, b) =>
-        (b.lastOpenedAt || b.addedAt) - (a.lastOpenedAt || a.addedAt) ||
-        collator.compare(a.title, b.title)
+    const libraryView = { sort: "recent", filter: "all", query: "" };
+    let libraryBooks = [];
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(LIBRARY_VIEW_KEY) || "{}");
+      if (LIBRARY_SORTS[saved.sort]) libraryView.sort = saved.sort;
+      if (["all", "reading", "unread", "done"].includes(saved.filter)) libraryView.filter = saved.filter;
+    } catch (_) {}
+
+    function saveLibraryView() {
+      try {
+        localStorage.setItem(LIBRARY_VIEW_KEY, JSON.stringify({ sort: libraryView.sort, filter: libraryView.filter }));
+      } catch (_) {}
+    }
+
+    /* « done » : dernière page atteinte ; « reading » : déjà ouvert ; « unread » : jamais ouvert. */
+    function readingState(book) {
+      if (book.finishedAt) return "done";
+      return book.lastOpenedAt || book.progress > 0 ? "reading" : "unread";
+    }
+
+    async function renderLibrary() {
+      libraryBooks = await db.books.toArray();
+      drawLibrary();
+    }
+
+    function drawLibrary() {
+      const all = libraryBooks;
+      const query = foldText(libraryView.query.trim());
+
+      const books = all.filter(book =>
+        (libraryView.filter === "all" || readingState(book) === libraryView.filter) &&
+        (!query || foldText(`${book.title} ${book.author}`).includes(query))
       );
+
+      books.sort((a, b) => LIBRARY_SORTS[libraryView.sort](a, b) || collator.compare(a.title, b.title));
 
       releaseLibraryCoverUrls();
       const grid = $("bookGrid");
       grid.replaceChildren();
 
-      $("bookCount").textContent = `${books.length} livre${books.length > 1 ? "s" : ""}`;
-      $("emptyState").hidden = books.length > 0;
+      const total = `${all.length} livre${all.length > 1 ? "s" : ""}`;
+      $("bookCount").textContent = books.length === all.length ? total : `${books.length} sur ${total}`;
+      $("emptyState").hidden = all.length > 0;
+      $("libraryTools").hidden = all.length < 2;
+      $("libraryNoMatch").hidden = all.length === 0 || books.length > 0;
+      $("librarySort").value = libraryView.sort;
+      document.querySelectorAll("[data-filter]").forEach(button => {
+        button.setAttribute("aria-pressed", String(button.dataset.filter === libraryView.filter));
+      });
 
       for (const book of books) {
         const card = document.createElement("article");
@@ -2891,6 +3079,13 @@
 
         coverWrap.append(coverButton, deleteButton);
 
+        if (book.finishedAt) {
+          const done = document.createElement("span");
+          done.className = "book-done";
+          done.textContent = "Terminé";
+          coverWrap.appendChild(done);
+        }
+
         const title = document.createElement("h3");
         title.className = "book-title";
         title.textContent = book.title;
@@ -2903,11 +3098,11 @@
 
         card.append(coverWrap, title, author);
 
-        if (book.progress > 0) {
+        if (book.progress > 0 || book.finishedAt) {
           const progress = document.createElement("div");
-          progress.className = "book-progress";
+          progress.className = book.finishedAt ? "book-progress done" : "book-progress";
           const bar = document.createElement("span");
-          bar.style.width = `${clamp(book.progress, 0, 1) * 100}%`;
+          bar.style.width = `${book.finishedAt ? 100 : clamp(book.progress, 0, 1) * 100}%`;
           progress.appendChild(bar);
           card.appendChild(progress);
         }
@@ -3469,9 +3664,19 @@
         return chapter ? items.indexOf(chapter) : -1;
       }
 
+      /* La nouvelle page n'est connue qu'à l'événement « relocated », juste
+         après l'affichage : on l'attend (au plus 800 ms, si la page ne change pas). */
       async goTo(target) {
+        const relocated = new Promise(resolve => {
+          const timer = setTimeout(resolve, 800);
+          this.rendition.once("relocated", () => { clearTimeout(timer); resolve(); });
+        });
+
         if (target?.cfi) await this.rendition.display(target.cfi);
         else if (target?.href) await this.rendition.display(target.href);
+        else return;
+
+        await relocated;
       }
 
       async search(query, report, cancelled) {
@@ -5029,6 +5234,7 @@
       $("searchResults").replaceChildren();
       $("searchStatus").textContent = "";
       $("tocList").replaceChildren();
+      hideReturn();
 
       const engine = current?.engine;
       try { engine?.saveState?.(); } catch (_) {}
@@ -5686,9 +5892,21 @@
         updateBookmarkButton();
         measureReadingSpeed(engine);
         updateTimeLeft(engine);
+        if (returnPoint && engine.isOnPage?.(returnPoint.position)) hideReturn();
+        void markFinished(engine);
       } catch (error) {
         console.warn("Mise à jour de la page :", error);
       }
+    }
+
+    /* Dernière page atteinte : le livre compte comme terminé dans la bibliothèque. */
+    async function markFinished(engine) {
+      const record = engine.record;
+      if (record.finishedAt || !engine.canGo || engine.canGo(1)) return;
+
+      record.finishedAt = Date.now();
+      try { await db.books.update(record.id, { finishedAt: record.finishedAt }); }
+      catch (error) { console.warn("Livre terminé :", error); }
     }
 
     function stopTurns() {
@@ -6041,6 +6259,11 @@
       return button;
     }
 
+    /* Page quittée par le dernier saut. Après plusieurs sauts d'affilée
+       (résultats de recherche successifs, par exemple), on garde la
+       toute première : c'est là qu'on lisait. */
+    let returnPoint = null;
+
     async function jumpTo(target, afterJump) {
       const engine = current?.engine;
       if (!engine || !target) return;
@@ -6048,12 +6271,44 @@
       closeNav();
       stopTurns();
 
+      const before = engine.positionInfo?.();
+
       try {
         await engine.goTo(target);
         afterJump?.(engine);
       } catch (error) {
         showToast("Impossible d’aller à cet endroit : " + error.message, 5000, true);
+        return;
       }
+
+      if (engine !== current?.engine) return;
+      const origin = returnPoint || before;
+      if (!origin?.position) return;
+
+      if (engine.isOnPage?.(origin.position)) hideReturn();
+      else showReturn(origin);
+    }
+
+    function showReturn(point) {
+      returnPoint = point;
+      $("returnLabel").textContent = point.label || "";
+      $("returnBar").hidden = false;
+    }
+
+    function hideReturn() {
+      returnPoint = null;
+      $("returnBar").hidden = true;
+    }
+
+    async function goBackToReturnPoint() {
+      const engine = current?.engine;
+      const point = returnPoint;
+      hideReturn();
+      if (!engine || !point) return;
+
+      stopTurns();
+      try { await engine.goTo(point.position); }
+      catch (error) { showToast("Impossible de revenir à cette page : " + error.message, 5000, true); }
     }
 
     async function renderToc() {
@@ -6096,6 +6351,7 @@
       $("notesStatus").textContent = notes.length
         ? `${notes.length} élément${notes.length > 1 ? "s" : ""}`
         : "Aucun signet ni note dans ce livre pour l’instant.";
+      $("exportNotesButton").hidden = notes.length === 0;
 
       for (const note of notes) {
         const entry = document.createElement("li");
@@ -6157,6 +6413,37 @@
         entry.appendChild(row);
         list.appendChild(entry);
       }
+    }
+
+    /* Signets, surlignages et notes du livre, dans l'ordre du livre, en texte simple. */
+    function exportNotes() {
+      const record = current?.record;
+      if (!record) return;
+
+      const notes = (current.annotations || [])
+        .slice()
+        .sort((a, b) => (a.progress || 0) - (b.progress || 0) || a.createdAt - b.createdAt);
+      if (!notes.length) return;
+
+      const kinds = { bookmark: "Signet", highlight: "Surlignage", note: "Note" };
+      const lines = [
+        record.title,
+        record.author,
+        "",
+        `Signets et notes exportés d’Omni-Liseuse le ${formatDate(Date.now())}.`
+      ];
+
+      for (const note of notes) {
+        lines.push("", "────────────────────", `${kinds[note.type] || "Note"} · ${note.label || ""}`);
+        if (note.text) lines.push(note.type === "highlight" ? `« ${note.text} »` : note.text);
+        if (note.note) lines.push(`Note : ${note.note}`);
+      }
+
+      /* BOM : les accents restent justes dans le Bloc-notes de Windows. */
+      const blob = new Blob(["\ufeff" + lines.join("\r\n") + "\r\n"], { type: "text/plain;charset=utf-8" });
+      const name = record.title.replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80) || "livre";
+      downloadBlob(blob, `${name} - notes.txt`);
+      showToast("Fichier de notes créé.");
     }
 
     function excerptNode(excerpt) {
@@ -6489,6 +6776,7 @@
         lastOpenedAt: Number(entry.lastOpenedAt) || 0,
         position: entry.position && typeof entry.position === "object" ? entry.position : null,
         progress: clamp(Number(entry.progress) || 0, 0, 1),
+        finishedAt: Number(entry.finishedAt) || 0,
         needsReimport: false,
         ...(typeof entry.epubLocations === "string" ? { epubLocations: entry.epubLocations } : {})
       };
@@ -6551,6 +6839,9 @@
                 lastOpenedAt: Number(entry.lastOpenedAt)
               });
               updated++;
+            }
+            if (Number(entry.finishedAt) && !known.finishedAt) {
+              await db.books.update(entry.id, { finishedAt: Number(entry.finishedAt) });
             }
             restoredIds.add(entry.id);
             continue;
@@ -6792,6 +7083,29 @@
       $("searchForm").addEventListener("submit", event => {
         event.preventDefault();
         void runSearch($("searchInput").value);
+      });
+
+      $("exportNotesButton").addEventListener("click", exportNotes);
+      $("returnButton").addEventListener("click", () => void goBackToReturnPoint());
+      $("returnDismiss").addEventListener("click", hideReturn);
+
+      $("librarySearch").addEventListener("input", event => {
+        libraryView.query = event.target.value;
+        drawLibrary();
+      });
+
+      $("librarySort").addEventListener("change", event => {
+        libraryView.sort = event.target.value;
+        saveLibraryView();
+        drawLibrary();
+      });
+
+      document.querySelectorAll("[data-filter]").forEach(button => {
+        button.addEventListener("click", () => {
+          libraryView.filter = button.dataset.filter;
+          saveLibraryView();
+          drawLibrary();
+        });
       });
 
       document.querySelectorAll("#sheetColors [data-color]").forEach(button => {

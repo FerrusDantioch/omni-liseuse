@@ -13,7 +13,7 @@
  * - Les livres ne passent jamais par ici : ils sont dans IndexedDB.
  */
 
-const CACHE_NAME = "omni-liseuse-v3.2.1";
+const CACHE_NAME = "omni-liseuse-v3.3.0";
 const CACHE_PREFIX = "omni-liseuse-";
 
 const APP_SHELL = [
