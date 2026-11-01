@@ -1647,7 +1647,7 @@
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 3.3.1</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <p><strong>Version 3.3.2</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
       <div class="credit">
         <p>Application développée par <strong>Ferrus Dantioch</strong> avec l'aide de l'IA.</p>
         <p>© 2026 Ferrus Dantioch. Omni-Liseuse est publiée sous licence
@@ -7320,6 +7320,14 @@
         window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDF_WORKER;
       }
 
+      /*
+       * Le mode hors ligne est préparé en premier, même si une bibliothèque
+       * n'a pas pu être téléchargée : sinon, une connexion instable à la
+       * première visite empêchait pour toujours d'enregistrer l'application,
+       * et donc de garder ces bibliothèques pour les visites suivantes.
+       */
+      void setupOfflineSupport();
+
       if (!window.Dexie) {
         $("importButton").disabled = true;
         showToast("Dexie.js n’a pas pu être chargé.", 8000, true);
@@ -7341,8 +7349,6 @@
         showToast("IndexedDB est indisponible : " + error.message, 9000, true);
         return;
       }
-
-      void setupOfflineSupport();
 
       const legacyCount = await db.books
         .filter(book => book.needsReimport === true)
