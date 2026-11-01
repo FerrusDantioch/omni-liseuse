@@ -31,11 +31,33 @@
     }());
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Oxanium:wght@500;600;700&display=swap" rel="stylesheet">
-
   <style>
+    /* ============================================================
+       POLICES (copiées dans le dossier polices/ : aucun appel à
+       Internet, elles marchent aussi hors ligne dès la première visite)
+       ============================================================ */
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("polices/eb-garamond.woff2") format("woff2");
+      font-weight: 400 800;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "EB Garamond";
+      src: url("polices/eb-garamond-italique.woff2") format("woff2");
+      font-weight: 400 800;
+      font-style: italic;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Oxanium";
+      src: url("polices/oxanium.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+      font-display: swap;
+    }
+
     /* ============================================================
        THÈMES ET BASE
        ============================================================ */
@@ -1647,12 +1669,15 @@
     <section class="modal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
       <img id="aboutIcon" class="modal-icon" alt="Icône Omni-Liseuse">
       <h2 id="aboutTitle">Omni-Liseuse</h2>
-      <p><strong>Version 3.3.2</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
+      <p><strong>Version 3.4.0</strong><br>Liseuse PWA locale pour formats ouverts et documents personnels.</p>
       <div class="credit">
         <p>Application développée par <strong>Ferrus Dantioch</strong> avec l'aide de l'IA.</p>
         <p>© 2026 Ferrus Dantioch. Omni-Liseuse est publiée sous licence
           <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.fr" target="_blank" rel="noopener">Creative Commons BY-NC-ND 4.0</a> :
           vous pouvez la partager librement en citant son auteur, mais pas la vendre ni la modifier.</p>
+        <p><small>Bibliothèques incluses : JSZip (MIT), Epub.js (BSD-2-Clause), Dexie.js et PDF.js
+          (Apache 2.0). Polices : EB Garamond et Oxanium (SIL Open Font License 1.1).
+          Textes complets dans le fichier libs/LICENCES.txt.</small></p>
         <a class="secondary-button wide-button" href="https://ferrusdantioch.github.io/omni-systeme/#applications" target="_blank" rel="noopener">Découvrir les autres applications Omni</a>
       </div>
       <p>Pensez à exporter votre bibliothèque de temps en temps (Réglages → Sauvegarde) : les livres ne sont enregistrés que sur cet appareil.</p>
@@ -1707,10 +1732,12 @@
   <div id="toast" role="status" aria-live="polite" hidden></div>
 
   <!-- Bibliothèques tierces -->
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js"></script>
-  <script src="https://unpkg.com/dexie@4.0.11/dist/dexie.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- Bibliothèques copiées dans le dossier libs/ (versions figées, licences
+       dans libs/LICENCES.txt) : rien n'est téléchargé depuis Internet. -->
+  <script src="libs/jszip.min.js"></script>
+  <script src="libs/epub.min.js"></script>
+  <script src="libs/dexie.min.js"></script>
+  <script src="libs/pdf.min.js"></script>
 
   <script>
   (() => {
@@ -1724,7 +1751,12 @@
      * obligatoire pour un service worker). Il garde aussi les bibliothèques
      * ci-dessous en cache.
      */
-    const PDF_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    const PDF_WORKER = new URL("libs/pdf.worker.min.js", document.baseURI).href;
+    /* Adresse complète des polices, pour les donner aussi aux pages des
+       livres EPUB (affichées dans un cadre à part, qui ne voit pas les
+       polices de l'application). */
+    const POLICE_LIVRE = new URL("polices/eb-garamond.woff2", document.baseURI).href;
+    const POLICE_LIVRE_ITALIQUE = new URL("polices/eb-garamond-italique.woff2", document.baseURI).href;
 
     const CBR_MESSAGE =
       "Le format CBR (archive RAR) n'est pas pris en charge par les navigateurs. " +
@@ -2469,7 +2501,7 @@
     function ensurePdfJs() {
       if (!window.pdfjsLib) {
         throw new Error(
-          "PDF.js n’est pas chargé. Vérifiez la connexion lors du premier chargement."
+          "PDF.js n’a pas pu être chargé. Fermez puis rouvrez l’application."
         );
       }
 
@@ -3322,6 +3354,8 @@
         }
 
         style.textContent = `
+          @font-face{font-family:'EB Garamond';src:url("${POLICE_LIVRE}") format("woff2");font-weight:400 800;font-style:normal}
+          @font-face{font-family:'EB Garamond';src:url("${POLICE_LIVRE_ITALIQUE}") format("woff2");font-weight:400 800;font-style:italic}
           html,body{background:${colors.paper}!important;color:${colors.ink}!important}
           body{
             font-family:'EB Garamond',Georgia,serif!important;

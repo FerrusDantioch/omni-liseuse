@@ -12,53 +12,34 @@
  *   liseuse affiche alors « Nouvelle version disponible » et la mise à
  *   jour se fait d'un appui, sans interrompre une lecture en cours.
  *   Rien ne change avant cet appui.
- * - Les bibliothèques (versions figées) et les icônes sont servies
- *   depuis le cache.
+ * - Les bibliothèques (dossier libs/), les polices (dossier polices/) et
+ *   les icônes sont copiées dans l'application et servies depuis le cache :
+ *   aucun autre site n'est contacté.
  * - Les livres ne passent jamais par ici : ils sont dans IndexedDB.
  */
 
-const CACHE_NAME = "omni-liseuse-v3.3.2";
+const CACHE_NAME = "omni-liseuse-v3.4.0";
 const CACHE_PREFIX = "omni-liseuse-";
 
+/* Tout nouveau fichier de l'application doit être ajouté à cette liste. */
 const APP_SHELL = [
   "./",
   "./manifest.webmanifest",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
-  "./icons/apple-touch-icon.png"
-];
-
-const LIBRARIES = [
-  "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js",
-  "https://cdn.jsdelivr.net/npm/epubjs@0.3.93/dist/epub.min.js",
-  "https://unpkg.com/dexie@4.0.11/dist/dexie.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js",
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js",
-  "https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Oxanium:wght@500;600;700&display=swap"
-];
-
-/* Sites externes dont les réponses peuvent être gardées en cache. */
-const CACHED_HOSTS = [
-  "cdn.jsdelivr.net",
-  "unpkg.com",
-  "cdnjs.cloudflare.com",
-  "fonts.googleapis.com",
-  "fonts.gstatic.com"
+  "./icons/apple-touch-icon.png",
+  "./libs/jszip.min.js",
+  "./libs/epub.min.js",
+  "./libs/dexie.min.js",
+  "./libs/pdf.min.js",
+  "./libs/pdf.worker.min.js",
+  "./polices/eb-garamond.woff2",
+  "./polices/eb-garamond-italique.woff2",
+  "./polices/oxanium.woff2"
 ];
 
 const NAVIGATION_TIMEOUT = 4000;
-
-async function fetchExternal(request) {
-  const url = typeof request === "string" ? request : request.url;
-
-  try {
-    // Réponse « cors » lisible plutôt qu'opaque : elle occupe moins de quota.
-    return await fetch(url, { mode: "cors", credentials: "omit" });
-  } catch (error) {
-    return fetch(request, { mode: "no-cors", credentials: "omit" });
-  }
-}
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
@@ -67,13 +48,6 @@ self.addEventListener("install", event => {
     await cache.addAll(
       APP_SHELL.map(url => new Request(url, { cache: "reload" }))
     );
-
-    await Promise.allSettled(LIBRARIES.map(async url => {
-      const response = await fetchExternal(url);
-      if (response.ok || response.type === "opaque") {
-        await cache.put(url, response);
-      }
-    }));
   })());
 });
 
@@ -108,8 +82,8 @@ self.addEventListener("fetch", event => {
     return;
   }
 
-  if (sameOrigin || CACHED_HOSTS.includes(url.hostname)) {
-    event.respondWith(cacheFirst(request, sameOrigin));
+  if (sameOrigin) {
+    event.respondWith(cacheFirst(request));
   }
 });
 
@@ -141,15 +115,15 @@ async function cachedPage(request) {
   }
 }
 
-async function cacheFirst(request, sameOrigin) {
+async function cacheFirst(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request, { ignoreVary: true });
 
   if (cached) return cached;
 
-  const response = sameOrigin ? await fetch(request) : await fetchExternal(request);
+  const response = await fetch(request);
 
-  if (response.ok || response.type === "opaque") {
+  if (response.ok) {
     await cache.put(request, response.clone());
   }
 
