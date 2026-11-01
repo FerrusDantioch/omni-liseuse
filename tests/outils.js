@@ -79,8 +79,10 @@ let navigateur, serveur, adresse;
 const externes = [];         // requêtes vers un autre site
 const erreurs = [];          // erreurs JavaScript
 
-async function nouvellePage(options = {}) {
+/* « avant » : ce qu'il faut préparer avant d'ouvrir la page (faux site, etc.). */
+async function nouvellePage({ avant, ...options } = {}) {
   const ctx = await navigateur.newContext({ ...TELEPHONE, acceptDownloads: true, ...options });
+  if (avant) await avant(ctx);
   ctx.on('request', (r) => {
     const u = r.url();
     if (!/^(http:\/\/localhost:|blob:|data:)/.test(u)) externes.push(u);
@@ -99,7 +101,7 @@ function fichiersDuServiceWorker(nomFichier) {
 }
 
 /* ---------- Ce que toute application doit savoir faire ---------- */
-async function controlesCommuns({ serviceWorker }) {
+async function controlesCommuns({ serviceWorker, avant }) {
   await section('Fichiers rangés pour le hors ligne', async () => {
     const liste = fichiersDuServiceWorker(serviceWorker);
     const manquants = liste.filter((f) => !fs.existsSync(path.join(RACINE, f)));
@@ -108,7 +110,7 @@ async function controlesCommuns({ serviceWorker }) {
   });
 
   await section('Ouverture sur un téléphone', async () => {
-    const { ctx, p } = await nouvellePage();
+    const { ctx, p } = await nouvellePage({ avant });
     await p.waitForTimeout(1500);
     const mesure = await p.evaluate(() => ({
       debord: document.documentElement.scrollWidth - innerWidth,
@@ -162,4 +164,4 @@ async function lancer(nom, fn, { autorises = [] } = {}) {
   process.exit(echecs.length ? 1 : 0);
 }
 
-module.exports = { lancer, section, verifier, nouvellePage, controlesCommuns, RACINE, DOSSIER, erreurs, externes };
+module.exports = { lancer, section, verifier, nouvellePage, controlesCommuns, RACINE, DOSSIER, erreurs, externes, adresse: () => adresse };
