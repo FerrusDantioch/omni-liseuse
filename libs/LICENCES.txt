@@ -7,7 +7,7 @@ Chacun garde sa propre licence, reproduite ci-dessous.
 - libs/jszip.min.js        : JSZip 3.10.1 (MIT, au choix avec GPL-3.0 ; Omni-Liseuse l'utilise sous MIT)
 - libs/epub.min.js         : Epub.js 0.3.93 (BSD-2-Clause)
 - libs/dexie.min.js        : Dexie.js 4.0.11 (Apache 2.0)
-- libs/pdf.min.js, libs/pdf.worker.min.js : PDF.js 3.11.174 (Apache 2.0)
+- libs/pdf.min.mjs, libs/pdf.worker.min.mjs : PDF.js 4.10.38 (Apache 2.0)
 - polices/eb-garamond*.woff2 : EB Garamond (SIL Open Font License 1.1)
 - polices/oxanium.woff2     : Oxanium (SIL Open Font License 1.1)
 
@@ -911,7 +911,7 @@ Apache License
 
 
 ==================================================================
-PDF.js 3.11.174
+PDF.js 4.10.38
 ==================================================================
 
 

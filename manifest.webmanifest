@@ -26,10 +26,44 @@
       "purpose": "any"
     },
     {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
       "src": "icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Importer un livre",
+      "short_name": "Importer",
+      "description": "Ajoute un livre à ta bibliothèque",
+      "url": "./?action=import",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "./",
+      "accept": {
+        "application/epub+zip": [".epub"],
+        "application/pdf": [".pdf"],
+        "application/x-fictionbook+xml": [".fb2"],
+        "text/plain": [".txt"],
+        "text/html": [".html", ".htm"],
+        "application/vnd.comicbook+zip": [".cbz"]
+      }
     }
   ]
 }

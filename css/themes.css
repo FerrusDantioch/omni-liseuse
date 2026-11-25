@@ -1,0 +1,96 @@
+/* ============================================================
+   POLICES (copiées dans le dossier polices/ : aucun appel à
+   Internet, elles marchent aussi hors ligne dès la première visite)
+   ============================================================ */
+@font-face {
+  font-family: "EB Garamond";
+  src: url("../polices/eb-garamond.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("../polices/eb-garamond-italique.woff2") format("woff2");
+  font-weight: 400 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Oxanium";
+  src: url("../polices/oxanium.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ============================================================
+   THÈMES ET VARIABLES
+   ============================================================ */
+:root {
+  --accent: #6d4aff;
+  --accent-light: #a48dff;
+  --accent-soft: rgba(109, 74, 255, .15);
+  --danger: #b82644;
+  --danger-bg: #b52542;
+  --danger-bg-hover: #9e1e38;
+  --reader-font-size: 19px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+html[data-theme="clair"] {
+  color-scheme: light;
+  --bg: #faf0e6;
+  --paper: #faf0e6;
+  --reader-bg: #eee1d2;
+  --panel: #fffaf3;
+  --panel-2: #f1e3d3;
+  --ink: #2b2b2b;
+  --muted: #5f574e;
+  --danger: #b82644;
+  --line: rgba(43, 43, 43, .13);
+  --button: rgba(255, 255, 255, .54);
+  --button-hover: rgba(255, 255, 255, .92);
+  --cover-shadow: rgba(74, 48, 28, .25);
+}
+
+html[data-theme="sombre"] {
+  color-scheme: dark;
+  --bg: #1a1a1a;
+  --paper: #1a1a1a;
+  --reader-bg: #111;
+  --panel: #252525;
+  --panel-2: #303030;
+  --ink: #dcdcdc;
+  --muted: #a2a2a2;
+  --danger: #f4798f;
+  --line: rgba(220, 220, 220, .13);
+  --button: rgba(255, 255, 255, .06);
+  --button-hover: rgba(255, 255, 255, .12);
+  --cover-shadow: rgba(0, 0, 0, .58);
+}
+
+/* Violet nuit : mêmes couleurs que le portfolio Omni-système
+   (fond #14111d, surfaces #1d1929, filets #332c47, violet #a777ff). */
+html[data-theme="nuit"] {
+  color-scheme: dark;
+  --accent: #a777ff;
+  --accent-light: #d6c2ff;
+  --accent-soft: rgba(167, 119, 255, .14);
+  --bg: #14111d;
+  --paper: #1d1929;
+  --reader-bg: #14111d;
+  --panel: #1d1929;
+  --panel-2: #262036;
+  --ink: #e9e4f2;
+  --muted: #a59cbb;
+  --danger: #f4798f;
+  --line: #332c47;
+  --button: rgba(167, 119, 255, .08);
+  --button-hover: rgba(167, 119, 255, .16);
+  --cover-shadow: rgba(0, 0, 0, .6);
+  --f-titre: "Oxanium", "Trebuchet MS", system-ui, sans-serif;
+}

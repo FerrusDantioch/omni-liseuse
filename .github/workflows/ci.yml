@@ -1,0 +1,54 @@
+name: CI Omni-Liseuse
+
+on:
+  push:
+    branches:
+      - main
+      - 'fix/**'
+      - 'feat/**'
+      - 'claude/**'
+  pull_request:
+    branches:
+      - main
+      - 'fix/**'
+      - 'feat/**'
+      - 'claude/**'
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Vérifier la syntaxe JavaScript (node --check)
+        run: |
+          while IFS= read -r -d '' f; do
+            node --check "$f"
+          done < <(find . -path ./node_modules -prune -o -path ./libs -prune -o -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
+
+      - name: Contrôles statiques (CSP, .nojekyll, SW réciproque)
+        run: node tests/verifier-statique.mjs
+
+      - name: Installer Playwright (sans modifier le dépôt)
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+
+      - name: Tests navigateur et E2E (Playwright)
+        env:
+          CI: 'true'
+        run: node tests/tester.js
+
+      - name: Vérifier que le dépôt reste propre
+        run: test -z "$(git status --porcelain)"
