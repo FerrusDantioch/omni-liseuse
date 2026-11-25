@@ -313,7 +313,9 @@ export function activateFocusTrap(overlayId, initialFocus = null) {
 
   if (target instanceof HTMLElement) {
     requestAnimationFrame(() => {
-      if (!container.hidden) target.focus();
+      if (!container.hidden && !container.contains(document.activeElement)) {
+        target.focus();
+      }
     });
   }
 }

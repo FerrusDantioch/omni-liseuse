@@ -217,6 +217,7 @@ lancer('Omni-Liseuse', async () => {
     await p.click('#navButton');
     await p.waitForSelector('#navPanel:not([hidden])', { timeout: 5000 });
     await p.focus('#navTabToc');
+    await p.waitForFunction(() => document.activeElement?.id === 'navTabToc');
     await p.keyboard.press('ArrowRight');
     const navApres = await p.evaluate(() => ({
       tocSelected: document.getElementById('navTabToc').getAttribute('aria-selected'),
