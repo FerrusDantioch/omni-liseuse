@@ -25,9 +25,26 @@ let chromium;
 try {
   ({ chromium } = require('playwright'));
 } catch (e) {
-  console.error('Playwright n’est pas installé. Tapez d’abord :  npm install playwright\n' +
-    'puis :  npx playwright install chromium');
-  process.exit(1);
+  const extraPaths = (process.env.NODE_PATH || '')
+    .split(path.delimiter)
+    .map((p) => p.trim())
+    .filter(Boolean);
+  let resolved = null;
+  if (extraPaths.length) {
+    try {
+      resolved = require.resolve('playwright', { paths: extraPaths });
+    } catch (_) {}
+  }
+  if (!resolved && process.env.PLAYWRIGHT_PATH) {
+    resolved = process.env.PLAYWRIGHT_PATH;
+  }
+  if (resolved) {
+    ({ chromium } = require(resolved));
+  } else {
+    console.error('Playwright n’est pas installé. Tapez d’abord :  npm install --no-save playwright\n' +
+      'puis :  npx playwright install chromium');
+    process.exit(1);
+  }
 }
 
 const RACINE = path.resolve(__dirname, '..');           // le dossier de l'application
@@ -37,21 +54,29 @@ const TYPES = {
   '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8', '.webmanifest': 'application/manifest+json',
   '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2',
-  '.wasm': 'application/wasm', '.txt': 'text/plain; charset=utf-8', '.pdf': 'application/pdf'
+  '.wasm': 'application/wasm', '.txt': 'text/plain; charset=utf-8',
+  '.md': 'text/markdown; charset=utf-8', '.pdf': 'application/pdf'
 };
 
 /* ---------- Le serveur local ---------- */
+const substitutions = new Map();
+
 function demarrerServeur() {
   const prefixe = '/' + DOSSIER + '/';
   const serveur = http.createServer((req, res) => {
     let chemin = decodeURIComponent(new URL(req.url, 'http://x').pathname);
     if (!chemin.startsWith(prefixe)) { res.writeHead(404); return res.end('Introuvable'); }
     chemin = chemin.slice(prefixe.length) || 'index.html';
+    const type = TYPES[path.extname(chemin).toLowerCase()] || 'application/octet-stream';
+    if (substitutions.has(chemin)) {
+      res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-cache' });
+      return res.end(substitutions.get(chemin));
+    }
     const fichier = path.resolve(RACINE, chemin);
     if (!fichier.startsWith(RACINE + path.sep)) { res.writeHead(403); return res.end(); }
     fs.readFile(fichier, (err, contenu) => {
       if (err) { res.writeHead(404); return res.end('Introuvable'); }
-      res.writeHead(200, { 'Content-Type': TYPES[path.extname(fichier)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+      res.writeHead(200, { 'Content-Type': type, 'Cache-Control': 'no-cache' });
       res.end(contenu);
     });
   });
@@ -181,6 +206,7 @@ async function lancer(nom, fn, { autorises = [], argsNavigateur = [] } = {}) {
       verifier(erreurs.length === 0, 'aucune erreur JavaScript', [...new Set(erreurs)].slice(0, 5));
     });
     await navigateur.close();
+    serveur.closeAllConnections?.();
     serveur.close();
   }
   console.log('\n────────────────────────────────────────');
@@ -190,4 +216,17 @@ async function lancer(nom, fn, { autorises = [], argsNavigateur = [] } = {}) {
   process.exit(echecs.length ? 1 : 0);
 }
 
-module.exports = { lancer, section, verifier, nouvellePage, controlesCommuns, RACINE, DOSSIER, erreurs, externes, adresse: () => adresse };
+module.exports = {
+  lancer,
+  section,
+  verifier,
+  nouvellePage,
+  controlesCommuns,
+  RACINE,
+  DOSSIER,
+  erreurs,
+  externes,
+  adresse: () => adresse,
+  remplacer: (chemin, contenu) => substitutions.set(chemin, contenu),
+  reinitialiserSubstitutions: () => substitutions.clear()
+};
