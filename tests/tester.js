@@ -151,7 +151,8 @@ async function importer(p, livre) {
 async function ouvrir(p, titre) {
   await p.click(`.cover-button[aria-label*="${titre}"]`);
   await p.waitForSelector('#readerView:not([hidden])', { timeout: 15000 });
-  await p.waitForTimeout(800);
+  await p.waitForSelector('#readerLoading[hidden]', { state: 'attached', timeout: 15000 });
+  await p.waitForTimeout(300);
 }
 
 async function retour(p) {
@@ -293,6 +294,7 @@ lancer('Omni-Liseuse', async () => {
     const extAvant = externes.length;
     await importer(p, { ...LIVRES.htmlXss, titre: 'Piège HTML' });
     await ouvrir(p, 'Piège HTML');
+    await p.waitForSelector('#textViewport:not([hidden])', { timeout: 10000 });
     await p.click('#textContent');
     await p.waitForTimeout(300);
 
