@@ -228,13 +228,14 @@ export async function closeReader() {
 
   try { engine?.destroy(); } catch (_) {}
 
+  try { await state.db.settings.put({ key: "resumeBookId", value: null }); } catch (_) {}
+
   resetReaderViewports();
   setReaderChromeHidden(false);
   $("readerLoading").hidden = true;
   $("readerView").hidden = true;
   $("libraryView").hidden = false;
 
-  await state.db.settings.put({ key: "resumeBookId", value: null });
   await renderLibrary();
 }
 

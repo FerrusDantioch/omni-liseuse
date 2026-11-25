@@ -152,6 +152,11 @@ async function ouvrir(p, titre) {
   await p.click(`.cover-button[aria-label*="${titre}"]`);
   await p.waitForSelector('#readerView:not([hidden])', { timeout: 15000 });
   await p.waitForSelector('#readerLoading[hidden]', { state: 'attached', timeout: 15000 });
+  await p.waitForFunction(
+    (t) => (document.getElementById('readerBookTitle')?.textContent || '').includes(t),
+    titre,
+    { timeout: 15000 }
+  );
   await p.waitForTimeout(300);
 }
 

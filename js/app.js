@@ -431,7 +431,9 @@ async function boot() {
 
     if (book && !book.needsReimport) {
       setTimeout(() => {
-        void openBook(book.id);
+        if (!state.current && !state.opening && !$("libraryView").hidden) {
+          void openBook(book.id);
+        }
       }, 180);
     } else {
       await state.db.settings.put({ key: "resumeBookId", value: null });
